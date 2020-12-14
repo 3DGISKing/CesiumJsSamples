@@ -1,0 +1,26 @@
+.cesium-viewer-cesiumLatlonContainer {
+    display: block;
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    color: #edffff;
+}
+
+.cesium-cesiumLatlonInspector {
+    color: rgb(237, 255, 255);
+    display: inline-block;
+    position: relative;
+    user-select: none;
+    border-radius: 5px;
+    background: rgba(48, 51, 54, 0.8);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(68, 68, 68);
+    border-image: initial;
+    padding: 4px 12px;
+}
+
+.cesium-cesiumLatlonInspector-Title {
+    padding-bottom: 3px;
+    text-align: center;
+}

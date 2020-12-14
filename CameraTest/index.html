@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version. -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>Cesium Camera Test</title>
+
+  <link rel="stylesheet" href="https://cesiumjs.org/releases/1.73/Build/Cesium/Widgets/widgets.css">
+  <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+  <script src="https://cesiumjs.org/releases/1.73/Build/Cesium/Cesium.js"></script>
+  <script src="jquery-2.1.4.min.js"></script>
+  <script src="range.js"></script>
+
+  <style>
+       html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+
+      .infoview {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px 15px;
+        border-radius: 4px;
+        border: 1px solid rgba(128, 128, 128, .5);
+        color: #fff;
+        background: rgba(0, 0, 0, .4);
+        box-shadow: 0 3px 14px rgba(128, 128, 128, .5);
+        z-index: 999
+      }
+
+      .infoview input,
+      .infoview select,
+      .infoview textarea {
+        color: #fff;
+        background-color: rgba(32, 160, 255, .2);
+        border: 1px solid #e4eaec;
+        font-size: 14px
+      }
+ </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <div class="infoview">
+    <div style="width:100%;text-align:center;font-size:16px">Camera Control（Unit: Degree）</div>
+    <table class="yybz_atable">
+      <tbody>
+      <tr>
+        <td class="nametd">Heading</td>
+        <td><input id="heading" type="range" min="0" max="360" step="1.0" value="0" title="heading"></td>
+      </tr>
+      <tr>
+        <td class="nametd">Pitch</td>
+        <td><input id="pitch" type="range" min="0" max="360" step="1.0" value="0" title="pitch"></td>
+      </tr>
+      <tr>
+        <td class="nametd">Roll</td>
+        <td><input id="roll" type="range" min="0" max="360" step="1.0" value="0" title="roll"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    var viewer = new Cesium.Viewer('cesiumContainer');
+
+    viewer.terrainProvider = Cesium.createWorldTerrain();
+    viewer.extend(Cesium.viewerCesiumInspectorMixin);
+
+    var tileset = new Cesium.Cesium3DTileset({
+      url: Cesium.IonResource.fromAssetId(6074)
+    });
+
+    viewer.scene.primitives.add(tileset);
+    viewer.zoomTo(tileset);
+
+    initInterface();
+
+    function initInterface() {
+      $("#heading").range({
+        onChange: function (e, i) {
+          updateCamera()
+        }
+      });
+
+      $("#pitch").range({
+        onChange: function (e, i) {
+          updateCamera()
+        }
+      });
+
+      $("#roll").range({
+        onChange: function (e, i) {
+          updateCamera()
+        }
+      });
+    }
+
+    function updateCamera() {
+      var heading = Number($("#heading").val());
+      var pitch = Number($("#pitch").val());
+      var roll = Number($("#roll").val());
+
+      viewer.camera.setView({
+        orientation: {
+          heading : Cesium.Math.toRadians(heading),
+          pitch : Cesium.Math.toRadians(pitch),
+          roll : Cesium.Math.toRadians(roll)
+        }
+      });
+    }
+
+  </script>
+</body>
+</html>

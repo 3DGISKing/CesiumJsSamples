@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>StreetView</title>
+    
+<!--    <link rel = "stylesheet" href="./app.css">-->
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.73/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+
+<!--    <script src="https://cesiumjs.org/releases/1.73/Build/Cesium/Cesium.js"></script>-->
+    <script src="https://cesiumjs.org/releases/1.73/Build/CesiumUnminified/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar"></div>
+
+<script src="StreetViewController.js"></script>
+
+<script>
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+        terrainProvider: Cesium.createWorldTerrain()
+    });
+
+    // Set the initial camera view to look at Manhattan
+    const initialPosition = Cesium.Cartesian3.fromDegrees(-74.01881302800248, 40.69114333714821, 753);
+    const initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(21.27879878293835, -21.34390550872461, 0.0716951918898415);
+
+    viewer.scene.camera.setView({
+        destination: initialPosition,
+        orientation: initialOrientation,
+        endTransform: Cesium.Matrix4.IDENTITY
+    });
+
+    const tileset = new Cesium.Cesium3DTileset({ url: Cesium.IonResource.fromAssetId(5741) });
+
+    viewer.scene.primitives.add(tileset);
+
+    const streetViewController = new Cesium.StreetViewController({
+        cesiumViewer : viewer
+    });
+
+    Sandcastle.addToolbarButton("Start", () => {
+        if(streetViewController.isEnabled()){
+            alert("already started!");
+            return;
+        }
+
+        streetViewController.entered().addEventListener(function () {
+            console.log("streetViewController started!");
+        });
+
+        streetViewController.enter();
+    });
+
+    Sandcastle.addToolbarButton("Stop", () => {
+        if(!streetViewController.isEnabled()){
+            alert("not yet started!");
+            return;
+        }
+
+        streetViewController.exited().addEventListener(function () {
+            console.log("streetViewController stopped!");
+        });
+
+        streetViewController.exit();
+    });
+
+</script>
+
+</body>
+</html>
