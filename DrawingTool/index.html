@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drawing Tool</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+    <script src="https://cesiumjs.org/releases/1.76/Build/Cesium/Cesium.js"></script>
+</head>
+<body>
+
+<div id = "cesiumContainer" class="fullSize"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<div id="toolbar"></div>
+
+<script type="text/javascript">
+    var extent = Cesium.Rectangle.fromDegrees(117.896284, 31.499028, 139.597380, 43.3115285);
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
+    Cesium.Camera.DEFAULT_VIEW_FACTOR = 0.7;
+
+    var viewer = new Cesium.Viewer('cesiumContainer',  {
+        selectionIndicator : false,
+        infoBox : false,
+        timeline : false,
+        animation : false,
+        navigationHelpButton : false,
+        navigationInstructionsInitiallyVisible : false,
+        terrainProvider : Cesium.createWorldTerrain()
+    });
+
+    var scene = viewer.scene;
+    var drawingMode = 'line';
+    var activeShapePoints = [];
+    var activeShape;
+    var floatingPoint;
+    var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+    var shape;
+    var point;
+    
+    var options = [{
+        text : 'Line',
+        onselect : function() {
+            terminateShape();
+            drawingMode = 'line';
+        }
+    }, {
+        text : 'Polygon',
+        onselect : function() {
+            terminateShape();
+            drawingMode = 'polygon';
+        }
+    },{
+        text : 'Clear',
+        onselect : function(){
+            clearView();
+        }
+    }];
+
+    function createPoint(worldPosition) {
+        point = viewer.entities.add({
+            position : worldPosition,
+            point : {
+                color : Cesium.Color.RED,
+                pixelSize : 10,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            }
+        });
+        
+        return point;
+    }
+    
+    function drawShape(positionData) {
+        if (drawingMode === 'line') {
+            shape = viewer.entities.add({
+                polyline : {
+                    positions : positionData,
+                    clampToGround : true,
+                    width : 3
+                }
+            });
+        }
+        else if (drawingMode === 'polygon') {
+            shape = viewer.entities.add({
+                polygon: {
+                    hierarchy: positionData,
+                    material: new Cesium.ColorMaterialProperty(Cesium.Color.AQUA.withAlpha(0.15))
+                }
+            });
+        }
+        
+        return shape;
+    }
+
+    handler.setInputAction(function(event) {
+        var earthPosition = viewer.scene.pickPosition(event.position);
+
+        if (Cesium.defined(earthPosition)) {
+            if (activeShapePoints.length === 0) {
+                floatingPoint = createPoint(earthPosition);
+                
+                activeShapePoints.push(earthPosition);
+                
+                var dynamicPositions = new Cesium.CallbackProperty(function () {
+                    var positions = {};
+
+                    positions.positions = activeShapePoints;
+                    
+                    if(drawingMode === "line")
+                        return activeShapePoints;
+                    else
+                        return positions;
+        
+                }, false);
+                
+                activeShape = drawShape(dynamicPositions);
+            }
+            
+            activeShapePoints.push(earthPosition);
+            
+            createPoint(earthPosition);
+        }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    handler.setInputAction(function(event) {
+        if (Cesium.defined(floatingPoint)) {
+            var newPosition = viewer.scene.pickPosition(event.endPosition);
+            
+            if (Cesium.defined(newPosition)) {
+                floatingPoint.position.setValue(newPosition);
+                activeShapePoints.pop();
+                activeShapePoints.push(newPosition);
+            }
+        }
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+    function terminateShape() {
+        activeShapePoints.pop();
+        drawShape(activeShapePoints);
+        viewer.entities.remove(floatingPoint);
+        viewer.entities.remove(activeShape);
+        floatingPoint = undefined;
+        activeShape = undefined;
+        activeShapePoints = [];
+    }
+   
+    handler.setInputAction(function(event) {
+        terminateShape();
+    }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+
+    function clearView(){
+        viewer.entities.removeAll(shape);
+        viewer.entities.remove(point);
+        viewer.entities.remove(floatingPoint);
+        viewer.entities.remove(activeShape);
+    }
+
+    Sandcastle.addToolbarMenu(options, 'toolbar');
+
+    viewer.camera.lookAt(Cesium.Cartesian3.fromDegrees(126.969195, 37.497851, 1000.0), new Cesium.Cartesian3(5000.0, 5000.0, 5000.0));
+    viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
+    
+</script>
+</body>
+</html>

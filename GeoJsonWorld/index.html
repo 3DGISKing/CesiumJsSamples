@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeoJson World</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.76/Build/Cesium/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id = "cesiumContainer" class="fullSize"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<script type="text/javascript">
+    var viewer = new Cesium.Viewer('cesiumContainer');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", 'ne_110_country.geojson', true);
+    
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var data= JSON.parse(xhr.responseText);
+            
+            data.features.forEach(function(el, i) {
+                
+                el.geometry.coordinates.forEach(function(geometry_s){
+                    
+                    var boundary = {};
+                    
+                    geometry_s.forEach(function(coordinates, k) {
+                        var positions= [];
+                        
+                        coordinates.forEach(function(coordinate){
+                            positions.push(coordinate[0],coordinate[1]);
+                        });
+                        
+                        if (boundary.positions) {
+                            boundary.holes = boundary.holes || [];
+                            boundary.holes.push({
+                                positions: Cesium.Cartesian3.fromDegreesArray(positions)
+                            });
+                        } else {
+                            boundary.positions = Cesium.Cartesian3.fromDegreesArray(positions);
+                        }
+                    });
+                    
+                    viewer.entities.add({
+                        polygon: {
+                            hierarchy: boundary,
+                            height: 1,
+                            material: new Cesium.Color(1, 0, 0, .5),
+                            outline: false
+                        }
+                    });
+                });
+            });
+        }
+    };
+    
+    xhr.send(null);
+
+</script>
+</body>
+</html>

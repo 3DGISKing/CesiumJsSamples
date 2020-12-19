@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meteor Simulation</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.76/Build/Cesium/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id = "cesiumContainer" class="fullSize"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<div id="toolbar"></div>
+
+<script type="text/javascript">
+    var extent = Cesium.Rectangle.fromDegrees(117.896284, 31.499028, 139.597380, 43.311528);
+
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
+    Cesium.Camera.DEFAULT_VIEW_FACTOR = 0.7;
+
+    var viewer = new Cesium.Viewer('cesiumContainer',{
+        timline : false,
+        shouldeAnimate : true,
+        selectionIndicator : false,
+        navigationHelpButton : false,
+        infoBox : false,
+        navigationInstructionInitiallyVisible : false,
+        baseLayerPicker : true
+    });
+
+    var scene = viewer.scene;
+    var meteorPosition = Cesium.Cartesian3.fromDegrees(139.743903, 35.694363, 0.0);
+    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(meteorPosition);
+    var start = Cesium.JulianDate.fromDate(new Date(2019,3,19, 12));
+    var stop = Cesium.JulianDate.addSeconds(start, 100, new Cesium.JulianDate());
+
+    viewer.clock.startTime = start.clone();
+    viewer.clock.stopTime = stop.clone();
+    viewer.clock.currentTime = start.clone();
+    viewer.clock.multiplier = 4;
+    viewer.clock.shouldAnimate = true;
+
+    var gravityScratch = new Cesium.Cartesian3();
+    var emitterModelMatrix = new Cesium.Matrix4();
+    var translation = new Cesium.Cartesian3();
+    var rotation = new Cesium.Quaternion();
+    var hpr = new Cesium.HeadingPitchRoll();
+    // 변환, 회전, 스케일이 정의된 아핀변환 (한 벡터공간을 다른 벡터공간으로 대응시키는 변환)
+    var trs = new Cesium.TranslationRotationScale();
+
+    /*
+     pos1 - 출발점 지정
+     pos2 - 도착점 지정
+     */
+    var pos1 = Cesium.Cartesian3.fromDegrees(139.268781, 35.390778, 100000.0);
+    var pos2 = Cesium.Cartesian3.fromDegrees(139.743903, 35.694363, 0.0);
+    var position = new Cesium.SampledPositionProperty();
+
+    position.addSample(start, pos1);
+    position.addSample(stop, pos2);
+    // particle system 에 대한 파라미터 지정
+    var viewModel = {
+        emissionRate : 10.0,
+        gravity : 0.0,
+        minimumParticleLife : 10.0,
+        maximumParticleLife : 10.0,
+        minimumSpeed : 4,
+        maximumSpeed : 8,
+        particleSize : 150.0
+    };
+
+    function computeModelMatrix(meteor, time){
+        return meteor.computeModelMatrix(time, new Cesium.Matrix4());
+    }
+
+    function computeEmitterModelMatrix(){
+        hpr = Cesium.HeadingPitchRoll.fromDegrees(0.0, 0.0, 0.0, hpr);
+        trs.translation = Cesium.Cartesian3.fromElements(-4.0, 0.0, 1.4, translation);
+        trs.rotation = Cesium.Quaternion.fromHeadingPitchRoll(hpr, rotation);
+
+        return Cesium.Matrix4.fromTranslationRotationScale(trs, emitterModelMatrix);
+    }
+    // particle에 중력을 적용
+    function applyGravity(p, dt){
+        var position = p.position;
+
+        Cesium.Cartesian3.normalize(position, gravityScratch);
+        Cesium.Cartesian3.multiplyByScalar(gravityScratch, viewModel.gravity * dt, gravityScratch);
+
+        p.velocity = Cesium.Cartesian3.add(p.velocity, gravityScratch, p.velocity);
+    }
+
+    /********
+     simulation function start
+     value 1 - 50m급
+     value 2 - 100m급
+     ********/
+    
+    Sandcastle.addToolbarButton('50Mt Meteor Simulation', function simulation50() {
+        // 운석 변수 선언
+        var meteor = viewer.entities.add({
+            availability : new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                start : start,
+                stop : stop
+            })]),
+            model : {
+                uri : 'meteor.gltf',
+                minimumPixelSize : 100,
+                maximumPixelSize : 100
+            },
+            viewFrom: new Cesium.Cartesian3(-40.0, -30.0, 1000.0),//운석을 바라보는 관점
+            position : position,
+            orientation : new Cesium.VelocityOrientationProperty(position)
+        });
+        viewer.trackedEntity = meteor;
+        // 파티클 변수 선언
+        var particleSystem = scene.primitives.add(new Cesium.ParticleSystem({
+            image : 'smoke.png',
+
+            startColor : Cesium.Color.GRAY.withAlpha(0.5),
+            endColor : Cesium.Color.WHITE.withAlpha(0.5),
+
+            minimumSpeed : viewModel.minimumSpeed,
+            maximumSpeed : viewModel.maximumSpeed,
+
+            imageSize : new Cesium.Cartesian2(viewModel.particleSize, viewModel.particleSize),
+
+            emissionRate : viewModel.emissionRate,
+
+            bursts : [
+                new Cesium.ParticleBurst({time : 1.0, minimum : 10, maximum : 10})
+            ],
+            lifetime : 1.0,
+
+            emitter : new Cesium.CircleEmitter(2.0),
+
+            emitterModelMatrix : computeEmitterModelMatrix(),
+
+            updateCallback : applyGravity
+        }));
+
+        /*
+        등급 별 시뮬레이션
+        value 1 = 50m
+        value 2 = 100m
+        */
+        //50m급
+        var targetCircle = viewer.entities.add({
+            position : meteorPosition,
+            ellipse : {
+                semiMinorAxis : 50.0,
+                semiMajorAxis : 50.0,
+                material : 'target.jpg'
+            }
+        });
+        // 운석이 도착점에 도달할 시 피해반경 표출
+        setTimeout(function(){
+            var circle = viewer.entities.add({
+                position : meteorPosition,
+                ellipse : {
+                    semiMinorAxis : 11000.0,
+                    semiMajorAxis : 11000.0,
+                    material : Cesium.Color.RED.withAlpha(0.5)
+                }
+            });
+        },23000);
+        // 피해반경 가시화
+        setTimeout(function(){
+            if(particleSystem != null){
+                scene.primitives.remove(particleSystem);
+            }
+            var staticPosition = Cesium.Cartesian3.fromDegrees(139.743903, 35.694363, 60000);
+            var orientation = new Cesium.HeadingPitchRange(0,300,0);
+            viewer.scene.camera.setView({
+                destination : staticPosition,
+                orientation : orientation
+            });
+
+        },26000);
+
+        /*
+        scene이 render하기 전 발생 될 이벤트 받아옴. (particleSystem)
+        parameter - 1.meteor / 2. time
+        */
+        viewer.scene.preUpdate.addEventListener(function(scene,time){
+            particleSystem.modelMatrix = computeModelMatrix(meteor, time);
+
+            particleSystem.emitterModelMatrix = computeEmitterModelMatrix();
+
+            if(viewModel.spin){
+                viewModel.heading += 0;
+                viewModel.pitch += 0;
+                viewModel.roll += 0;
+            }
+        });
+    });
+
+    Sandcastle.addToolbarButton('100Mt Meteor Simulation', function simulation100() {
+        // 운석 변수 선언
+        var meteor = viewer.entities.add({
+            availability : new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                start : start,
+                stop : stop
+            })]),
+            model : {
+                uri : 'js/image/meteor.gltf',
+                minimumPixelSize : 100,
+                maximumPixelSize : 100
+            },
+            viewFrom: new Cesium.Cartesian3(-40.0, -30.0, 1000.0),//운석을 바라보는 관점
+            position : position,
+            orientation : new Cesium.VelocityOrientationProperty(position)
+        });
+        viewer.trackedEntity = meteor;
+        // 파티클 변수 선언
+        var particleSystem = scene.primitives.add(new Cesium.ParticleSystem({
+            image : 'smoke.png',
+
+            startColor : Cesium.Color.GRAY.withAlpha(0.5),
+            endColor : Cesium.Color.WHITE.withAlpha(0.5),
+
+            minimumSpeed : viewModel.minimumSpeed,
+            maximumSpeed : viewModel.maximumSpeed,
+
+            imageSize : new Cesium.Cartesian2(viewModel.particleSize, viewModel.particleSize),
+
+            emissionRate : viewModel.emissionRate,
+
+            bursts : [
+                new Cesium.ParticleBurst({time : 1.0, minimum : 10, maximum : 10})
+            ],
+            lifetime : 1.0,
+
+            emitter : new Cesium.CircleEmitter(2.0),
+
+            emitterModelMatrix : computeEmitterModelMatrix(),
+
+            updateCallback : applyGravity
+        }));
+
+
+        var targetCircle = viewer.entities.add({
+            position : meteorPosition,
+            ellipse : {
+                semiMinorAxis : 50.0,
+                semiMajorAxis : 50.0,
+                material : 'js/image/target.jpg'
+            }
+        });
+        //100m급
+        viewer.entities.add({
+            position : meteorPosition,
+            ellipse : {
+                semiMinorAxis : 100.0,
+                semiMajorAxis : 100.0,
+                material : 'js/image/target.jpg'
+            }
+        });
+
+        setTimeout(function(){
+            viewer.entities.add({
+                position : meteorPosition,
+                ellipse : {
+                    semiMinorAxis : 1100000.0,
+                    semiMajorAxis : 1100000.0,
+                    material : Cesium.Color.RED.withAlpha(0.5)
+                }
+            });
+        },23000);
+
+        setTimeout(function(){
+            if(particleSystem != null){
+                scene.primitives.remove(particleSystem);
+            }
+            var staticPosition = Cesium.Cartesian3.fromDegrees(139.743903, 35.694363, 3000000);
+            var orientation = new Cesium.HeadingPitchRange(0,300,0);
+            viewer.scene.camera.setView({
+                destination : staticPosition,
+                orientation : orientation
+            });
+        },26000);
+
+
+        /*
+        scene이 render하기 전 발생 될 이벤트 받아옴. (particleSystem)
+        parameter - 1.meteor / 2. time
+        */
+        viewer.scene.preUpdate.addEventListener(function(scene,time){
+            particleSystem.modelMatrix = computeModelMatrix(meteor, time);
+
+            particleSystem.emitterModelMatrix = computeEmitterModelMatrix();
+
+            if(viewModel.spin){
+                viewModel.heading += 0;
+                viewModel.pitch += 0;
+                viewModel.roll += 0;
+            }
+        });
+    });
+
+    Sandcastle.addToolbarButton('Reset', function() {
+        location.reload();
+    });
+
+</script>
+</body>
+</html>

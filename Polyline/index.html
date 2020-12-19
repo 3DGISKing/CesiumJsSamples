@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Re: Lines / polylines appear to clip when moving the camera despite not being under terrain</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.76/Build/Cesium/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id = "cesiumContainer" class="fullSize"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<script type="text/javascript">
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+        terrainProvider: Cesium.createWorldTerrain()});
+
+    /**
+     *  Bug issue
+     *  Lines / polylines appear to clip when moving thecamera despite not being under terrain
+     *
+     * Also, interestingly enough, the "logarithmicDepthBuffer = false" also seems to have solved another camera-related issue we were running into where the camera would randomly freeze during a zoom.
+     * For example, we would try to zoom in or out, and the camera would get stuck and be unable to zoom with right click or mouse wheel until we panned again. Once we panned,
+     * the issue would go away and we would be able to zoom again. Again, this issue was also somehow fixed by setting "logarithmicDepthBuffer=false".
+       Not sure if the above is useful information to your team or not, but nevertheless thanks for the help!
+     * @type {boolean}
+     */
+    viewer.scene.logarithmicDepthBuffer = false;
+
+    var elevation = 2000;
+    var centerLoc = [39.95, -105.27, elevation];
+    var endPosition;
+    var startPosition = Cesium.Cartesian3.fromDegrees(centerLoc[1], centerLoc[0], centerLoc[2]);
+    var lineMaterial = new Cesium.PolylineArrowMaterialProperty(new Cesium.Color(1,0,0));
+    var t = 0;
+    var x,y;
+    var r = 0.07;
+    
+    for (var i = 0; i < 63; i++) {
+        t = 0.1 * i;
+        x = r * Math.cos(t) + centerLoc[0];
+        y = r * Math.sin(t) + centerLoc[1];
+        endPosition = Cesium.Cartesian3.fromDegrees(y, x, elevation);
+
+        viewer.entities.add({
+            name: "hello" + i,
+            description: "hello2" + i,
+            polyline: {
+                positions: [startPosition, endPosition],
+                width: 9,
+                material: lineMaterial
+            }
+        })
+    }
+
+    viewer.zoomTo(viewer.entities);
+    
+</script>
+</body>
+</html>

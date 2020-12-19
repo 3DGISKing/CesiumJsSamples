@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Draw Axis</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+    <script src="https://cesiumjs.org/releases/1.76/Build/Cesium/Cesium.js"></script>
+</head>
+<body>
+<div id = "cesiumContainer"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<script type="text/javascript">
+    viewer = new Cesium.Viewer('cesiumContainer', {
+        selectionIndicator: false
+    });
+
+
+    let xAxis = viewer.entities.add({
+        name : 'X axis',
+        polyline : {
+            positions : [new Cesium.Cartesian3(0.000001, 0, 0), new Cesium.Cartesian3(10000000, 0, 0)],
+            width : 10,
+            arcType : Cesium.ArcType.NONE,
+            material : new Cesium.PolylineArrowMaterialProperty(Cesium.Color.RED),
+            depthFailMaterial: new Cesium.PolylineArrowMaterialProperty(new Cesium.Color(1.0, 0, 0, 0.2))
+        }
+    });
+
+    let yAxis = viewer.entities.add({
+        name : 'Y axis',
+        polyline : {
+            positions : [new Cesium.Cartesian3(0, 0.000001, 0), new Cesium.Cartesian3(0, 10000000, 0)],
+            width : 10,
+            arcType : Cesium.ArcType.NONE,
+            material : new Cesium.PolylineArrowMaterialProperty(Cesium.Color.GREEN),
+            depthFailMaterial: new Cesium.PolylineArrowMaterialProperty(new Cesium.Color(0, 1, 0, 0.2))
+        }
+    });
+
+    let zAxis = viewer.entities.add({
+        name : 'Z axis',
+        polyline : {
+            positions : [new Cesium.Cartesian3(0, 0, 0.000001), new Cesium.Cartesian3(0, 0, 10000000)],
+            width : 10,
+            arcType : Cesium.ArcType.NONE,
+            material : new Cesium.PolylineArrowMaterialProperty(Cesium.Color.BLUE),
+            depthFailMaterial: new Cesium.PolylineArrowMaterialProperty(new Cesium.Color(0, 0, 1, 0.2))
+        }
+    });
+    
+</script>
+</body>
+</html>

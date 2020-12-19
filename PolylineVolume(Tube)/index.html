@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Re: Lines / polylines appear to clip when moving the camera despite not being under terrain</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.76/Build/Cesium/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id = "cesiumContainer" class="fullSize"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<script type="text/javascript">
+    var viewer = new Cesium.Viewer('cesiumContainer');
+
+    function computeCircle(radius) {
+        var positions = [];
+        for (var i = 0; i < 360; i++) {
+            var radians = Cesium.Math.toRadians(i);
+            positions.push(new Cesium.Cartesian2(radius * Math.cos(radians), radius * Math.sin(radians)));
+        }
+        return positions;
+    }
+
+    var redTube = viewer.entities.add({
+        name : 'Red tube with rounded corners',
+        polylineVolume : {
+            positions : Cesium.Cartesian3.fromDegreesArray([-85.0, 32.0,
+                -85.0, 36.0,
+                -89.0, 36.0]),
+            shape : computeCircle(60000.0),
+            material : Cesium.Color.RED
+        }
+    });
+
+    viewer.zoomTo(viewer.entities);
+    
+</script>
+</body>
+</html>

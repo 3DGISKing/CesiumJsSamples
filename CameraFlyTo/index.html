@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fly to</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+    <script src="https://cesiumjs.org/releases/1.76/Build/Cesium/Cesium.js"></script>
+</head>
+<body>
+<div id = "cesiumContainer" class="fullSize"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<div id="toolbar"></div>
+
+<script type="text/javascript">
+    var extent = Cesium.Rectangle.fromDegrees(117.896284, 31.499028, 139.597380, 43.311528);
+    Cesium.Camera.DEFAULT_VIEW_RECTANGLE = extent;
+    Cesium.Camera.DEFAULT_VIEW_FACTOR = 0.7;
+
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+        timeline : false,
+        shouldAnimate : false,
+        selectionIndicator : false,
+        navigationHelpButton : false,
+        infoBox : false,
+        navigationInstructionsInitiallyVisible : false
+    });
+
+    var soPos = Cesium.Cartesian3.fromDegrees(126.926094, 37.526077, 0);
+    var snPos = Cesium.Cartesian3.fromDegrees(127.1335085, 37.431755, 0);
+    var jejPos = Cesium.Cartesian3.fromDegrees(126.538746, 33.358393, 0);
+
+    var scene = viewer.scene;
+    var center = new Cesium.Cartesian3();
+    var headingPitchRoll = new Cesium.HeadingPitchRoll();
+    var fixedFrameTransform = Cesium.Transforms.localFrameToFixedFrameGenerator('south', 'east');
+
+    var start = Cesium.JulianDate.fromDate(new Date(2019,5,10, 13));
+    var stop = Cesium.JulianDate.addSeconds(start, 100, new Cesium.JulianDate());
+
+    viewer.clock.startTime = start.clone();
+    viewer.clock.stopTime = stop.clone();
+    viewer.clock.shouldAnimate = true;
+
+    /* Songnam region 3d */
+    scene.primitives.add(Cesium.Model.fromGltf({
+            url : 'sn.gltf',
+            modelMatrix : Cesium.Transforms.headingPitchRollToFixedFrame(snPos, headingPitchRoll, Cesium.Ellipsoid.WGS84, fixedFrameTransform),
+            scale : 34,
+            color : Cesium.Color.MAGENTA
+        })
+    );
+    
+    /* seoul 3d*/
+    scene.primitives.add(Cesium.Model.fromGltf({
+            url : 'test.gltf',
+            modelMatrix : Cesium.Transforms.headingPitchRollToFixedFrame(soPos, headingPitchRoll, Cesium.Ellipsoid.WGS84, fixedFrameTransform),
+            scale : 37.3
+        })
+    );
+
+    scene.primitives.add(Cesium.Model.fromGltf({
+            url : 'jeju.gltf',
+            modelMatrix : Cesium.Transforms.headingPitchRollToFixedFrame(jejPos, headingPitchRoll, Cesium.Ellipsoid.WGS84, fixedFrameTransform),
+            scale : 900
+        })
+    );
+
+    /*
+     * tour start
+     * * korean peninsula -> songnam -> seoul -> jeju
+     *
+     */
+    Sandcastle.addToolbarButton('Start Tour', function tour() {
+        this.disabled = true;
+        // start korea peninsula
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.786754, 36.643957, 600000.0)
+            });
+        },2000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(128.075929, 33.014948, 500000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(0),
+                    pitch : Cesium.Math.toRadians(-420),
+                    roll : Cesium.Math.toRadians(0)
+                }
+            });
+        },7000);
+
+        //Songnam
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.1335085, 37.431755, 5000.0)
+            });
+        },12000);
+
+        // Songnam view
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.135768, 37.422385, 1500.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(0),
+                    pitch : Cesium.Math.toRadians(-50),
+                    roll : 0
+                }
+            });
+        },15000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.113523, 37.431426, 1300.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(80),
+                    pitch : Cesium.Math.toRadians(-40),
+                    roll : 0
+                }
+            });
+        },18000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.136110, 37.441887, 1100.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(150),
+                    pitch : Cesium.Math.toRadians(-55),
+                    roll : 0
+                }
+            });
+        },21000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.154444, 37.435255, 900.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(250),
+                    pitch : Cesium.Math.toRadians(-35),
+                    roll : 0
+                }
+            });
+        },24000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.144764, 37.422264, 600.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(330),
+                    pitch : Cesium.Math.toRadians(-30),
+                    roll : 0
+                }
+            });
+        },27000);
+
+        //seoul 확대
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.925087, 37.525285, 5000.0)
+            });
+        },32000);
+
+        //seoul view
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.900845, 37.513272, 500.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(50),
+                    pitch : Cesium.Math.toRadians(-10),
+                    roll : 0
+                }
+            });
+        },35000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.901007, 37.542970, 800.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(130),
+                    pitch : Cesium.Math.toRadians(-25),
+                    roll : 0
+                }
+            });
+        },38000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.936284, 37.542007, 1200.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(210),
+                    pitch : Cesium.Math.toRadians(-30),
+                    roll : 0
+                }
+            });
+        },41000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.955088, 37.509821, 1500.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(300),
+                    pitch : Cesium.Math.toRadians(-30),
+                    roll : 0
+                }
+            });
+        },44000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.905109, 37.509339, 2000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(400),
+                    pitch : Cesium.Math.toRadians(-40),
+                    roll : 0
+                }
+            });
+        },47000);
+
+        // jeju
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.540122, 33.357772, 80000.0)
+            });
+        },52000);
+
+        //jeju view
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.578669, 33.158991, 3000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(-10),
+                    pitch : Cesium.Math.toRadians(-10),
+                    roll : 0
+                }
+            });
+        },55000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.103072, 33.446492, 3000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(110),
+                    pitch : Cesium.Math.toRadians(-10),
+                    roll : 0
+                }
+            });
+        },58000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.906192, 33.610389, 3000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(210),
+                    pitch : Cesium.Math.toRadians(-10),
+                    roll : 0
+                }
+            });
+        },61000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.961106, 33.337189, 3000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(280),
+                    pitch : Cesium.Math.toRadians(-10),
+                    roll : 0
+                }
+            });
+        },64000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.557389, 33.266105, 5000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(-10),
+                    pitch : Cesium.Math.toRadians(-35),
+                    roll : 0
+                }
+            });
+        },67000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.364592, 33.335144, 5000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(80),
+                    pitch : Cesium.Math.toRadians(-35),
+                    roll : 0
+                }
+            });
+        },70000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.491013, 33.449799, 5000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(160),
+                    pitch : Cesium.Math.toRadians(-35),
+                    roll : 0
+                }
+            });
+        },73000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.685509, 33.422088, 5000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(240),
+                    pitch : Cesium.Math.toRadians(-35),
+                    roll : 0
+                }
+            });
+        },76000);
+
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(126.490769, 33.349251, 10000.0),
+                orientation : {
+                    heading : Cesium.Math.toRadians(0),
+                    pitch : Cesium.Math.toRadians(-90),
+                    roll : 0
+                }
+            });
+        },79000);
+
+        // restore initial level
+        setTimeout(function(){
+            viewer.scene.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(127.786754, 36.643957, 8000000.0)
+            });
+        },84000);
+
+        setTimeout(function(){
+            tour();
+        },89000);
+    });
+</script>
+</body>
+</html>
