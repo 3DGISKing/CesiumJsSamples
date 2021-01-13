@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Map Sharing</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.77/Build/Cesium/Cesium.js"></script>
+    <script src="../WWWVendor/ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="../WWWVendor/jQuery-TE_v.1.4.0/jquery-te-1.4.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../WWWVendor/jQuery-TE_v.1.4.0/jquery-te-1.4.0.css" />
+    <link rel="stylesheet" href = "./app.css">
+</head>
+
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="bottomBar">
+</div>
+
+<div id ="editor-panel" class = "panel" style="overflow-y: auto; height: 90%">
+    <form id="form" action="upload_image.php" method="post" enctype="multipart/form-data">
+        <h2 style=" margin: 10px">Property</h2>
+        <h3>Color</h3>
+        <select id = "polygon-color-select" class="cesium-button" style="margin-bottom: 10px">
+            <option value="white">White</option>
+            <option value="red">Red</option>
+            <option value="black">Black</option>
+            <option value="blue">Blue</option>
+            <option value="yellow">Yellow</option>
+        </select>
+
+        <textarea id = "polygon-coordinates" style="width: 98%; height: 150px" placeholder="Long, Lat">
+115.4172086,39.9684207,
+115.5629666,39.8120596,
+115.4187246,39.7736101,
+115.5081667,39.5906583,
+116.1978449,39.5876375,
+116.428136,39.4416113,
+116.9006007,39.676559,
+116.7718132,40.0314308,
+117.3986672,40.1821416,
+117.2018195,40.4980893,
+117.5079852,40.6592549,
+116.9630603,40.705602,
+116.6249895,41.0593639,
+116.327926,40.9195805,
+116.4554798,40.7684371,
+115.746696,40.5372208,
+115.9629383,40.2629735,
+115.4172086,39.9684207
+        </textarea>
+
+        <div class="sub_panel">
+            <h2 style=" margin: 0">Information</h2>
+
+            <h3>Coordinate</h3>
+            <input id = "explanation-pushpin-coordinate" type="text" style="width: 100%" value="116.4074, 39.9042">
+
+            <h3>Name</h3>
+            <input id = "explanation-pushpin-name" type="text" style="width: 100%" value="beijing">
+
+            <h3>Information</h3>
+            <textarea id = "explanation-pushpin-text" style="width: 98%; height: 150px" placeholder="text..." class="jqte-test">
+                <p><b>Beijing</b> (<span class="rt-commentedText nowrap"><span class="IPA nopopups noexcerpt"><a href="/wiki/Help:IPA/English" title="Help:IPA/English">/<span style="border-bottom:1px dotted"><span title="/ˌ/: secondary stress follows">ˌ</span><span title="'b' in 'buy'">b</span><span title="/eɪ/: 'a' in 'face'">eɪ</span><span title="/ˈ/: primary stress follows">ˈ</span><span title="/dʒ/: 'j' in 'jam'">dʒ</span><span title="/ɪ/: 'i' in 'kit'">ɪ</span><span title="/ŋ/: 'ng' in 'sing'">ŋ</span></span>/</a></span></span> <a href="/wiki/Help:Pronunciation_respelling_key" title="Help:Pronunciation respelling key"><i title="English pronunciation respelling"><span style="font-size:90%">BAY</span>-<span style="font-size:90%">JING</span></i></a><sup id="cite_ref-10" class="reference"><a href="#cite_note-10">[10]</a></sup><sup id="cite_ref-longman_11-0" class="reference"><a href="#cite_note-longman-11">[11]</a></sup> <span style="font-size:85%;">Mandarin pronunciation:</span> <span class="IPA" style="white-space:nowrap"><a href="/wiki/Help:IPA/Mandarin" title="Help:IPA/Mandarin">[pèi.tɕíŋ]</a></span> <span class="nowrap" style="font-size:85%">(<span class="unicode haudio"><span class="fn"><span style="white-space:nowrap;margin-right:.25em;"><a href="/wiki/File:Beijing_pronunciation.ogg" title="About this sound"><img alt="About this sound" src="//upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/11px-Loudspeaker.svg.png" decoding="async" width="11" height="11" srcset="//upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/17px-Loudspeaker.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Loudspeaker.svg/22px-Loudspeaker.svg.png 2x" data-file-width="20" data-file-height="20"></a></span><a href="//upload.wikimedia.org/wikipedia/commons/c/c8/Beijing_pronunciation.ogg" class="internal" title="Beijing pronunciation.ogg">listen</a></span></span>)</span>), <a href="/wiki/Chinese_postal_romanization" title="Chinese postal romanization">alternatively romanized</a> as <b>Peking</b><sup id="cite_ref-12" class="reference"><a href="#cite_note-12">[12]</a></sup> (<span class="rt-commentedText nowrap"><span class="IPA nopopups noexcerpt"><a href="/wiki/Help:IPA/English" title="Help:IPA/English">/<span style="border-bottom:1px dotted"><span title="/ˌ/: secondary stress follows">ˌ</span><span title="'p' in 'pie'">p</span><span title="/i/: 'y' in 'happy'">i</span><span title="/ˈ/: primary stress follows">ˈ</span><span title="'k' in 'kind'">k</span><span title="/ɪ/: 'i' in 'kit'">ɪ</span><span title="/ŋ/: 'ng' in 'sing'">ŋ</span></span>/</a></span></span> <a href="/wiki/Help:Pronunciation_respelling_key" title="Help:Pronunciation respelling key"><i title="English pronunciation respelling"><span style="font-size:90%">PEE</span>-<span style="font-size:90%">KING</span></i></a>),<sup id="cite_ref-13" class="reference"><a href="#cite_note-13">[13]</a></sup> is the <a href="/wiki/Capital_city" title="Capital city">capital</a> of the <a href="/wiki/People%27s_Republic_of_China" class="mw-redirect" title="People's Republic of China">People's Republic of China</a>. It is the world's <a href="/wiki/List_of_national_capitals_by_population" title="List of national capitals by population">most populous national capital city</a>, with over 21 million residents within an <a href="/wiki/City_proper" title="City proper">administrative area</a> of 16,410.5&nbsp;km<sup>2</sup>.<sup id="cite_ref-bulletin2018_4-1" class="reference"><a href="#cite_note-bulletin2018-4">[4]</a></sup> The city, located in <a href="/wiki/North_China" title="North China">Northern China</a>, is governed as a <a href="/wiki/Direct-administered_municipalities_of_China" title="Direct-administered municipalities of China">municipality</a> under the direct administration of the <a href="/wiki/Government_of_the_People%27s_Republic_of_China" class="mw-redirect" title="Government of the People's Republic of China">State Council</a> with <a href="/wiki/List_of_administrative_divisions_of_Beijing" title="List of administrative divisions of Beijing">16 urban, suburban, and rural districts</a>.<sup id="cite_ref-figures_14-0" class="reference"><a href="#cite_note-figures-14">[14]</a></sup> Beijing is mostly surrounded by <a href="/wiki/Hebei" title="Hebei">Hebei</a> Province with the exception of neighboring <a href="/wiki/Tianjin" title="Tianjin">Tianjin</a> to the southeast; together, the three divisions form the <a href="/wiki/Jingjinji" class="mw-redirect" title="Jingjinji">Jingjinji</a> <a href="/wiki/Megalopolises_in_China" title="Megalopolises in China">megalopolis</a> and the <a href="/wiki/National_capital_region" class="mw-redirect" title="National capital region">national capital region</a> of China.<sup id="cite_ref-basic_15-0" class="reference"><a href="#cite_note-basic-15">[15]</a></sup>
+</p>
+            </textarea>
+
+            <button id="explanation-pushpin-add" type="button" style="margin-top: 10px;" class="cesium-button">Add</button>
+            <button id="explanation-pushpin-update" type="button" style="margin-top: 10px;" class="cesium-button">Update</button>
+        </div>
+
+        <div class="sub_panel">
+            <h2 style=" margin: 0">Image</h2>
+
+            <h3>Coordinate</h3>
+            <input id = "image-pushpin-coordinate" type="text" style="width: 100%" value="116.4074,39.9042">
+
+            <h3>Name</h3>
+            <input id = "image-pushpin-name" type="text" style="width: 100%" value="beijing">
+
+            <input name="fileToUpload" id="fileToUpload" type="file" accept=".png,.jpg" class="cesium-button" style="margin-top: 10px">
+
+            <br>
+            <button id="image-pushpin-add" type="button" style="margin-top: 10px;" class="cesium-button">Add</button>
+            <button id="image-pushpin-update" type="button" style="margin-top: 10px;" class="cesium-button">Update</button>
+        </div>
+
+        <div class="sub_panel">
+            <h2 style=" margin: 0">Pdf</h2>
+
+            <h3>Coordinate</h3>
+            <input id = "pdf-pushpin-coordinate" type="text" style="width: 100%" value="116.4074,39.9042">
+
+            <h3>Name</h3>
+            <input id = "pdf-pushpin-name" type="text" style="width: 100%" value="beijing">
+
+            <input name="pdfFileToUpload" id="pdfFileToUpload" type="file" accept=".pdf" class="cesium-button" style="margin-top: 10px">
+
+            <br>
+            <button id="pdf-pushpin-add" type="button" style="margin-top: 10px;" class="cesium-button">Add</button>
+<!--            <button id="pdf-pushpin-update" type="button" style="margin-top: 10px;" class="cesium-button">Update</button>-->
+        </div>
+
+        <div class="sub_panel">
+            <h2 style=" margin: 0">Clipping</h2>
+
+            <h3>Clipping Center</h3>
+            <input id = "clipping-center-coordinate" type="text" style="width: 100%" value="116.4074, 39.9042">
+
+            <h3>Clipping Width(m)</h3>
+            <input id = "clipping-width" type="text" style="width: 100%" value="10000">
+
+            <h3>Clipping Height(m)</h3>
+            <input id = "clipping-height" type="text" style="width: 100%" value="10000">
+
+            <br>
+            <button id="clipping" type="button" style="margin-top: 10px;" class="cesium-button">Clipping</button>
+<!--            <button id="cancel-clipping" type="button" style="margin-top: 10px;" class="cesium-button">Cancel Clipping</button>-->
+        </div>
+
+        <div class="sub_panel">
+            <h2 style=" margin: 0">Drill Holes</h2>
+
+            <h3>Holes</h3>
+            <input name="fileToUpload" id="fileHoles" type="file" accept=".json" class="cesium-button" style="margin-top: 10px">
+
+            <h3>Holes Data</h3>
+            <input name="fileToUpload" id="fileHolesData" type="file" accept=".json" class="cesium-button" style="margin-top: 10px">
+
+            <br>
+            <button id="holes-draw" type="button" style="margin-top: 10px;" class="cesium-button">Draw / Zoom</button>
+        </div>
+
+        <br>
+        <h3>Custom Link Name</h3>
+        <input id = "custom-link-name" type="text" style="width: 100%" value="">
+
+        <button id="make-polygon" type="button" style="margin-top: 10px;" class="cesium-button">Draw / Zoom</button>
+        <button id="delete" type="button" style="margin-top: 10px;" class="cesium-button">Delete</button>
+        <button id="create-link" type="button" style="margin-top: 10px;" class="cesium-button">Create</button>
+        <button id="create-embed-code" type="button" style="margin-top: 10px;" class="cesium-button">Get Code</button>
+
+        <textarea id = "embed-code" style="margin-top: 5px; width: 98%; height: 50px" placeholder=""></textarea>
+    </form>
+</div>
+
+<div class="hover_bkgr_fricc">
+    <span class="helper"></span>
+    <div>
+        <div class="popupCloseButton">X</div>
+        <img id = 'image' width="500">
+    </div>
+</div>
+
+<script>
+    // for viewerCesiumNavigationMixin
+    Cesium.defineProperties = Object.defineProperties;
+</script>
+
+<script src="./viewerCesiumNavigationMixin.min.js"></script>
+<script src = "./app.js"></script>
+
+</body>
+</html>

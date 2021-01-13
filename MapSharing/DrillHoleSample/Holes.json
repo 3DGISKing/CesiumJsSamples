@@ -1,0 +1,1460 @@
+[
+  {
+    "HoleID": "CA16PI018",
+    "Long": -101.5978123,
+    "Lat": 22.30203497,
+    "Elevation": 2431.955,
+    "DH_Dip": -77,
+    "DH_Azimuth": 98,
+    "Total Length": 295.85
+  },
+  {
+    "HoleID": "CA16PI019",
+    "Long": -101.5978941,
+    "Lat": 22.30312702,
+    "Elevation": 2434.374,
+    "DH_Dip": -65,
+    "DH_Azimuth": 99,
+    "Total Length": 176.9
+  },
+  {
+    "HoleID": "CA16PI020",
+    "Long": -101.5991513,
+    "Lat": 22.30065379,
+    "Elevation": 2425.018,
+    "DH_Dip": -70,
+    "DH_Azimuth": 101,
+    "Total Length": 196.75
+  },
+  {
+    "HoleID": "CA16PI021",
+    "Long": -101.5996057,
+    "Lat": 22.29962043,
+    "Elevation": 2424.672,
+    "DH_Dip": -66,
+    "DH_Azimuth": 119,
+    "Total Length": 159.75
+  },
+  {
+    "HoleID": "CA16PI022",
+    "Long": -101.6000995,
+    "Lat": 22.29864545,
+    "Elevation": 2422.954,
+    "DH_Dip": -76,
+    "DH_Azimuth": 120,
+    "Total Length": 118.95
+  },
+  {
+    "HoleID": "CA16PI033",
+    "Long": -101.5994904,
+    "Lat": 22.29932616,
+    "Elevation": 2423.799,
+    "DH_Dip": -79,
+    "DH_Azimuth": 118,
+    "Total Length": 147.9
+  },
+  {
+    "HoleID": "GR-01",
+    "Long": -101.59614,
+    "Lat": 22.30432433,
+    "Elevation": 2430,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "GR-02",
+    "Long": -101.5961691,
+    "Lat": 22.30417514,
+    "Elevation": 2430,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 2.81
+  },
+  {
+    "HoleID": "GR-03",
+    "Long": -101.5962318,
+    "Lat": 22.30398298,
+    "Elevation": 2430,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 3.1
+  },
+  {
+    "HoleID": "GR-04",
+    "Long": -101.5963163,
+    "Lat": 22.30404195,
+    "Elevation": 2430,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 1.2
+  },
+  {
+    "HoleID": "GR-05",
+    "Long": -101.5963328,
+    "Lat": 22.30398869,
+    "Elevation": 2430,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 1.3
+  },
+  {
+    "HoleID": "GR-06",
+    "Long": -101.5963872,
+    "Lat": 22.30384403,
+    "Elevation": 2430,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 1.15
+  },
+  {
+    "HoleID": "GR-07",
+    "Long": -101.5964263,
+    "Lat": 22.30388075,
+    "Elevation": 2410,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 1
+  },
+  {
+    "HoleID": "GR-08",
+    "Long": -101.5963751,
+    "Lat": 22.30400116,
+    "Elevation": 2405,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 0.98
+  },
+  {
+    "HoleID": "GR-09",
+    "Long": -101.5963267,
+    "Lat": 22.30409877,
+    "Elevation": 2405,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 1.04
+  },
+  {
+    "HoleID": "GR-10",
+    "Long": -101.5963483,
+    "Lat": 22.30378425,
+    "Elevation": 2405,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 1.34
+  },
+  {
+    "HoleID": "GR-11",
+    "Long": -101.5962922,
+    "Lat": 22.30395114,
+    "Elevation": 2405,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102.22,
+    "Total Length": 3.98
+  },
+  {
+    "HoleID": "PE-01",
+    "Long": -101.5985825,
+    "Lat": 22.29934147,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.45
+  },
+  {
+    "HoleID": "PE-02",
+    "Long": -101.5985879,
+    "Lat": 22.29933399,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 4.25
+  },
+  {
+    "HoleID": "PE-03",
+    "Long": -101.5985934,
+    "Lat": 22.2993265,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 2.65
+  },
+  {
+    "HoleID": "PE-04",
+    "Long": -101.5985988,
+    "Lat": 22.29931901,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.7
+  },
+  {
+    "HoleID": "PE-05",
+    "Long": -101.5986042,
+    "Lat": 22.29931153,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.8
+  },
+  {
+    "HoleID": "PE-06",
+    "Long": -101.5986096,
+    "Lat": 22.29930404,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.5
+  },
+  {
+    "HoleID": "PE-07",
+    "Long": -101.598615,
+    "Lat": 22.29929655,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.6
+  },
+  {
+    "HoleID": "PE-08",
+    "Long": -101.5986204,
+    "Lat": 22.29928907,
+    "Elevation": 2406.6887,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.3
+  },
+  {
+    "HoleID": "PE-08A",
+    "Long": -101.5986259,
+    "Lat": 22.29928158,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 2.8
+  },
+  {
+    "HoleID": "PE-09",
+    "Long": -101.5986313,
+    "Lat": 22.29927409,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 2.7
+  },
+  {
+    "HoleID": "PE-10",
+    "Long": -101.5986367,
+    "Lat": 22.29926661,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 2.95
+  },
+  {
+    "HoleID": "PE-11",
+    "Long": -101.5986421,
+    "Lat": 22.29925912,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-12",
+    "Long": -101.5986475,
+    "Lat": 22.29925164,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-13",
+    "Long": -101.598653,
+    "Lat": 22.29924415,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.45
+  },
+  {
+    "HoleID": "PE-14",
+    "Long": -101.5986584,
+    "Lat": 22.29923666,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.85
+  },
+  {
+    "HoleID": "PE-15",
+    "Long": -101.5986638,
+    "Lat": 22.29922918,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.25
+  },
+  {
+    "HoleID": "PE-16",
+    "Long": -101.5986692,
+    "Lat": 22.29922169,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.25
+  },
+  {
+    "HoleID": "PE-17",
+    "Long": -101.5986746,
+    "Lat": 22.2992142,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.15
+  },
+  {
+    "HoleID": "PE-18",
+    "Long": -101.59868,
+    "Lat": 22.29920672,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.45
+  },
+  {
+    "HoleID": "PE-19",
+    "Long": -101.5986855,
+    "Lat": 22.29919923,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.1
+  },
+  {
+    "HoleID": "PE-20",
+    "Long": -101.5986909,
+    "Lat": 22.29919174,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.4
+  },
+  {
+    "HoleID": "PE-21",
+    "Long": -101.5986963,
+    "Lat": 22.29918426,
+    "Elevation": 2403.6041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 125,
+    "Total Length": 3.7
+  },
+  {
+    "HoleID": "PE-22",
+    "Long": -101.5987809,
+    "Lat": 22.29907645,
+    "Elevation": 2402.2874,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.9
+  },
+  {
+    "HoleID": "PE-23",
+    "Long": -101.5987867,
+    "Lat": 22.29906967,
+    "Elevation": 2402.2874,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.05
+  },
+  {
+    "HoleID": "PE-24",
+    "Long": -101.5987924,
+    "Lat": 22.29906173,
+    "Elevation": 2402.2874,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-25",
+    "Long": -101.5987971,
+    "Lat": 22.29905389,
+    "Elevation": 2402.2874,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.75
+  },
+  {
+    "HoleID": "PE-26",
+    "Long": -101.5988016,
+    "Lat": 22.29904518,
+    "Elevation": 2402.2874,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.25
+  },
+  {
+    "HoleID": "PE-27",
+    "Long": -101.5988077,
+    "Lat": 22.29903862,
+    "Elevation": 2402.2874,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.55
+  },
+  {
+    "HoleID": "PE-28",
+    "Long": -101.5988137,
+    "Lat": 22.29903156,
+    "Elevation": 2402.2874,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "PE-29",
+    "Long": -101.5988226,
+    "Lat": 22.29902643,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 4.05
+  },
+  {
+    "HoleID": "PE-30",
+    "Long": -101.5988287,
+    "Lat": 22.29901937,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.95
+  },
+  {
+    "HoleID": "PE-31",
+    "Long": -101.5988347,
+    "Lat": 22.29901231,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.9
+  },
+  {
+    "HoleID": "PE-32",
+    "Long": -101.5988408,
+    "Lat": 22.29900525,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 4.35
+  },
+  {
+    "HoleID": "PE-33",
+    "Long": -101.5988468,
+    "Lat": 22.29899819,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 4.5
+  },
+  {
+    "HoleID": "PE-34",
+    "Long": -101.5988528,
+    "Lat": 22.29899113,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.85
+  },
+  {
+    "HoleID": "PE-35",
+    "Long": -101.5988589,
+    "Lat": 22.29898407,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.85
+  },
+  {
+    "HoleID": "PE-36",
+    "Long": -101.5988649,
+    "Lat": 22.29897701,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 4.3
+  },
+  {
+    "HoleID": "PE-37",
+    "Long": -101.598871,
+    "Lat": 22.29896995,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 4.2
+  },
+  {
+    "HoleID": "PE-38",
+    "Long": -101.598877,
+    "Lat": 22.29896289,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.5
+  },
+  {
+    "HoleID": "PE-39",
+    "Long": -101.5988831,
+    "Lat": 22.29895583,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-40",
+    "Long": -101.5988891,
+    "Lat": 22.29894877,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.3
+  },
+  {
+    "HoleID": "PE-41",
+    "Long": -101.5988936,
+    "Lat": 22.29894126,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3
+  },
+  {
+    "HoleID": "PE-42",
+    "Long": -101.5988968,
+    "Lat": 22.2989342,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 2.65
+  },
+  {
+    "HoleID": "PE-43",
+    "Long": -101.5988969,
+    "Lat": 22.29892724,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 2
+  },
+  {
+    "HoleID": "PE-44",
+    "Long": -101.5989095,
+    "Lat": 22.29892369,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-45",
+    "Long": -101.5989081,
+    "Lat": 22.29891067,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 2.65
+  },
+  {
+    "HoleID": "PE-46",
+    "Long": -101.5989216,
+    "Lat": 22.29890957,
+    "Elevation": 2401.2706,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3
+  },
+  {
+    "HoleID": "PE-47",
+    "Long": -101.5989276,
+    "Lat": 22.29890251,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 2.85
+  },
+  {
+    "HoleID": "PE-48",
+    "Long": -101.5989337,
+    "Lat": 22.29889545,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-49",
+    "Long": -101.5989454,
+    "Lat": 22.29889432,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.65
+  },
+  {
+    "HoleID": "PE-50",
+    "Long": -101.5989566,
+    "Lat": 22.29889148,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 4.7
+  },
+  {
+    "HoleID": "PE-51",
+    "Long": -101.598954,
+    "Lat": 22.29887924,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 130,
+    "Total Length": 3.5
+  },
+  {
+    "HoleID": "PE-52",
+    "Long": -101.598958,
+    "Lat": 22.29886876,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 3.5
+  },
+  {
+    "HoleID": "PE-53",
+    "Long": -101.5989628,
+    "Lat": 22.2988609,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 3.5
+  },
+  {
+    "HoleID": "PE-54",
+    "Long": -101.5989592,
+    "Lat": 22.29884951,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 3
+  },
+  {
+    "HoleID": "PE-55",
+    "Long": -101.598964,
+    "Lat": 22.29884165,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 2.7
+  },
+  {
+    "HoleID": "PE-56",
+    "Long": -101.598969,
+    "Lat": 22.29883682,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "PE-57",
+    "Long": -101.5989704,
+    "Lat": 22.29882875,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 2.45
+  },
+  {
+    "HoleID": "PE-58",
+    "Long": -101.5989747,
+    "Lat": 22.29882166,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 2.6
+  },
+  {
+    "HoleID": "PE-59",
+    "Long": -101.5989822,
+    "Lat": 22.29881662,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 3.1
+  },
+  {
+    "HoleID": "PE-60",
+    "Long": -101.5989845,
+    "Lat": 22.29880741,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 2.8
+  },
+  {
+    "HoleID": "PE-61",
+    "Long": -101.5989918,
+    "Lat": 22.29880091,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 3
+  },
+  {
+    "HoleID": "PE-62",
+    "Long": -101.5989964,
+    "Lat": 22.29879493,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 3.4
+  },
+  {
+    "HoleID": "PE-63",
+    "Long": -101.598999,
+    "Lat": 22.29878601,
+    "Elevation": 2400.3844,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 3.15
+  },
+  {
+    "HoleID": "PE-64",
+    "Long": -101.5989963,
+    "Lat": 22.29877451,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 120,
+    "Total Length": 1.9
+  },
+  {
+    "HoleID": "PE-65",
+    "Long": -101.599003,
+    "Lat": 22.29877156,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 131,
+    "Total Length": 2.3
+  },
+  {
+    "HoleID": "PE-66",
+    "Long": -101.5990063,
+    "Lat": 22.29876745,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 131,
+    "Total Length": 2.4
+  },
+  {
+    "HoleID": "PE-67",
+    "Long": -101.5990144,
+    "Lat": 22.29876487,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.1
+  },
+  {
+    "HoleID": "PE-68",
+    "Long": -101.5990218,
+    "Lat": 22.2987591,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.85
+  },
+  {
+    "HoleID": "PE-69",
+    "Long": -101.5990321,
+    "Lat": 22.29875667,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-70",
+    "Long": -101.5990397,
+    "Lat": 22.29875162,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.3
+  },
+  {
+    "HoleID": "PE-71",
+    "Long": -101.599046,
+    "Lat": 22.29874385,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.8
+  },
+  {
+    "HoleID": "PE-72",
+    "Long": -101.5990535,
+    "Lat": 22.29873836,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.7
+  },
+  {
+    "HoleID": "PE-73",
+    "Long": -101.5990628,
+    "Lat": 22.29873331,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.8
+  },
+  {
+    "HoleID": "PE-74",
+    "Long": -101.599068,
+    "Lat": 22.29872567,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.5
+  },
+  {
+    "HoleID": "PE-75",
+    "Long": -101.5990755,
+    "Lat": 22.2987199,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.5
+  },
+  {
+    "HoleID": "PE-76",
+    "Long": -101.5990868,
+    "Lat": 22.29871721,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-77",
+    "Long": -101.5990933,
+    "Lat": 22.29870849,
+    "Elevation": 2398.911,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3
+  },
+  {
+    "HoleID": "PE-78",
+    "Long": -101.599097,
+    "Lat": 22.29869909,
+    "Elevation": 2398.4041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.5
+  },
+  {
+    "HoleID": "PE-79",
+    "Long": -101.5991019,
+    "Lat": 22.29869069,
+    "Elevation": 2398.4041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.3
+  },
+  {
+    "HoleID": "PE-80",
+    "Long": -101.5991102,
+    "Lat": 22.29868549,
+    "Elevation": 2398.4041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.6
+  },
+  {
+    "HoleID": "PE-81",
+    "Long": -101.5991169,
+    "Lat": 22.29868014,
+    "Elevation": 2398.4041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.7
+  },
+  {
+    "HoleID": "PE-82",
+    "Long": -101.5991268,
+    "Lat": 22.29867599,
+    "Elevation": 2398.4041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3
+  },
+  {
+    "HoleID": "PE-83",
+    "Long": -101.5991294,
+    "Lat": 22.29866553,
+    "Elevation": 2398.4041,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.4
+  },
+  {
+    "HoleID": "PE-84",
+    "Long": -101.5991381,
+    "Lat": 22.29866167,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.5
+  },
+  {
+    "HoleID": "PE-85",
+    "Long": -101.5991491,
+    "Lat": 22.29865866,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "PE-86",
+    "Long": -101.5991566,
+    "Lat": 22.29865289,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "PE-87",
+    "Long": -101.599162,
+    "Lat": 22.29864503,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.4
+  },
+  {
+    "HoleID": "PE-88",
+    "Long": -101.5991709,
+    "Lat": 22.29864099,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.6
+  },
+  {
+    "HoleID": "PE-89",
+    "Long": -101.5991821,
+    "Lat": 22.29863925,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.1
+  },
+  {
+    "HoleID": "PE-90",
+    "Long": -101.599192,
+    "Lat": 22.29863669,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.4
+  },
+  {
+    "HoleID": "PE-91",
+    "Long": -101.5992003,
+    "Lat": 22.29863116,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-92",
+    "Long": -101.5992078,
+    "Lat": 22.29862538,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.1
+  },
+  {
+    "HoleID": "PE-93",
+    "Long": -101.5992152,
+    "Lat": 22.29861961,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "PE-94",
+    "Long": -101.5992227,
+    "Lat": 22.29861383,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 3.2
+  },
+  {
+    "HoleID": "PE-95",
+    "Long": -101.5992301,
+    "Lat": 22.29860806,
+    "Elevation": 2397.0932,
+    "DH_Dip": 0,
+    "DH_Azimuth": 105,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "PE-96",
+    "Long": -101.5979989,
+    "Lat": 22.3001016,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.4
+  },
+  {
+    "HoleID": "PE-97",
+    "Long": -101.5979972,
+    "Lat": 22.30011049,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.4
+  },
+  {
+    "HoleID": "PE-98",
+    "Long": -101.5979955,
+    "Lat": 22.30011937,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.4
+  },
+  {
+    "HoleID": "PE-99",
+    "Long": -101.5979938,
+    "Lat": 22.30012826,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.5
+  },
+  {
+    "HoleID": "PE-100",
+    "Long": -101.5979921,
+    "Lat": 22.30013715,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.7
+  },
+  {
+    "HoleID": "PE-101",
+    "Long": -101.5979904,
+    "Lat": 22.30014604,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.5
+  },
+  {
+    "HoleID": "PE-102",
+    "Long": -101.5979887,
+    "Lat": 22.30015493,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.9
+  },
+  {
+    "HoleID": "PE-103",
+    "Long": -101.597987,
+    "Lat": 22.30016382,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 2
+  },
+  {
+    "HoleID": "PE-104",
+    "Long": -101.5979854,
+    "Lat": 22.30017271,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 2
+  },
+  {
+    "HoleID": "PE-105",
+    "Long": -101.5979837,
+    "Lat": 22.3001816,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.8
+  },
+  {
+    "HoleID": "PE-106",
+    "Long": -101.597982,
+    "Lat": 22.30019049,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.7
+  },
+  {
+    "HoleID": "PE-107",
+    "Long": -101.5979786,
+    "Lat": 22.30020826,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.2
+  },
+  {
+    "HoleID": "PE-108",
+    "Long": -101.5979769,
+    "Lat": 22.30021715,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.2
+  },
+  {
+    "HoleID": "PE-109",
+    "Long": -101.5979752,
+    "Lat": 22.30022604,
+    "Elevation": 2423.5,
+    "DH_Dip": 0,
+    "DH_Azimuth": 109,
+    "Total Length": 1.2
+  },
+  {
+    "HoleID": "PE-110",
+    "Long": -101.5979292,
+    "Lat": 22.30046872,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 1.9
+  },
+  {
+    "HoleID": "PE-111",
+    "Long": -101.5979255,
+    "Lat": 22.30047707,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 2.1
+  },
+  {
+    "HoleID": "PE-112",
+    "Long": -101.5979218,
+    "Lat": 22.30048542,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 2
+  },
+  {
+    "HoleID": "PE-113",
+    "Long": -101.5979181,
+    "Lat": 22.30049377,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 2.7
+  },
+  {
+    "HoleID": "PE-114",
+    "Long": -101.5979144,
+    "Lat": 22.30050212,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 2.8
+  },
+  {
+    "HoleID": "PE-115",
+    "Long": -101.5979108,
+    "Lat": 22.30051046,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 2.9
+  },
+  {
+    "HoleID": "PE-116",
+    "Long": -101.5979071,
+    "Lat": 22.30051881,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 3
+  },
+  {
+    "HoleID": "PE-117",
+    "Long": -101.5979034,
+    "Lat": 22.30052716,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 111,
+    "Total Length": 1.7
+  },
+  {
+    "HoleID": "PE-118",
+    "Long": -101.5978369,
+    "Lat": 22.30080807,
+    "Elevation": 2423.8,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102,
+    "Total Length": 2.3
+  },
+  {
+    "HoleID": "PE-119",
+    "Long": -101.5978351,
+    "Lat": 22.30081693,
+    "Elevation": 2423.8,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102,
+    "Total Length": 2.2
+  },
+  {
+    "HoleID": "PE-120",
+    "Long": -101.5978332,
+    "Lat": 22.30082579,
+    "Elevation": 2423.8,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102,
+    "Total Length": 2.1
+  },
+  {
+    "HoleID": "PE-121",
+    "Long": -101.5978314,
+    "Lat": 22.30083465,
+    "Elevation": 2423.8,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102,
+    "Total Length": 1.88
+  },
+  {
+    "HoleID": "PE-122",
+    "Long": -101.5978295,
+    "Lat": 22.30084351,
+    "Elevation": 2423.8,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102,
+    "Total Length": 1.9
+  },
+  {
+    "HoleID": "PE-123",
+    "Long": -101.5978277,
+    "Lat": 22.30085237,
+    "Elevation": 2423.8,
+    "DH_Dip": 0,
+    "DH_Azimuth": 102,
+    "Total Length": 1.82
+  },
+  {
+    "HoleID": "PE-124",
+    "Long": -101.5980908,
+    "Lat": 22.29994523,
+    "Elevation": 2424,
+    "DH_Dip": 0,
+    "DH_Azimuth": 123,
+    "Total Length": 3.6
+  },
+  {
+    "HoleID": "CA19PI034",
+    "Long": -101.5969713,
+    "Lat": 22.30416608,
+    "Elevation": 2440.4,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 126.6
+  },
+  {
+    "HoleID": "CA19PI035",
+    "Long": -101.5975033,
+    "Lat": 22.30401281,
+    "Elevation": 2440.2,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 173.85
+  },
+  {
+    "HoleID": "CA19PI036",
+    "Long": -101.5968176,
+    "Lat": 22.30351844,
+    "Elevation": 2438.3,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 76.25
+  },
+  {
+    "HoleID": "CA19PI037",
+    "Long": -101.5975317,
+    "Lat": 22.30212095,
+    "Elevation": 2431.1,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 77.85
+  },
+  {
+    "HoleID": "CA19PI038",
+    "Long": -101.5978748,
+    "Lat": 22.30136466,
+    "Elevation": 2428.9,
+    "DH_Dip": -65,
+    "DH_Azimuth": 125,
+    "Total Length": 59.5
+  },
+  {
+    "HoleID": "CA19PI039",
+    "Long": -101.5972869,
+    "Lat": 22.30336609,
+    "Elevation": 2437.2,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 106.75
+  },
+  {
+    "HoleID": "CA19PI040",
+    "Long": -101.5976187,
+    "Lat": 22.30261984,
+    "Elevation": 2433.5,
+    "DH_Dip": -65,
+    "DH_Azimuth": 125,
+    "Total Length": 122
+  },
+  {
+    "HoleID": "CA19PI041",
+    "Long": -101.5981078,
+    "Lat": 22.30247982,
+    "Elevation": 2429.4,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 151
+  },
+  {
+    "HoleID": "CA19PI042",
+    "Long": -101.5980721,
+    "Lat": 22.3019352,
+    "Elevation": 2428.8,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 122
+  },
+  {
+    "HoleID": "CA19PI043",
+    "Long": -101.598784,
+    "Lat": 22.30193037,
+    "Elevation": 2429.2,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 198.25
+  },
+  {
+    "HoleID": "CA19PI044",
+    "Long": -101.599013,
+    "Lat": 22.30100497,
+    "Elevation": 2425.3,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 210.45
+  },
+  {
+    "HoleID": "CA19PI045",
+    "Long": -101.5994279,
+    "Lat": 22.30037358,
+    "Elevation": 2425.1,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 175.85
+  },
+  {
+    "HoleID": "CA19PI046",
+    "Long": -101.5984909,
+    "Lat": 22.3012109,
+    "Elevation": 2424.5,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 137.25
+  },
+  {
+    "HoleID": "CA19PI047",
+    "Long": -101.5989125,
+    "Lat": 22.30046592,
+    "Elevation": 2422.2,
+    "DH_Dip": -60,
+    "DH_Azimuth": 120,
+    "Total Length": 131.15
+  },
+  {
+    "HoleID": "CA19PI048",
+    "Long": -101.5991776,
+    "Lat": 22.29967635,
+    "Elevation": 2421.7,
+    "DH_Dip": -65,
+    "DH_Azimuth": 120,
+    "Total Length": 100.65
+  },
+  {
+    "HoleID": "CA19PI049",
+    "Long": -101.5992899,
+    "Lat": 22.29928996,
+    "Elevation": 2422.4,
+    "DH_Dip": -70,
+    "DH_Azimuth": 120,
+    "Total Length": 128.1
+  },
+  {
+    "HoleID": "CA19PI050",
+    "Long": -101.5997448,
+    "Lat": 22.2991426,
+    "Elevation": 2423.2,
+    "DH_Dip": -60,
+    "DH_Azimuth": 115,
+    "Total Length": 115.9
+  },
+  {
+    "HoleID": "CA19PI051",
+    "Long": -101.5997674,
+    "Lat": 22.29867398,
+    "Elevation": 2418,
+    "DH_Dip": -60,
+    "DH_Azimuth": 95,
+    "Total Length": 120.5
+  },
+  {
+    "HoleID": "CA19PI052",
+    "Long": -101.5990537,
+    "Lat": 22.30006829,
+    "Elevation": 2421,
+    "DH_Dip": -58,
+    "DH_Azimuth": 120,
+    "Total Length": 109.8
+  },
+  {
+    "HoleID": "CA19PI053",
+    "Long": -101.5983578,
+    "Lat": 22.30059708,
+    "Elevation": 2420,
+    "DH_Dip": -75,
+    "DH_Azimuth": 125,
+    "Total Length": 96.05
+  }
+]
