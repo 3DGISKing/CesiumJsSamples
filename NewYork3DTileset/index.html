@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>CesiumJs Hello World</title>
+    <title>New York</title>
     <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
     <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
     <script src="https://cesiumjs.org/releases/1.77/Build/Cesium/Cesium.js"></script>
@@ -21,7 +21,28 @@
 <script>
     Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYTIzNzQ4NS1iN2ZmLTQ3ZWQtYjU0OS1mZWI4Nzk0MjcwNDAiLCJpZCI6OTc4Niwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDkxODE3NH0.UUQf2vuc3PN3VPNSUYt5uAbrSv5irvkIe-A57Ocp6ow";
 
-    const viewer = new Cesium.Viewer('cesiumContainer', {});
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+
+    });
+
+    var tileset = new Cesium.Cesium3DTileset({
+        url: Cesium.IonResource.fromAssetId(75343),
+    });
+
+    viewer.scene.primitives.add(tileset);
+
+    tileset.readyPromise.then(function () {
+        viewer.zoomTo(
+            tileset,
+            new Cesium.HeadingPitchRange(
+                0.0,
+                -0.5,
+                tileset.boundingSphere.radius / 4.0
+            )
+        );
+    }).otherwise(function(err) {
+        console.error(err.message);
+    });
 </script>
 </body>
 </html>
