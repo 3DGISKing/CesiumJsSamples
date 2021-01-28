@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.77/Build/Cesium/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id="cesiumContainer"></div>
+<div id="controls">
+    <div class="row">
+        <div class="col-35">Lead
+        Time:</div>
+        <div class="col-65"><input id="lead" type="range" min="0" max="300" value="0"></div>
+    </div>
+    <div class="row">
+        <div class="col-35">Linger
+        Time:</div>
+        <div class="col-65"><input id="linger" type="range" min="0" max="300" value="300"></div>
+    </div>
+    <div class="row">
+        <div class="col-35">Value
+        Min:</div>
+        <div class="col-65"><input id="vmin" type="range" min="-50" max="100" value="-10"></div>
+    </div>
+    <div class="row">
+        <div class="col-35">Value
+        Max:</div>
+        <div class="col-65"><input id="vmax" type="range" min="0" max="100" value="65"></div>
+    </div>
+    <div class="row">
+        <div class="col-35">Hue
+        Min:</div>
+        <div class="col-65"><input id="hmin" type="range" min="0" max="1000"></div>
+    </div>
+    <div class="row">
+        <div class="col-35">Hue
+        Range:</div>
+        <div class="col-65"><input id="hrange" type="range" min="0" max="1000"></div>
+    </div>
+    <div class="row">
+        <div class="col-35">Alpha
+        Scale:</div>
+        <div class="col-65"><input id="alpha" type="range" min="0" max="5000"></div>
+    </div>
+    <div class="row">
+        <div class="col-35">Reverse:</div>
+        <div class="col-65"><input id="reverse" type="checkbox" checked="true"></div>
+    </div>
+    <div class="row">
+        <div id="min" class="col-10"></div>
+        <div id="stripe" class="col-80"></div>
+        <div id="max" class="col-10"></div>
+    </div>
+</div>
+<style>
+    html, body, #cesiumContainer {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        color: #edffff;
+    }
+
+    #controls {
+        position: absolute;
+        padding: 10px;
+        top: 10px;
+        left: 10px;
+        width: 260px;
+        height: 210px;
+        background: #555555AA;
+    }
+
+    .row {
+        display: flex;
+        height: 14%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .col-35 {
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+        width: 35%;
+    }
+
+    .col-65 {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width: 65%;
+    }
+
+    .col-10 {
+        display: flex;
+        flex-direction: column;
+        width: 10%;
+        justify-content: space-around;
+    }
+
+    .col-80 {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+    }
+
+    #min {
+        width: 10%;
+        height: 100%;
+    }
+
+    #stripe {
+    }
+
+    #max {
+        width: 10%;
+        height: 14%;
+    }
+
+    input {
+        box-sizing: border-box;
+        width: 100%;
+    }
+</style>
+<script>
+    var epoch;
+    var viewerTime = 0;
+    var lead = 0;
+    var linger = 300;
+    var reverse = true;
+    var ascale = 0.0;
+    var vmin = -10;
+    var vmax = 65;
+    var vrange = vmax - vmin;
+    var hmin = 0.83;
+    var hrange = 0.83;
+    var scale = hrange / vrange;
+
+    document.getElementById("lead").oninput = async (e) => {
+        lead = e.target.valueAsNumber;
+        updateTimeWindow();
+    };
+
+    document.getElementById("linger").oninput = async (e) => {
+        linger = e.target.valueAsNumber;
+        updateTimeWindow();
+    };
+
+    document.getElementById("vmin").oninput = async (e) => {
+        vmin = e.target.valueAsNumber;
+        vrange = vmax - vmin;
+        scale = hrange / vrange;
+        document.getElementById("min").innerHTML = e.target.valueAsNumber;
+        update();
+    }
+
+    document.getElementById("vmax").oninput = async (e) => {
+        vmax = e.target.valueAsNumber;
+        vrange = vmax - vmin;
+        scale = hrange / vrange;
+        document.getElementById("max").innerHTML = e.target.valueAsNumber;
+        update();
+    }
+
+    document.getElementById("hmin").oninput = async (e) => {
+        hmin = e.target.valueAsNumber / 1000;
+        update();
+    }
+
+    document.getElementById("hrange").oninput = async (e) => {
+        hrange = e.target.valueAsNumber / 1000;
+        scale = hrange / vrange;
+        update();
+    }
+
+    document.getElementById("alpha").oninput = async (e) => {
+        ascale = e.target.valueAsNumber / 1000;
+        update();
+    }
+
+    document.getElementById("reverse").onchange = async (e) => {
+        reverse = e.target.checked;
+        update();
+    }
+
+    var updateTimeWindow = async () => {
+        hiwrapTileset.style.show = getShowExpression();
+        hiwrapTileset.makeStyleDirty();
+    }
+
+    var update = async () => {
+        getColorMap();
+        hiwrapTileset.style.color = getColorExpression();
+        hiwrapTileset.makeStyleDirty();
+    }
+
+    var reset = () => {
+        document.getElementById("vmin").value = -10;
+        document.getElementById("vmax").value = 65;
+        document.getElementById("hmin").value = 833;
+        document.getElementById("hrange").value = 833;
+        document.getElementById("alpha").value = 0;
+        document.getElementById("reverse").checked = true;
+        document.getElementById("min").innerHTML = vmin.toString();
+        document.getElementById("max").innerHTML = vmax.toString();
+        viewerTime = Cesium.JulianDate.secondsDifference(viewer.clock.currentTime, epoch);
+    };
+
+    var getColorExpression = () => {
+        let revScale = '';
+        if (reverse) {
+            revScale = ' * -1.0 + 1.0';
+        }
+        return `hsla((((clamp(\${value}, ${vmin}, ${vmax}) + ${vmin}) / ${vrange}) ${revScale}) * ${hrange} + ${hmin}, 1.0, 0.5, pow((\${value} - ${vmin})/${vrange}, ${ascale}))`
+    };
+
+    var getShowExpression = () => {
+        return `\${time} <= ${viewerTime + lead} && \${time} >= ${viewerTime - linger}`;
+    };
+
+    var getColorMap = async () => {
+        let h1 = Math.floor(360 * hmin);
+        let h2 = Math.floor(360 * (hmin + hrange));
+        let steps = Math.max(Math.floor(12 * hrange), 1);
+        let gradient = Array(steps + 1).fill().map((e, i) => {
+            return `hsl(${i * 30 + h1}, 100%, 50%) ${Math.floor(i * 100 / steps)}%${i != steps ? ',' : ''}`
+        });
+        document.getElementById("stripe").style.backgroundImage = `linear-gradient(${reverse ? `270` : `90`}deg,${gradient.join('')})`;
+    };
+
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhYjMyN2RmOS1kZDUyLTQ3NzAtODY1Yi1jN2VjZGM2MGMwNjAiLCJpZCI6NzEwMywic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0ODI2NDIzNH0.6mNjeIHMcoOZOo8sb7WaApfsUKHmXx58TFLFZ5nrcVQ';
+
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+        shadows: false,
+        automaticallyTrackDataSourceClocks: false
+    });
+
+    viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2015-12-03T14:00:00Z");
+    viewer.clock.currentTime = Cesium.JulianDate.fromIso8601("2015-12-03T14:40:00Z");
+    viewer.clock.stopTime = Cesium.JulianDate.fromIso8601("2015-12-03T17:50:00Z");
+    viewer.timeline.zoomTo(Cesium.JulianDate.fromIso8601("2015-12-03T14:00:00Z"),
+        Cesium.JulianDate.fromIso8601("2015-12-03T17:50:00Z"));
+    viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+    var previousTime = Cesium.JulianDate.clone(viewer.clock.currentTime);
+
+    var hiwrapTileset = new Cesium.Cesium3DTileset({
+        url: 'tile/tileset.json',
+        maximumScreenSpaceError: 512,
+        debugShowContentBoundingVolume: true
+    });
+
+    hiwrapTileset.readyPromise.then((tileset) => {
+        epoch = Cesium.JulianDate.fromIso8601(tileset.properties.epoch);
+        tileset.style = new Cesium.Cesium3DTileStyle();
+        reset();
+        tileset.style.color = getColorExpression();
+        tileset.style.show = getShowExpression(viewerTime);
+        tileset.makeStyleDirty();
+        viewer.clock.onTick.addEventListener((e) => {
+            if (!Cesium.JulianDate.equalsEpsilon(previousTime, viewer.clock.currentTime, 1)) {
+                previousTime = Cesium.JulianDate.clone(viewer.clock.currentTime);
+                viewerTime = Cesium.JulianDate.secondsDifference(previousTime, epoch);
+                tileset.style.show = getShowExpression();
+                tileset.makeStyleDirty();
+            }
+        });
+    });
+
+    var flightTrackCzml = Cesium.CzmlDataSource.load('czml/er2.czml').then((ds) => {
+        modelRef = ds.entities.getById('nasa_er2');
+        modelRef.orientation = new Cesium.CallbackProperty((time, result) => {
+            let position = modelRef.position.getValue(time);
+            let att = modelRef.properties.attitude.getValue(time);
+            let hpr = Cesium.HeadingPitchRoll.fromDegrees(att.x, att.y, att.z);
+            return Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+        }, false);
+        viewer.dataSources.add(ds);
+    });
+
+    viewer.scene.primitives.add(hiwrapTileset);
+    viewer.zoomTo(hiwrapTileset);
+    var credit = new Cesium.Credit(`<div>Heymsfield, Gerald M and Lin Tian. 2017.</div>
+                                    <div>GPM Ground Validation High Altitude Imaging Wind and Rain Airborne Profiler (HIWRAP) OLYMPEX</div>
+                                    <div>Shown data is ku band from flight on 2015-12-03.</div>
+                                    <div>Dataset available online from the NASA Global Hydrology Resource Center DAAC, Huntsville, Alabama, U.S.A.</div>
+                                    <div>DOI: <a href="http://dx.doi.org/10.5067/GPMGV/OLYMPEX/HIWRAP/DATA101">http://dx.doi.org/10.5067/GPMGV/OLYMPEX/HIWRAP/DATA101</a></div>`, true);
+</script>
+</body>
+</html>
