@@ -1,0 +1,1 @@
+# To get the list of the asset you need to make sure your token has the “assets:list” scope

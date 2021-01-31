@@ -40,6 +40,14 @@
                 tileset.boundingSphere.radius / 4.0
             )
         );
+
+        var transparentStyle = new Cesium.Cesium3DTileStyle({
+            color : "color('white', 0.3)",
+            show : true
+        });
+
+        tileset.style = transparentStyle;
+
     }).otherwise(function(err) {
         console.error(err.message);
     });
