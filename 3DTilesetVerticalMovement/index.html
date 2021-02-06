@@ -21,6 +21,7 @@
             padding: 4px;
             border-radius: 4px;
         }
+
         #toolbar input {
             vertical-align: middle;
             padding-top: 2px;
@@ -89,12 +90,35 @@
     const toolbar = document.getElementById("toolbar");
     Cesium.knockout.applyBindings(viewModel, toolbar);
 
-    Cesium.knockout.getObservable(viewModel, 'newYorkCityShow').subscribe( function () {
+    Cesium.knockout.getObservable(viewModel, 'newYorkCityShow').subscribe(function () {
         NewYorkTileset.show = viewModel.newYorkCityShow;
     });
 
     Cesium.knockout.getObservable(viewModel, 'OSMBuildingShow').subscribe(function () {
         OSMBuildingTileset.show = viewModel.OSMBuildingShow;
+    });
+
+    NewYorkTileset.readyPromise.then(function () {
+        const eastNorthUp = Cesium.Transforms.eastNorthUpToFixedFrame(NewYorkTileset.boundingSphere.center);
+
+        const verticalOffset = 100;
+
+        const local = new Cesium.Cartesian3(0, 0, verticalOffset);
+        const global  = Cesium.Matrix4.multiplyByPoint(eastNorthUp, local, new Cesium.Cartesian3());
+
+        const origin = Cesium.Matrix4.getTranslation(eastNorthUp, new Cesium.Cartesian3());
+
+        const delta = Cesium.Cartesian3.subtract(global, origin, new Cesium.Cartesian3());
+
+        const tilesetModelMatrix = Cesium.Matrix4.IDENTITY.clone();
+
+        tilesetModelMatrix[12] += delta.x;
+        tilesetModelMatrix[13] += delta.y;
+        tilesetModelMatrix[14] += delta.z;
+
+        NewYorkTileset.modelMatrix = tilesetModelMatrix;
+    }).otherwise(function (error) {
+        console.error(error);
     });
 
 </script>
