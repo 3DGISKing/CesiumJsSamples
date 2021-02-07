@@ -47,7 +47,7 @@
 
 </div>
 
-<script src="./Cesium3DTileLocationEditor.js"></script>
+<script src="../3DTilesetLocationEditor/Cesium3DTileLocationEditor.js"></script>
 <script>
     /* global Cesium*/
 
@@ -65,21 +65,13 @@
 
     viewer.scene.primitives.add(NewYorkTileset);
 
+    viewer.zoomTo(NewYorkTileset);
+
     const OSMBuildingTileset = new Cesium.Cesium3DTileset({
         url: Cesium.IonResource.fromAssetId(96188),
     });
 
     viewer.scene.primitives.add(OSMBuildingTileset);
-
-    NewYorkTileset.readyPromise
-        .then(function (tileset) {
-            viewer.zoomTo(tileset);
-
-            const tilesetLocationEditor = new Cesium3dTilesetLocationEditor(viewer, tileset);
-        })
-        .otherwise(function (error) {
-            console.log(error);
-        });
 
     let viewModel = {
         newYorkCityShow: true,
@@ -99,6 +91,8 @@
     });
 
     NewYorkTileset.readyPromise.then(function () {
+        const tilesetLocationEditor = new Cesium3dTilesetLocationEditor(viewer, NewYorkTileset);
+
         const eastNorthUp = Cesium.Transforms.eastNorthUpToFixedFrame(NewYorkTileset.boundingSphere.center);
 
         const verticalOffset = 100;
@@ -120,6 +114,10 @@
     }).otherwise(function (error) {
         console.error(error);
     });
+
+    OSMBuildingTileset.readyPromise.then(function () {
+        console.log(OSMBuildingTileset);
+    })
 
 </script>
 </body>

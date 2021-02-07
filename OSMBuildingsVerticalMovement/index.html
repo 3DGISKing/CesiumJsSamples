@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>CesiumJs Hello World</title>
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.78/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.78/Build/Cesium/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+
+    <style>
+        #toolbar {
+            background: rgba(42, 42, 42, 0.8);
+            padding: 4px;
+            border-radius: 4px;
+        }
+        #toolbar input {
+            vertical-align: middle;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar">
+    <div>Height</div>
+    <input type="range" min="-100.0" max="100.0" step="1" data-bind="value: height, valueUpdate: 'input'">
+    <input type="text" size="5" data-bind="value: height">
+</div>
+
+<script>
+    var viewer = new Cesium.Viewer("cesiumContainer");
+
+    viewer.scene.globe.depthTestAgainstTerrain = true;
+
+    var viewModel = {
+        height: 0,
+    };
+
+    Cesium.knockout.track(viewModel);
+
+    var toolbar = document.getElementById("toolbar");
+    Cesium.knockout.applyBindings(viewModel, toolbar);
+
+    var tileset = Cesium.createOsmBuildings();
+
+    tileset.readyPromise
+        .then(function (tileset) {
+            viewer.scene.primitives.add(tileset);
+        })
+        .otherwise(function (error) {
+            console.log(error);
+        });
+
+    Cesium.knockout
+        .getObservable(viewModel, "height")
+        .subscribe(function (height) {
+            height = Number(height);
+            if (isNaN(height)) {
+                return;
+            }
+
+            var cartographic = Cesium.Cartographic.fromCartesian(
+                Cesium.Cartesian3.fromDegrees(-74.019, 40.6912, 750)
+            );
+            var surface = Cesium.Cartesian3.fromRadians(
+                cartographic.longitude,
+                cartographic.latitude,
+                0.0
+            );
+            var offset = Cesium.Cartesian3.fromRadians(
+                cartographic.longitude,
+                cartographic.latitude,
+                height
+            );
+            var translation = Cesium.Cartesian3.subtract(
+                offset,
+                surface,
+                new Cesium.Cartesian3()
+            );
+            tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+        });
+
+    viewer.scene.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(-74.019, 40.6912, 750),
+        orientation: {
+            heading: Cesium.Math.toRadians(20),
+            pitch: Cesium.Math.toRadians(-20),
+        },
+    });
+</script>
+</body>
+</html>
