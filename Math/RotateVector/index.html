@@ -68,19 +68,23 @@
     viewer.scene.globe.depthTestAgainstTerrain = true;
 
     viewer.camera.flyTo({
-        destination: Cartesian3.fromDegrees(129.50778, 42.9075, 500)
+        destination: Cartesian3.fromDegrees(0, 0, 10000000)
     });
 
-    const origin = Cartesian3.fromDegrees(129.50778, 42.9075, 10);
+    const origin = Cartesian3.fromDegrees(0, 0, 1000);
+
+    const axisLength = 1000000;
+    const vectorLength = 2000000;
+
+    // heading 0 indicates east direction
+    // heading -90 indicates true north
+    const initHeading = 0;
 
     viewer.scene.primitives.add(new Cesium.DebugModelMatrixPrimitive({
         modelMatrix: Cesium.Transforms.eastNorthUpToFixedFrame(origin, undefined, new Cesium.Matrix4()),
-        length: 50.0,
+        length: axisLength,
         width: 5.0
     }));
-
-    const vectorLength = 100;
-    const initHeading = 45;
 
     let viewModel = {
         heading: initHeading,
