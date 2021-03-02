@@ -26,6 +26,8 @@ const defaultCartesian = Cartesian3.fromDegrees(defaultLongitude, defaultLatitud
 let viewModel = null;
 let viewer = null;
 
+let updatedFromCartesian;
+
 function createModel() {
     viewModel = {
         cartesianX: defaultCartesian.x,
@@ -52,6 +54,8 @@ function createModel() {
 }
 
 function createViewer() {
+    Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYTIzNzQ4NS1iN2ZmLTQ3ZWQtYjU0OS1mZWI4Nzk0MjcwNDAiLCJpZCI6OTc4Niwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDkxODE3NH0.UUQf2vuc3PN3VPNSUYt5uAbrSv5irvkIe-A57Ocp6ow";
+
     viewer = new Cesium.Viewer("cesiumContainer", {
         animation: false,
         timeline: false
@@ -61,9 +65,12 @@ function createViewer() {
 }
 
 function updateFromDegrees() {
-    const longitude = viewModel.longitude;
-    const latitude = viewModel.latitude;
-    const height = viewModel.height;
+    if(updatedFromCartesian)
+        return;
+
+    const longitude = parseFloat(viewModel.longitude);
+    const latitude = parseFloat(viewModel.latitude);
+    const height = parseFloat(viewModel.height);
 
     const cartesian = Cartesian3.fromDegrees(longitude, latitude, height);
 
@@ -77,11 +84,15 @@ function updateFromCartesian() {
     const y = parseFloat(viewModel.cartesianY);
     const z = parseFloat(viewModel.cartesianZ);
 
-    const carto = Cartographic.fromCartesian(Cesium.Cartesian3(x , y, z));
+    const carto = Cartographic.fromCartesian(new Cesium.Cartesian3(x, y, z));
+
+    updatedFromCartesian = true;
 
     viewModel.longitude = CesiumMath.toDegrees(carto.longitude);
     viewModel.latitude = CesiumMath.toDegrees(carto.latitude);
     viewModel.height = carto.height;
+
+    updatedFromCartesian = false;
 }
 
 function goTo() {
