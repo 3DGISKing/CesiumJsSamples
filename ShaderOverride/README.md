@@ -1,7 +1,3 @@
-### 1 visualize 500 airports around the world as labels. 
-### 2 visualize airspace fences.
-### 3 simulate airport approach procedures.
-
 [![](http://img.youtube.com/vi/qWRPDqbgSAg/0.jpg)](http://www.youtube.com/watch?v=qWRPDqbgSAg "")
 
 # Hi, Enjoy my code.
