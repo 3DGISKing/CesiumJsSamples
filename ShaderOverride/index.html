@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Globe Shader Override</title>
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.78/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src="https://cesiumjs.org/releases/1.78/Build/CesiumUnminified/Cesium.js"></script>
+
+    <style>
+        #toolbar {
+            overflow-y: auto;
+            max-height: 100%;
+            background: rgba(42, 42, 42, 0.8);
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        #toolbar input {
+            vertical-align: middle;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        #toolbar input[type=text]{
+            width: 150px;
+        }
+
+        table {
+            margin-bottom: 15px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+</div>
+
+<div id="toolbar">
+    <table>
+        <tbody>
+        <tr>
+            <td>Split Position</td>
+            <td>
+                <input data-bind="value: splitPosition, valueUpdate: 'input'" max="1" min="0" step="0.1" type="range" >
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="./overrideUniformState.js"></script>
+
+<script type="module">
+    import {shader} from "./GlobeFS.js";
+
+    Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYTIzNzQ4NS1iN2ZmLTQ3ZWQtYjU0OS1mZWI4Nzk0MjcwNDAiLCJpZCI6OTc4Niwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDkxODE3NH0.UUQf2vuc3PN3VPNSUYt5uAbrSv5irvkIe-A57Ocp6ow";
+
+    // step1
+    Object.defineProperties(Cesium.Scene.prototype, {
+        splitPosition: {
+            get: function () {
+                return this._frameState.splitPosition;
+            },
+            set: function (value) {
+                this._frameState.splitPosition = value;
+            },
+        }
+    });
+
+    // step 2
+    Cesium.FrameState.prototype.splitPosition = 0.0;
+
+    // step 3
+    
+    Cesium.UniformState.prototype._splitPosition = 0.0;
+
+    Object.defineProperties(Cesium.UniformState.prototype, {
+        splitPosition: {
+            get: function () {
+                return this._splitPosition;
+            }
+        }
+    });
+
+    //step 4
+
+    function AutomaticUniform(options) {
+        this._size = options.size;
+        this._datatype = options.datatype;
+        this.getValue = options.getValue;
+    }
+
+    Cesium.AutomaticUniforms.czml_splitPosition = new AutomaticUniform({
+        size: 1,
+        datatype: Cesium.WebGLConstants.FLOAT,
+        getValue: function (uniformState) {
+            return uniformState.splitPosition;
+        },
+    });
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {});
+
+    //step 5
+    viewer.scene.globe._surfaceShaderSet.baseFragmentShaderSource.sources[1] = shader;
+
+    //step6
+
+    let viewModel = {
+        splitPosition: 1
+    };
+
+    const knockout = Cesium.knockout;
+
+    knockout.track(viewModel);
+
+    const toolbar = document.getElementById("toolbar");
+
+    knockout.applyBindings(viewModel, toolbar);
+
+    Cesium.knockout.getObservable(viewModel, 'splitPosition').subscribe(updateSplitPosition);
+
+    function updateSplitPosition() {
+        viewer.scene.splitPosition = viewModel.splitPosition;
+    }
+
+</script>
+</body>
+</html>
