@@ -1,5 +1,3 @@
-# How to overlay Three js scene on the Cesium js scene
-
 [![](http://img.youtube.com/vi/Sg0N-cLPH7Y/0.jpg)](http://www.youtube.com/watch?v=Sg0N-cLPH7Y "")
 
 # Hi, Enjoy my code.
