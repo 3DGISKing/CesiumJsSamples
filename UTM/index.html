@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>UTM World</title>
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.75/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+
+    <script src="https://cesiumjs.org/releases/1.75/Build/Cesium/Cesium.js"></script>
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+    <script src = "proj4_2.5.0.js"></script>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar">
+</div>
+
+<script>
+    Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYTIzNzQ4NS1iN2ZmLTQ3ZWQtYjU0OS1mZWI4Nzk0MjcwNDAiLCJpZCI6OTc4Niwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU1NDkxODE3NH0.UUQf2vuc3PN3VPNSUYt5uAbrSv5irvkIe-A57Ocp6ow";
+
+    const fromDegree = Cesium.Cartesian3.fromDegrees;
+    const zoneNumber = 11;
+
+    function utmToLatlon(easting, northing) {
+        const utm = `+proj=utm +zone=${zoneNumber}`;
+        const wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+
+        return proj4(utm, wgs84, [easting, northing]);
+    }
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+
+    });
+
+    /**
+     * @param p1 upper left
+     * @param p2 upper right
+     * @param p3 lower right
+     * @param p4 lower left
+     * @param sectionName
+     */
+    function addSection(p1, p2, p3, p4, sectionName){
+        const latlng1 = utmToLatlon(p1[0], p1[1], zoneNumber);
+        const latlng2 = utmToLatlon(p2[0], p2[1], zoneNumber);
+        const latlng3 = utmToLatlon(p3[0], p3[1], zoneNumber);
+        const latlng4 = utmToLatlon(p4[0], p4[1], zoneNumber);
+
+        viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(latlng1[0], latlng1[1], p1[2]),
+            label: {
+                text: sectionName,
+                scale: 0.8,
+                pixelOffset: new Cesium.Cartesian2(0, -30),
+                font: "32px Helvetica",
+                fillColor: Cesium.Color.YELLOW,
+                outlineColor: Cesium.Color.BLACK,
+                outlineWidth: 2,
+                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            }
+        });
+
+        viewer.entities.add({
+            polygon : {
+                hierarchy : {
+                    positions : [fromDegree(latlng1[0], latlng1[1], p1[2]),
+                        fromDegree(latlng2[0], latlng2[1], p2[2]),
+                        fromDegree(latlng3[0], latlng3[1], p3[2]),
+                        fromDegree(latlng4[0], latlng4[1], p4[2])]
+                },
+                perPositionHeight: true,
+                material : Cesium.Color.BLUE.withAlpha(0.5)
+            }
+        });
+    }
+
+    addSection([493330.72, 4234613.68, 100],
+               [493562.72, 4234670.48, 100],
+               [493562.83, 4234613.68, 0],
+               [493330.72, 4234613.68, 0],
+               'sectionAA');
+
+    addSection([493517.59, 4234443.92, 100],
+        [493701.21, 4234543.18, 100],
+        [493701.21, 4234543.18, 0],
+        [493517.59, 4234443.92, 0],
+        'sectionBB');
+
+    addSection([493095.89, 4234475.47, 100],
+        [493345.50, 4234910.77, 100],
+        [493345.50, 4234910.77, 0],
+        [493095.89, 4234475.47, 0],
+        'sectionCC');
+
+    addSection([493833.56, 4234172.11, 100],
+        [494004.05, 4234634.66, 100],
+        [494004.05, 4234634.66, 0],
+        [493833.56, 4234172.11, 0],
+        'sectionDD');
+
+    addSection([493877.67 , 4233939.21, 100],
+        [494260.50, 4234110.60, 100],
+        [494260.50, 4234110.60, 0],
+        [493877.67, 4233939.21, 0],
+        'sectionEE');
+
+
+    viewer.zoomTo(viewer.entities);
+
+</script>
+</body>
+</html>
