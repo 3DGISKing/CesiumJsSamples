@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScreenSpaceEventController</title>
+
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="https://cesiumjs.org/Cesium/Build/Apps/Sandcastle/templates/bucket.css">
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+    <script src="https://cesiumjs.org/releases/1.80/Build/Cesium/Cesium.js"></script>
+
+</head>
+<body>
+
+<div id = "cesiumContainer" class="fullSize"> </div>
+
+<script type="text/javascript">
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+        infoBox: true, //Disable InfoBox widget
+        selectionIndicator: true, //Disable selection indicator
+        shouldAnimate: true
+    });
+
+    var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+    viewer.selectedEntityChanged.addEventListener(function (newEntity) {
+        if(viewer.selectedEntity != null) {
+            viewer.selectedEntity = undefined;
+        }
+    });
+
+    handler.setInputAction(function(movement) {
+        const scene = viewer.scene;
+
+        var pickedInstance = scene.pick(movement.position);
+
+        if (Cesium.defined(pickedInstance)) {
+
+        }
+
+        console.log('left click')
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    handler.setInputAction(function(movement) {
+        const scene = viewer.scene;
+
+        var pickedInstance = scene.pick(movement.position);
+
+        if (Cesium.defined(pickedInstance)) {
+
+        }
+
+        console.log('left double click')
+    }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+</script>
+</body>
+</html>
