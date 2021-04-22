@@ -1,7 +1,7 @@
 # This is a repo that includes old expired, and trivial projects during my research and freelancing. 
   
 ## Note
-Please use the latest CesiumJs version in index.html of each sample  
+Please include the latest CesiumJs version in the index.html of each sample and use your Cesium Ion access token. 
 
 ## Hi, Enjoy my code.
 I am finding an opportunity to work on a great 3D Web GIS project based on CesiumJS.  

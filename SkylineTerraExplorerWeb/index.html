@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TerraExplorerWeb</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cesiumjs.org/releases/1.57/Build/CesiumUnminified/Cesium.js"></script>
+    <link rel="stylesheet" href="https://cesiumjs.org/releases/1.76/Build/Cesium/Widgets/widgets.css">
+
+    <script src="TerraExplorer-7.0.min.js"></script>
+</head>
+
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<script>
+
+    let shader = "uniform sampler2D colorTexture;\nuniform float sharpen;\nvarying vec2 v_textureCoordinates;\nvoid main(void)\n{\nvec3 color = texture2D(colorTexture, v_textureCoordinates).rgb;\nif (sharpen==0.0)\ngl_FragColor = vec4(color,1.0);\nelse{\nvec2 step = 1.0 / czm_viewport.zw;\nvec3 color0 = texture2D(colorTexture, v_textureCoordinates + vec2(0.0,-step.y)).rgb;\nvec3 color1 = texture2D(colorTexture, v_textureCoordinates + vec2(0.0,step.y)).rgb;\nvec3 color2 = texture2D(colorTexture, v_textureCoordinates + vec2(-step.x,0.0)).rgb;\nvec3 color3 = texture2D(colorTexture, v_textureCoordinates + vec2(step.x,0.0)).rgb;\ngl_FragColor = vec4(color + (4.0 * color - color0-color1-color2-color3) * sharpen,1.0);\n}\n}\n";
+
+    Cesium.PostProcessStageLibrary.createSharpenStage = function () {
+        return new Cesium.PostProcessStage({
+            name: "czm_sharpen",
+            fragmentShader: shader,
+            uniforms: {
+                sharpen: 1
+            }
+        })
+    };
+
+    shader = "uniform sampler2D colorTexture;\nuniform float saturation;\nvarying vec2 v_textureCoordinates;\nmat4 saturationMatrix( float saturation ) {\nvec3 luminance = vec3( 0.3086, 0.6094, 0.0820 );\nfloat oneMinusSat = 1.0 - saturation;\nvec3 red = vec3( luminance.x * oneMinusSat );\nred.r += saturation;\nvec3 green = vec3( luminance.y * oneMinusSat );\ngreen.g += saturation;\nvec3 blue = vec3( luminance.z * oneMinusSat );\nblue.b += saturation;\nreturn mat4(\nred,     0,\ngreen,   0,\nblue,    0,\n0, 0, 0, 1 );\n}\nvoid main(void)\n{\nvec3 rgb = texture2D(colorTexture, v_textureCoordinates).rgb;\ngl_FragColor = vec4((saturationMatrix(saturation) * vec4(rgb,1.0)).rgb, 1.0);\n}\n";
+
+    Cesium.PostProcessStageLibrary.createSaturationStage = function () {
+        return new Cesium.PostProcessStage({
+            name: "czm_saturation",
+            fragmentShader: shader,
+            uniforms: {
+                saturation: 0.5
+            }
+        })
+    };
+
+    shader = "uniform sampler2D colorTexture;\nuniform float sharpen;\nvarying vec2 v_textureCoordinates;\nvoid main(void)\n{\nvec3 color = texture2D(colorTexture, v_textureCoordinates).rgb;\nif (sharpen==0.0)\ngl_FragColor = vec4(color,1.0);\nelse{\nvec2 step = 1.0 / czm_viewport.zw;\nvec3 color0 = texture2D(colorTexture, v_textureCoordinates + vec2(0.0,-step.y)).rgb;\nvec3 color1 = texture2D(colorTexture, v_textureCoordinates + vec2(0.0,step.y)).rgb;\nvec3 color2 = texture2D(colorTexture, v_textureCoordinates + vec2(-step.x,0.0)).rgb;\nvec3 color3 = texture2D(colorTexture, v_textureCoordinates + vec2(step.x,0.0)).rgb;\ngl_FragColor = vec4(color + (4.0 * color - color0-color1-color2-color3) * sharpen,1.0);\n}\n}\n";
+
+    Cesium.PostProcessStageLibrary.createBCGStage = function () {
+        return new Cesium.PostProcessStage({
+            name: "czm_cbg",
+            fragmentShader: shader,
+            uniforms: {
+                brightness: 0,
+                contrast: 0,
+                gamma: 1
+            }
+        })
+    };
+
+    const viewer = new Cesium.Viewer('cesiumContainer', {});
+
+    TerraExplorer.init();
+
+
+</script>
+</body>
+</html>
