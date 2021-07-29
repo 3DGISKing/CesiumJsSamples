@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Terrain Tangent Plane</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src = "https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar">
+</div>
+
+<script>
+    const Cartesian3 = Cesium.Cartesian3;
+
+    // for https://stackoverflow.com/questions/68540572/how-to-set-clamptoground-to-plane-in-cesiumjs
+
+    const viewer = new Cesium.Viewer("cesiumContainer", {
+        infoBox: false, //Disable InfoBox widget
+        selectionIndicator: false, //Disable selection indicator
+        shouldAnimate: true, // Enable animations
+        terrainProvider: Cesium.createWorldTerrain(),
+    });
+
+    viewer.scene.globe.depthTestAgainstTerrain = true;
+
+    const planePosition = new Cartesian3(4738769.082680055, 2182474.0152363363, 3658277.3322530985) ;
+    const p1 = new Cartesian3(4738769.287464709, 2182475.9314080626, 3658276.0712646632);
+    const p2 = new Cartesian3(4738768.602474061, 2182475.838987163, 3658278.7742168754);
+
+    const vec1 = Cartesian3.subtract(p1, planePosition, new Cartesian3());
+    const vec2 = Cartesian3.subtract(p2, planePosition, new Cartesian3());
+
+    let worldNormal = Cartesian3.cross(vec1, vec2, new Cartesian3());
+
+    worldNormal = Cartesian3.add(planePosition, worldNormal, new Cartesian3());
+
+    const transform = Cesium.Transforms.eastNorthUpToFixedFrame(planePosition);
+
+    const inv = Cesium.Matrix4.inverseTransformation(transform, new Cesium.Matrix4());
+
+    let localNormal = Cesium.Matrix4.multiplyByPoint(inv, worldNormal, new Cartesian3());
+
+    localNormal = Cartesian3.normalize(localNormal.clone(), new Cartesian3());
+
+    const plane = new Cesium.Plane(localNormal, -1.0);
+
+    viewer.scene.primitives.add(new Cesium.DebugModelMatrixPrimitive({
+        modelMatrix : transform,  // primitive to debug
+        length : 20.0,
+        width : 2.0
+    }));
+
+    const dimension = 10;
+
+    viewer.entities.add({
+        position: planePosition,
+        plane: {
+            plane: plane,
+            dimensions: new Cesium.Cartesian2(dimension, dimension),
+            material: new Cesium.ImageMaterialProperty({
+                image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANqSURBVFiF7ZdNbBRlGMd/z+zM7C66xSXbkLZilSbYYIjxYIumoo0BXKoghx40GEzbNJJIjJ78OnDRxIMHA9IYNCEaTawXCcVqIjGlIFvQRA41gAhWpVVp0rVr3DozndfLzjrOdmc/DPHS/2nyPh////u8M8/7jHCd8cg0E0BHcF0JnSNNnNGut4BK0GtxnrD67lQqsgthM6g1QBzkCqLO4/Ju3rz5WLfsc/wxR5vpHFQYMzMMA48Gc0o1xONqT1K37QMCj4XFCHyvYNdG8+2Mt9Y7ibmQZBjYAcwBC0BT1UdwOv/UrYZtZwQeryRYQRswnrH6+wAGFcZCkg8L5FmErcBP/phQASdVX0IizgiwrpJQH3SQt8acJ7b5yp5F2HK0ibNB59AdTVj9ryvkuRrIAbCVy7M/jMykbvitydCYc2HzsWa+Xso3Ui5JRg2sFlc+IPCi2srlZ2uem/RYWfIXpj5fzOSmGzQhvypKdzlyCDsCmx0Kov4lR7m8PHWcgUtH+PbPayUhnv3k/I+RmKY7T6fS34WRhwuA+4LJX5o6ztj8FLlFi2eujP5LhN+eiJgcXNujdyRaNoyrPck6BUiL92QrlxeLyaPcnWgpiPiU8/nZEvv+tdtYv6IRQKKW0xwmoGIjsgs7O1FMnqYttqq4tvfyKO0rUpzNXS3a2+OpYvwiyq2rAoKa9s70RKGsb9z2EO3xFIZovNr6IPc3tJJb/KtA/o/dBxUznZm6BMy79qm9lz+ZGyuSp72yAqCLxisFEUvZCzh3lxzOhglYsg/0TmJmG/j4i2ukDXRnqO1hPbCzImzlMm3laI2uLLEpkefvMQ69FiagpAJe745FSG+40fx9qK1HypEDGKItSQ78uqAbb4aRlwgI9u71K6M97fHGkvZZBVwR2d0tB/+oWkDgyswibHl/de6UZjg7gW9qIHdAPdlpHPqsGmetHLl3cXTI4V9cI3GvwBBgV8g3KeJu2mi+8161aiUg4IFytxbAV/nBW2zN7UPo0qCr0KovAhnR1HBHZM2oyL7Q774seicxt1/l9mr9M9bARMYaUF9a/SXzXi0odsKP7sACLvyXZPWgqpHMD2/KPT1r5mYtK9GVIp80iXsjVq356p6KbWXFAQTi9eaAGqdiPzY11h/rx//+X7AsYFnAsoC/AZeqYn7jLEFzAAAAAElFTkSuQmCC",
+                repeat: Cesium.Cartesian2(1.0, 1.0), // Not repeating
+                transparent: true, // enable png transparency
+            }),
+            outline: true,
+        },
+    });
+
+    const radius = 0.5;
+
+    viewer.entities.add({
+        position: planePosition,
+        ellipsoid: {
+            radii: new Cartesian3(radius, radius, radius),
+            material: Cesium.Color.RED
+        }
+    });
+
+    viewer.entities.add({
+        position: p1,
+        ellipsoid: {
+            radii: new Cartesian3(radius, radius, radius),
+            material: Cesium.Color.BLUE
+        }
+    });
+
+    viewer.entities.add({
+        position: p2,
+        ellipsoid: {
+            radii: new Cartesian3(radius, radius, radius),
+            material: Cesium.Color.BLUE
+        }
+    });
+
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+    handler.setInputAction(function(event) {
+        var clickedPoint = viewer.scene.pickPosition(event.position);
+
+        if(!clickedPoint)
+            return;
+
+        console.log(clickedPoint);
+
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    viewer.flyTo(viewer.entities);
+
+</script>
+</body>
+</html>
