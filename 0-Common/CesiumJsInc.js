@@ -21,6 +21,7 @@ const ColorMaterialProperty = Cesium.ColorMaterialProperty;
 const combine = Cesium.combine;
 const ConstantProperty = Cesium.ConstantProperty;
 const CoplanarPolygonGeometry = Cesium.CoplanarPolygonGeometry;
+const createGuid = Cesium.createGuid;
 const createWorldTerrain = Cesium.createWorldTerrain;
 const CustomDataSource = Cesium.CustomDataSource;
 const defaultValue = Cesium.defaultValue;
@@ -36,11 +37,13 @@ const Event = Cesium.Event;
 const FrameRateMonitor = Cesium.FrameRateMonitor;
 const GeometryInstance = Cesium.GeometryInstance;
 const GeographicTilingScheme = Cesium.GeographicTilingScheme;
+const GlobeSurfaceTileProvider = Cesium.GlobeSurfaceTileProvider;
 const HeadingPitchRange = Cesium.HeadingPitchRange;
 const HeadingPitchRoll = Cesium.HeadingPitchRoll;
 const HeightmapTerrainData = Cesium.HeightmapTerrainData;
 const HeightReference = Cesium.HeightReference;
 const HorizontalOrigin = Cesium.HorizontalOrigin;
+const IntersectionTests = Cesium.IntersectionTests;
 const Ion = Cesium.Ion;
 const IonImageryProvider = Cesium.IonImageryProvider;
 const IonResource = Cesium.IonResource;
@@ -61,12 +64,17 @@ const Ray = Cesium.Ray;
 const Rectangle = Cesium.Rectangle;
 const Resource = Cesium.Resource;
 const PinBuilder = Cesium.PinBuilder;
+const Plane = Cesium.Plane;
+const PlaneGeometry = Cesium.PlaneGeometry;
+const PlaneGeometryUpdater = Cesium.PlaneGeometryUpdater;
+const PlaneOutlineGeometry = Cesium.PlaneOutlineGeometry;
 const PointPrimitiveCollection = Cesium.PointPrimitiveCollection;
 const PolygonHierarchy = Cesium.PolygonHierarchy;
 const PolylineArrowMaterialProperty = Cesium.PolylineArrowMaterialProperty;
 const Primitive = Cesium.Primitive;
 const PrimitiveCollection = Cesium.PrimitiveCollection;
 const Quaternion = Cesium.Quaternion;
+const SceneMode = Cesium.SceneMode;
 const SceneTransforms = Cesium.SceneTransforms;
 const ScreenSpaceEventHandler = Cesium.ScreenSpaceEventHandler;
 const ScreenSpaceEventType = Cesium.ScreenSpaceEventType;
@@ -78,6 +86,7 @@ const VertexFormat = Cesium.VertexFormat;
 const VerticalOrigin = Cesium.VerticalOrigin;
 const Viewer = Cesium.Viewer;
 const viewerCesium3DTilesInspectorMixin = Cesium.viewerCesium3DTilesInspectorMixin;
+const WebGLConstants = Cesium.WebGLConstants;
 const WebMapServiceImageryProvider = Cesium.WebMapServiceImageryProvider;
 const WebMapTileServiceImageryProvider = Cesium.WebMapTileServiceImageryProvider;
 const when = Cesium.when;
@@ -99,10 +108,12 @@ export {
     Check,
     CircleGeometry,
     Color,
+    ColorGeometryInstanceAttribute,
     ColorMaterialProperty,
     combine,
     ConstantProperty,
     CoplanarPolygonGeometry,
+    createGuid,
     createWorldTerrain,
     CustomDataSource,
     defaultValue,
@@ -118,11 +129,13 @@ export {
     FrameRateMonitor,
     GeographicTilingScheme,
     GeometryInstance,
+    GlobeSurfaceTileProvider,
     HeadingPitchRange,
     HeadingPitchRoll,
     HeightmapTerrainData,
     HeightReference,
     HorizontalOrigin,
+    IntersectionTests,
     Ion,
     IonImageryProvider,
     IonResource,
@@ -138,6 +151,10 @@ export {
     Primitive,
     NearFarScalar,
     OrientedBoundingBox,
+    Plane,
+    PlaneGeometry,
+    PlaneGeometryUpdater,
+    PlaneOutlineGeometry,
     PolylineGraphics,
     PrimitiveCollection,
     Ray,
@@ -149,6 +166,7 @@ export {
     PolygonHierarchy,
     PolylineArrowMaterialProperty,
     Quaternion,
+    SceneMode,
     SceneTransforms,
     ScreenSpaceEventHandler,
     ScreenSpaceEventType,
@@ -160,6 +178,7 @@ export {
     VerticalOrigin,
     Viewer,
     viewerCesium3DTilesInspectorMixin,
+    WebGLConstants,
     WebMapServiceImageryProvider,
     WebMapTileServiceImageryProvider,
     when
