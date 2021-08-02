@@ -23,35 +23,14 @@
     var viewer = new Cesium.Viewer("cesiumContainer");
     var scene = viewer.scene;
 
-    var clippingPlanes = new Cesium.ClippingPlaneCollection({
-        planes: [
-            new Cesium.ClippingPlane(
-                new Cesium.Cartesian3(0.0, 0.0, -1.0),
-                10
-            ),
-            /*
-            new Cesium.ClippingPlane(
-                new Cesium.Cartesian3(0.0, 0.0, 1.0),
-                10
-            ),
-
-             */
-        ],
-        edgeWidth: 1.0,
-        unionClippingRegions: true
-    });
-
     var tileset = scene.primitives.add(
         new Cesium.Cesium3DTileset({
             url: "https://s3.us-east-2.wasabisys.com/construkted-assets/aucbzxw01n/tileset.json",
-            clippingPlanes: clippingPlanes,
         })
     );
 
     tileset.readyPromise
         .then(function (tileset) {
-            var radius;
-
             var transformCenter = Cesium.Matrix4.getTranslation(
                 tileset.root.transform,
                 new Cesium.Cartesian3()
@@ -59,9 +38,30 @@
 
             if(Cesium.Cartesian3.equals(transformCenter, Cesium.Cartesian3.ZERO)){
                 // non georeference
+
                 tileset.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(129.5089, 42.8913));
 
-                radius = tileset.boundingSphere.radius;
+                const boundingVolume = tileset.root.boundingVolume.boundingVolume;
+                const zAxisHalfLength = boundingVolume.halfAxes[8];
+
+                var clippingPlanes = new Cesium.ClippingPlaneCollection({
+                    planes: [
+                        // up
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(0.0, 0.0, -1.0),
+                            zAxisHalfLength * 2
+                        ),
+                        // down clipping plane
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(0.0, 0.0, 1.0),
+                            0
+                        ),
+                    ],
+                    edgeWidth: 1.0,
+                    unionClippingRegions: true
+                });
+
+                tileset.clippingPlanes = clippingPlanes;
             }else {
                 throw new Error();
             }
@@ -78,8 +78,8 @@
                     position: planePosition,
                     plane: {
                         dimensions: new Cesium.Cartesian2(
-                            radius * 2.5,
-                            radius * 2.5
+                           100,
+                           100
                         ),
                         material: Cesium.Color.RED.withAlpha(0.4),
                         plane: plane,
