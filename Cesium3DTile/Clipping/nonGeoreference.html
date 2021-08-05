@@ -42,7 +42,15 @@
                 tileset.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(129.5089, 42.8913));
 
                 const boundingVolume = tileset.root.boundingVolume.boundingVolume;
-                const zAxisHalfLength = boundingVolume.halfAxes[8];
+                const halfAxes = boundingVolume.halfAxes;
+
+                let xAxisHalfLength = halfAxes[0] * halfAxes[0] + halfAxes[1] * halfAxes[1] + halfAxes[2] * halfAxes[2];
+                let yAxisHalfLength = halfAxes[3] * halfAxes[3] + halfAxes[4] * halfAxes[4] + halfAxes[5] * halfAxes[5];
+                let zAxisHalfLength = halfAxes[6] * halfAxes[6] + halfAxes[7] * halfAxes[7] + halfAxes[8] * halfAxes[8];
+
+                xAxisHalfLength = Math.sqrt(xAxisHalfLength);
+                yAxisHalfLength = Math.sqrt(yAxisHalfLength);
+                zAxisHalfLength = Math.sqrt(zAxisHalfLength);
 
                 var clippingPlanes = new Cesium.ClippingPlaneCollection({
                     planes: [
@@ -51,10 +59,30 @@
                             new Cesium.Cartesian3(0.0, 0.0, -1.0),
                             zAxisHalfLength * 2
                         ),
+
                         // down clipping plane
                         new Cesium.ClippingPlane(
                             new Cesium.Cartesian3(0.0, 0.0, 1.0),
                             0
+                        ),
+                        // x
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(1.0, 0.0, 0.0),
+                            xAxisHalfLength
+                        ),
+                        // x
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(-1.0, 0.0, 0.0),
+                            xAxisHalfLength
+                        ),
+                        // y
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(0.0, 1.0, 0.0),
+                            yAxisHalfLength
+                        ),
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(0.0, -1.0, 0.0),
+                            yAxisHalfLength
                         ),
                     ],
                     edgeWidth: 1.0,
