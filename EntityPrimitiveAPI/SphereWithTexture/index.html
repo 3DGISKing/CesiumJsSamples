@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sphere</title>
+
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
+<body>
+<div id = "cesiumContainer" class="fullSize"> </div>
+<div id="loadingOverlay"><h1>Loading...</h1></div>
+<script type="text/javascript">
+    const textureUrl = "./wp3244114.jpg";
+    const initialTransparency = 1.0;
+
+    function Vector3( x, y, z ) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.z = z || 0;
+    }
+
+    Object.assign( Vector3.prototype, {
+        length: function () {
+            return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+        },
+
+        copy: function ( v ) {
+            this.x = v.x;
+            this.y = v.y;
+            this.z = v.z;
+
+            return this;
+        },
+        multiplyScalar: function ( scalar ) {
+            this.x *= scalar;
+            this.y *= scalar;
+            this.z *= scalar;
+
+            return this;
+        },
+        divideScalar: function ( scalar ) {
+            return this.multiplyScalar( 1 / scalar );
+        },
+        normalize: function () {
+            return this.divideScalar( this.length() || 1 );
+        },
+
+    });
+
+    function SphereBufferGeometry( radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength ) {
+        this.parameters = {
+            radius: radius,
+            widthSegments: widthSegments,
+            heightSegments: heightSegments,
+            phiStart: phiStart,
+            phiLength: phiLength,
+            thetaStart: thetaStart,
+            thetaLength: thetaLength
+        };
+
+        radius = radius || 1;
+
+        widthSegments = Math.max( 3, Math.floor( widthSegments ) || 8 );
+        heightSegments = Math.max( 2, Math.floor( heightSegments ) || 6 );
+
+        phiStart = phiStart !== undefined ? phiStart : 0;
+        phiLength = phiLength !== undefined ? phiLength : Math.PI * 2;
+
+        thetaStart = thetaStart !== undefined ? thetaStart : 0;
+        thetaLength = thetaLength !== undefined ? thetaLength : Math.PI;
+
+        var thetaEnd = Math.min( thetaStart + thetaLength, Math.PI );
+
+        var ix, iy;
+
+        var index = 0;
+        var grid = [];
+
+        var vertex = new Vector3();
+        var normal = new Vector3();
+
+        // buffers
+
+        var indices = [];
+        var vertices = [];
+        var normals = [];
+        var uvs = [];
+
+        // generate vertices, normals and uvs
+
+        for ( iy = 0; iy <= heightSegments; iy ++ ) {
+            var verticesRow = [];
+
+            var v = iy / heightSegments;
+
+            // special case for the poles
+
+            var uOffset = 0;
+
+            if ( iy == 0 && thetaStart == 0 ) {
+                uOffset = 0.5 / widthSegments;
+            } else if ( iy == heightSegments && thetaEnd == Math.PI ) {
+                uOffset = - 0.5 / widthSegments;
+            }
+
+            for ( ix = 0; ix <= widthSegments; ix ++ ) {
+                var u = ix / widthSegments;
+
+                // vertex
+                vertex.x = - radius * Math.cos( phiStart + u * phiLength ) * Math.sin( thetaStart + v * thetaLength );
+                vertex.y = radius * Math.cos( thetaStart + v * thetaLength );
+                vertex.z = radius * Math.sin( phiStart + u * phiLength ) * Math.sin( thetaStart + v * thetaLength );
+
+                vertices.push( vertex.x, vertex.y, vertex.z );
+
+                // normal
+                normal.copy( vertex ).normalize();
+                normals.push( normal.x, normal.y, normal.z );
+
+                // uv
+                //uvs.push( u + uOffset, 1 - v );
+
+                uvs.push( u + uOffset, v );
+                //uvs.push( 1- u + uOffset, v );
+
+                verticesRow.push( index ++ );
+            }
+
+            grid.push( verticesRow );
+        }
+
+        // indices
+
+        for ( iy = 0; iy < heightSegments; iy ++ ) {
+
+            for ( ix = 0; ix < widthSegments; ix ++ ) {
+
+                var a = grid[ iy ][ ix + 1 ];
+                var b = grid[ iy ][ ix ];
+                var c = grid[ iy + 1 ][ ix ];
+                var d = grid[ iy + 1 ][ ix + 1 ];
+
+                if ( iy !== 0 || thetaStart > 0 ) indices.push( a, b, d );
+                if ( iy !== heightSegments - 1 || thetaEnd < Math.PI ) indices.push( b, c, d );
+            }
+        }
+
+        // build geometry
+
+        this.index = indices;
+        this.position = vertices;
+        this.normal = normals;
+        this.uv = uvs;
+    }
+
+    function createMaterial(url, alpha) {
+        return new Cesium.Material({
+            fabric: {
+                type: "DiffuseMap",
+                uniforms: {
+                    image: url,
+                    repeat : new Cesium.Cartesian2(1.0, 1.0),
+                    alpha : alpha
+                },
+                components : {
+                    diffuse : 'texture2D(image, fract(repeat * materialInput.st)).rgb',
+                    alpha : 'texture2D(image, fract(repeat * materialInput.st)).a * alpha'
+                }
+            },
+            //translucent : true
+        });
+    }
+
+    function createCustomMappingSpherePrimitive(ballRadius, widthSegments, heightSegments ) {
+        let sphereGeometry = new SphereBufferGeometry( ballRadius, widthSegments, heightSegments );
+
+        let positions = sphereGeometry.position;
+
+        for ( let i = 0, l = positions.length / 3; i < l; i ++ ) {
+            let x = positions[ i * 3 + 0 ];
+            let y = positions[ i * 3 + 1 ];
+            let z = positions[ i * 3 + 2 ];
+
+            // three js axis direction to cesium js axis direction
+            positions[ i * 3 + 1 ] = z;
+            positions[ i * 3 + 2 ] = -y;
+        }
+
+        let position = new Cesium.GeometryAttribute({
+            componentDatatype: Cesium.ComponentDatatype.DOUBLE,
+            componentsPerAttribute: 3,
+            values: new Float64Array(sphereGeometry.position)
+        });
+
+        let normal = new Cesium.GeometryAttribute({
+            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+            componentsPerAttribute: 3,
+            values: new Float32Array(sphereGeometry.normal)
+        });
+
+        let st = new Cesium.GeometryAttribute({
+            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+            componentsPerAttribute: 2,
+            values: new Float32Array(sphereGeometry.uv)
+        });
+
+        let material = createMaterial(textureUrl, initialTransparency);
+
+        const spherePrimitive = new Cesium.Primitive({
+            geometryInstances : new Cesium.GeometryInstance({
+                geometry: new Cesium.Geometry({
+                    attributes: {
+                        position: position,
+                        normal: normal,
+                        st: st
+                    },
+                    indices : new Uint16Array(sphereGeometry.index),
+                    primitiveType: Cesium.PrimitiveType.TRIANGLES,
+                    boundingSphere: Cesium.BoundingSphere.fromVertices(sphereGeometry.position)
+                }),
+            }),
+            appearance: new Cesium.MaterialAppearance({
+                flat: true,
+                material: material,
+                closed: false
+            }),
+            asynchronous: false
+        });
+
+        return spherePrimitive;
+    }
+
+    const Cartesian3 = Cesium.Cartesian3;
+
+    const viewer = new Cesium.Viewer("cesiumContainer");
+
+    //const radius = Cesium.Ellipsoid.WGS84.maximumRadius;
+
+    const radius = 5000000;
+
+    const center = new Cartesian3.fromDegrees(-107.0, 40.0, radius);
+
+    const spherePrimitive = createCustomMappingSpherePrimitive(radius, 50, 50);
+
+    viewer.scene.primitives.add(spherePrimitive);
+
+    spherePrimitive.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+
+    /*
+    viewer.scene.primitives.add(new Cesium.DebugModelMatrixPrimitive({
+        modelMatrix : Cesium.Transforms.eastNorthUpToFixedFrame(center, undefined, new Cesium.Matrix4()),
+        length : radius * 2,
+        width : 5.0
+    }));
+    */
+
+    viewer.scene.globe.show = false;
+
+    const scene = viewer.scene;
+
+    scene.screenSpaceCameraController.enableRotate = true;
+    scene.screenSpaceCameraController.enableTranslate = false;
+    scene.screenSpaceCameraController.enableZoom = false;
+    scene.screenSpaceCameraController.enableTilt = false;
+    scene.screenSpaceCameraController.enableLook = false;
+
+    viewer.camera.flyTo({
+        destination : center,
+        orientation : {
+            heading : Cesium.Math.toRadians(0),
+            pitch : Cesium.Math.toRadians(0),
+            roll : 0.0
+        }
+    });
+
+</script>
+</body>
+</html>
