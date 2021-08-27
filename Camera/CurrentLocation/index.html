@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Fly Current Location</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../0-Common/bucket.css">
+    <script src="../../0-Common/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar"></div>
+<script>
+    const viewer = new Cesium.Viewer('cesiumContainer', {});
+
+    let label;
+
+    Sandcastle.addToolbarButton("Show current location", function () {
+        function showPosition(position) {
+            const longitude = position.coords.longitude;
+            const latitude = position.coords.latitude;
+
+            if(label){
+                viewer.entities.remove(label);
+            }
+
+            label = viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
+                label: {
+                    text: "My location",
+                    scale: 0.8,
+                    pixelOffset: new Cesium.Cartesian2(0, -30),
+                    font: "32px Helvetica",
+                    fillColor: Cesium.Color.YELLOW,
+                    outlineColor: Cesium.Color.BLACK,
+                    outlineWidth: 2,
+                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                }
+            });
+
+            viewer.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(longitude, latitude,  1000000)
+            });
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    });
+
+
+</script>
+</body>
+</html>

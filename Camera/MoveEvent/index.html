@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Capture zooming</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../0-Common/bucket.css">
+    <script src="../../0-Common/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar"></div>
+<script>
+
+    // https://stackoverflow.com/questions/68941505/capture-zoom-out-event-in-cesium
+
+    const viewer = new Cesium.Viewer("cesiumContainer");
+
+    const camera = viewer.camera;
+
+    const scratchCartesian1 = new Cesium.Cartesian3();
+    const scratchCartesian2 = new Cesium.Cartesian3();
+
+    let startPos, endPos;
+
+    camera.moveStart.addEventListener(function () {
+        startPos = camera.positionWC.clone(scratchCartesian1);
+
+    });
+
+    camera.moveEnd.addEventListener(function () {
+        endPos = camera.positionWC.clone(scratchCartesian2);
+
+        const startHeight = Cesium.Cartographic.fromCartesian(startPos).height;
+        const endHeight = Cesium.Cartographic.fromCartesian(endPos).height;
+
+        if (startHeight > endHeight) {
+            console.log("zoom in");
+        } else {
+            console.log("zoom out");
+        }
+
+    });
+</script>
+</body>
+</html>
