@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Fly Current Location</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.85/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.85/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../0-Common/bucket.css">
+    <script src="../../0-Common/Sandcastle-header.js"></script>
+
+    <style>
+        #toolbar {
+            background: rgba(42, 42, 42, 0.8);
+            padding: 4px;
+            border-radius: 4px;
+        }
+        #toolbar input {
+            vertical-align: middle;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar">
+    <table>
+        <tbody>
+        <tr>
+            <td>Vertical amount X</td>
+            <td>
+                <input type="range" min="0" max="1000" step="1" data-bind="value: verticalAmount, valueUpdate: 'input'">
+                <input type="text" size="2" data-bind="value: verticalAmount">
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<script>
+    // for https://stackoverflow.com/questions/69045207/cesium-cartesian3-move-vertically-up
+
+    const viewer = new Cesium.Viewer("cesiumContainer");
+
+    const viewModel = {
+        verticalAmount: 0,
+    };
+
+    Cesium.knockout.track(viewModel);
+    const toolbar = document.getElementById("toolbar");
+    Cesium.knockout.applyBindings(viewModel, toolbar);
+
+    const position = Cesium.Cartesian3.fromDegrees(129.507780, 42.9075, 0);
+    const origMagnitude = Cesium.Cartesian3.magnitude(position);
+
+    const radius = 10;
+
+    const ballPosition = new Cesium.Cartesian3();
+
+    viewer.entities.add({
+        position: new Cesium.CallbackProperty(function(){
+            const newMagnitude = origMagnitude + parseFloat(viewModel.verticalAmount);
+
+            const scalar = newMagnitude / origMagnitude;
+
+            return Cesium.Cartesian3.multiplyByScalar(position, scalar , ballPosition);
+
+        }, false),
+        ellipsoid: {
+            radii: new Cesium.Cartesian3(radius, radius, radius),
+        }
+    });
+
+    viewer.camera.flyToBoundingSphere(new Cesium.BoundingSphere(position, radius * 10));
+
+    function newBall(){
+        const newMagnitude = origMagnitude + parseFloat(viewModel.verticalAmount);
+
+        const scalar = newMagnitude / origMagnitude;
+
+        Cesium.Cartesian3.multiplyByScalar(position, scalar , ballPosition);
+
+        viewer.entities.add({
+            position: ballPosition,
+            ellipsoid: {
+                radii: new Cesium.Cartesian3(radius, radius, radius),
+            }
+        });
+    }
+
+    Sandcastle.addToolbarButton("New ball", function () {
+        newBall();
+    });
+
+</script>
+</body>
+</html>
