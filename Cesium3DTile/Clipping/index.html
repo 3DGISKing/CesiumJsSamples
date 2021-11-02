@@ -9,8 +9,8 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <title>Clipping</title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/CesiumUnminified/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.86.1/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.86.1/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <script src="https://sandcastle.cesium.com/Sandcastle-header.js"></script>
 </head>
 <body>
@@ -67,9 +67,9 @@
 
             var height = boundingSphereCartographic.height - transformCartographic.height;
 
-            clippingPlanes.modelMatrix = Cesium.Matrix4.fromTranslation(
-                new Cesium.Cartesian3(0.0, 0.0, height)
-            );
+            // clippingPlanes.modelMatrix = Cesium.Matrix4.fromTranslation(
+            //     new Cesium.Cartesian3(0.0, 0.0, height)
+            // );
 
             for (var i = 0; i < clippingPlanes.length; ++i) {
                 var plane = clippingPlanes.get(i);

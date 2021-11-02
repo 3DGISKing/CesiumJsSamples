@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Globe</title>
 
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/CesiumUnminified/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.85/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.85/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 </head>
 <body>
 <div id="cesiumContainer" class="fullSize"></div>
@@ -17,12 +17,12 @@
         }),
     });
 
-    viewer.scene.globe.enableLighting = true;
+    viewer.scene.globe.enableLighting = false;
 
     var minHeight = -414.0; // approximate dead sea elevation
     var maxHeight = 8777.0; // approximate everest elevation
 
-    function getColorRamp(selectedShading) {
+    function getColorRamp() {
         var ramp = document.createElement("canvas");
         ramp.width = 100;
         ramp.height = 1;
@@ -78,7 +78,7 @@
 
     shadingUniforms.minimumHeight = minHeight;
     shadingUniforms.maximumHeight = maxHeight;
-    shadingUniforms.image = getColorRamp("elevation");
+    shadingUniforms.image = getColorRamp();
 
     viewer.scene.globe.material = myMaterial;
 
