@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>ModelMatrix</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link href="../../0-Common/bucket.css" rel="stylesheet">
+    <script src="../../0-Common/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar">
+    <table>
+        <tbody>
+        <tr>
+            <td>Rotate around tileset 's center</td>
+            <td>
+                <input type="range" min="0.0" max="360" step="1" data-bind="value: rotate1, valueUpdate: 'input'">
+            </td>
+        </tr>
+        <tr>
+            <td>Rotate around moved tileset 's center</td>
+            <td>
+                <input type="range" min="0.0" max="360" step="1" data-bind="value: rotate2, valueUpdate: 'input'">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    const Color = Cesium.Color;
+    const Cartesian3 = Cesium.Cartesian3;
+    const CesiumMath = Cesium.Math;
+    const Matrix3 = Cesium.Matrix3;
+    const Matrix4 = Cesium.Matrix4;
+    const Transforms = Cesium.Transforms;
+
+    const viewer = new Cesium.Viewer("cesiumContainer");
+    const scene = viewer.scene;
+
+    const testUrl = "https://s3.us-east-2.wasabisys.com/construkted-assets/dm6fw7znkf/tileset.json";
+    const position1 = Cartesian3.fromDegrees(129.5089, 42.8913);
+    const position2 = Cartesian3.fromDegrees(129.5149, 42.8913);
+    const position3 = Cartesian3.fromDegrees(129.5186, 42.8910);
+
+    viewer.scene.primitives.add(new Cesium.DebugModelMatrixPrimitive({
+        modelMatrix : Transforms.eastNorthUpToFixedFrame(position3, undefined, new Matrix4()),
+        length : 200.0,
+        width : 3.0
+    }));
+
+
+    let tileset1, tileset2;
+
+    addTileset(testUrl, position1, 0, (tileset) =>{
+        drawClippingPlanes(tileset);
+
+        tileset1 = tileset;
+    });
+
+    addTileset(testUrl, position2, 0, (tileset) => {
+        tileset2 = tileset;
+        drawClippingPlanes(tileset);
+
+        viewer.zoomTo(
+            tileset,
+            new Cesium.HeadingPitchRange(
+                0.5,
+                -0.2,
+                tileset.boundingSphere.radius * 4.0
+            )
+        );
+    });
+
+    const viewModel = {
+        rotate1: 0,
+        rotate2: 0,
+    };
+
+    Cesium.knockout.track(viewModel);
+
+    const toolbar = document.getElementById("toolbar");
+    Cesium.knockout.applyBindings(viewModel, toolbar);
+
+    Cesium.knockout.getObservable(viewModel, 'rotate1').subscribe(rotateModelMatrixOfTileset1ClippingPlanes);
+    Cesium.knockout.getObservable(viewModel, 'rotate2').subscribe(rotateModelMatrixOfTileset2ClippingPlanes);
+
+    function rotateModelMatrixOfTileset1ClippingPlanes(heading) {
+        heading = CesiumMath.toRadians(parseFloat(heading));
+
+        const clippingPlanes = tileset1.clippingPlanes;
+
+        Matrix4.clone(Matrix4.IDENTITY, clippingPlanes.modelMatrix);
+
+        const rotation = Matrix3.fromRotationZ(heading, new Matrix3());
+
+        Matrix4.multiplyByMatrix3(clippingPlanes.modelMatrix, rotation, clippingPlanes.modelMatrix);
+    }
+
+    function rotateModelMatrixOfTileset2ClippingPlanes(heading) {
+        heading = CesiumMath.toRadians(parseFloat(heading));
+
+        const clippingPlanes = tileset2.clippingPlanes;
+
+        Matrix4.clone(Matrix4.IDENTITY, clippingPlanes.modelMatrix);
+
+        const halfAxes = calcHalfAxes(tileset2.root.boundingVolume.boundingVolume);
+
+        const xAxisHalfLength = halfAxes.x;
+        const yAxisHalfLength = halfAxes.y;
+
+        const offset = new Cartesian3(xAxisHalfLength / 4, 0, 0);
+        offset.z = 0;
+
+        Matrix4.multiplyByTranslation(clippingPlanes.modelMatrix, offset, clippingPlanes.modelMatrix);
+
+        const rotation = Matrix3.fromRotationZ(heading, new Matrix3());
+
+        Matrix4.multiplyByMatrix3(clippingPlanes.modelMatrix, rotation, clippingPlanes.modelMatrix);
+
+        const firstClippingPlane = clippingPlanes.get(0);
+
+        const origDistance = xAxisHalfLength / 2;
+
+        firstClippingPlane.distance = origDistance + offset.x;
+    }
+
+    function addTileset(url, position, heading, cb) {
+        const tileset = scene.primitives.add(
+            new Cesium.Cesium3DTileset({
+                url: url,
+            })
+        );
+
+        let clippingPlanes;
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                const transformCenter = Cesium.Matrix4.getTranslation(
+                    tileset.root.transform,
+                    new Cesium.Cartesian3()
+                );
+
+                if(!Cartesian3.equals(transformCenter, Cartesian3.ZERO)){
+                    // non georeference
+                    throw new Error("error");
+                }
+
+                viewer.scene.primitives.add(new Cesium.DebugModelMatrixPrimitive({
+                    modelMatrix : Cesium.Transforms.eastNorthUpToFixedFrame(position, undefined, new Cesium.Matrix4()),
+                    length : 300.0,
+                    width : 5.0
+                }));
+
+                const hpr = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(heading), 0, 0);
+                const orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+                tileset.modelMatrix = Transforms.headingPitchRollToFixedFrame(position, hpr);
+
+                const halfAxes = calcHalfAxes(tileset.root.boundingVolume.boundingVolume);
+
+                const xAxisHalfLength = halfAxes.x;
+                const yAxisHalfLength = halfAxes.y;
+                const zAxisHalfLength = halfAxes.z;
+
+                clippingPlanes = new Cesium.ClippingPlaneCollection({
+                    planes: [
+                        // x
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(1.0, 0.0, 0.0),
+                            xAxisHalfLength / 2
+                        ),
+                        // // x
+                        // new Cesium.ClippingPlane(
+                        //     new Cesium.Cartesian3(-1.0, 0.0, 0.0),
+                        //     xAxisHalfLength
+                        // ),
+                        // // y
+                        // new Cesium.ClippingPlane(
+                        //     new Cesium.Cartesian3(0.0, 1.0, 0.0),
+                        //     yAxisHalfLength
+                        // ),
+                        // //y
+                        // new Cesium.ClippingPlane(
+                        //     new Cesium.Cartesian3(0.0, -1.0, 0.0),
+                        //     yAxisHalfLength
+                        // ),
+                        // // up
+                        // new Cesium.ClippingPlane(
+                        //     new Cesium.Cartesian3(0.0, 0.0, -1.0),
+                        //     zAxisHalfLength * 2
+                        // ),
+                        //
+                        // // down clipping plane
+                        // new Cesium.ClippingPlane(
+                        //     new Cesium.Cartesian3(0.0, 0.0, 1.0),
+                        //     0
+                        // ),
+                    ],
+                    edgeWidth: 1.0,
+                    unionClippingRegions: true
+                });
+
+                tileset.clippingPlanes = clippingPlanes;
+
+                if(cb)
+                    cb(tileset);
+            })
+            .otherwise(function (error) {
+                console.log(error);
+            });
+    }
+
+    function calcHalfAxes(orientedBoundingBox) {
+        const halfAxes = orientedBoundingBox.halfAxes;
+
+        let xAxisHalfLength = halfAxes[0] * halfAxes[0] + halfAxes[1] * halfAxes[1] + halfAxes[2] * halfAxes[2];
+        let yAxisHalfLength = halfAxes[3] * halfAxes[3] + halfAxes[4] * halfAxes[4] + halfAxes[5] * halfAxes[5];
+        let zAxisHalfLength = halfAxes[6] * halfAxes[6] + halfAxes[7] * halfAxes[7] + halfAxes[8] * halfAxes[8];
+
+        xAxisHalfLength = Math.sqrt(xAxisHalfLength);
+        yAxisHalfLength = Math.sqrt(yAxisHalfLength);
+        zAxisHalfLength = Math.sqrt(zAxisHalfLength);
+
+        return {
+            x: xAxisHalfLength,
+            y: yAxisHalfLength,
+            z: zAxisHalfLength
+        }
+    }
+
+    function drawClippingPlanes(tileset) {
+        const halfAxes = calcHalfAxes(tileset.root.boundingVolume.boundingVolume);
+
+        const xAxisHalfLength = halfAxes.x;
+        const yAxisHalfLength = halfAxes.y;
+        const zAxisHalfLength = halfAxes.z;
+
+        const clippingPlanes = tileset.clippingPlanes;
+
+        for (let i = 0; i < clippingPlanes.length; ++i) {
+            const plane = clippingPlanes.get(i);
+
+            let color;
+
+            if(i === 0){
+                color = Color.RED;
+            }
+            else if( i === 1 ){
+                color = Color.YELLOW;
+            }
+            else if( i === 2 ){
+                color = Color.WHITE;
+            }
+            else if( i === 3 ){
+                color = Color.BLACK;
+            }
+            else if( i === 4 ){
+                color = Color.BLUE;
+            }
+            else if( i === 5 ){
+                color = Color.GREEN;
+            }
+
+            const planePosition =  Cesium.Matrix4.getTranslation(
+                tileset.modelMatrix,
+                new Cesium.Cartesian3()
+            );
+
+            viewer.entities.add({
+                position: planePosition,
+                plane: {
+                    dimensions: new Cesium.Cartesian2(
+                        yAxisHalfLength * 2,
+                        xAxisHalfLength * 2
+                    ),
+                    material: color.withAlpha(0.4),
+                    plane: plane,
+                    outline: true,
+                    outlineColor: Color.WHITE,
+                },
+            });
+        }
+    }
+
+</script>
+</body>
+</html>

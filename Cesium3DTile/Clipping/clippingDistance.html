@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Clipping Distance</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link href="../../0-Common/bucket.css" rel="stylesheet">
+    <script src="../../0-Common/Sandcastle-header.js"></script>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar">
+    <table>
+        <tbody>
+        <tr>
+            <td>Distance1</td>
+            <td>
+                <input type="range" min="0" max="200" step="1" data-bind="value: distance1, valueUpdate: 'input'">
+            </td>
+        </tr>
+        <tr>
+            <td>Distance2</td>
+            <td>
+                <input type="range" min="0" max="200" step="1" data-bind="value: distance2, valueUpdate: 'input'">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    const Color = Cesium.Color;
+    const Cartesian3 = Cesium.Cartesian3;
+    const CesiumMath = Cesium.Math;
+    const Matrix3 = Cesium.Matrix3;
+    const Matrix4 = Cesium.Matrix4;
+    const Transforms = Cesium.Transforms;
+
+    const viewer = new Cesium.Viewer("cesiumContainer");
+    const scene = viewer.scene;
+
+    const testUrl = "https://s3.us-east-2.wasabisys.com/construkted-assets/dm6fw7znkf/tileset.json";
+    const position1 = Cartesian3.fromDegrees(129.5089, 42.8913);
+    const position2 = Cartesian3.fromDegrees(129.5149, 42.8913);
+
+    const offset1 = new Cartesian3(40, 40, 0);
+    const offset2 = new Cartesian3(70, 50, 0);
+    const heading = CesiumMath.PI / 180 * 60;
+
+    //const heading = 0;
+
+    let tileset1, tileset2;
+
+    addTileset(testUrl, position1, 0, (tileset) =>{
+        drawClippingPlanes(tileset);
+
+        transformClippingPlane(tileset.clippingPlanes, offset1, heading);
+
+        tileset1 = tileset;
+
+        viewModel.distance1 = tileset1.clippingPlanes.get(0).distance;
+
+        addTileset(testUrl, position2, 0, (tileset) => {
+            tileset2 = tileset;
+            drawClippingPlanes(tileset);
+            transformClippingPlane(tileset.clippingPlanes, offset2, heading);
+
+            const tileset1Rotation = Matrix4.getMatrix3(tileset1.clippingPlanes.modelMatrix, new Matrix3());
+            const tileset1Angle = Math.acos(tileset1Rotation[0]);
+
+            const d = calcDeltaDistance(offset1.x, offset1.y, offset2.x, offset2.y, tileset1Angle);
+            //const d = calcDeltaDistance(offset1.x, offset1.y, offset2.x, offset2.y, heading);
+
+            tileset.clippingPlanes.get(0).distance = tileset1.clippingPlanes.get(0).distance + d;
+
+            viewModel.distance2 = tileset2.clippingPlanes.get(0).distance;
+
+            viewer.zoomTo(
+                tileset,
+                new Cesium.HeadingPitchRange(
+                    0.5,
+                    -0.2,
+                    tileset.boundingSphere.radius * 4.0
+                )
+            );
+        });
+    });
+
+    function transformClippingPlane(clippingPlanes, offset, heading){
+        Matrix4.clone(Matrix4.IDENTITY, clippingPlanes.modelMatrix);
+
+        Matrix4.multiplyByTranslation(clippingPlanes.modelMatrix, offset, clippingPlanes.modelMatrix);
+
+        const rotation = Matrix3.fromRotationZ(heading, new Matrix3());
+
+        Matrix4.multiplyByMatrix3(clippingPlanes.modelMatrix, rotation, clippingPlanes.modelMatrix);
+    }
+
+    const viewModel = {
+        distance1: 0,
+        distance2: 0,
+    };
+
+    Cesium.knockout.track(viewModel);
+
+    const toolbar = document.getElementById("toolbar");
+    Cesium.knockout.applyBindings(viewModel, toolbar);
+
+    Cesium.knockout.getObservable(viewModel, 'distance1').subscribe(updateDistance1);
+    Cesium.knockout.getObservable(viewModel, 'distance2').subscribe(updateDistance2);
+
+    function updateDistance1(distance){
+        tileset1.clippingPlanes.get(0).distance = parseFloat(distance);
+
+        const d = calcDeltaDistance(offset1.x, offset1.y, offset2.x, offset2.y, heading);
+
+        if(tileset2)
+            tileset2.clippingPlanes.get(0).distance = tileset1.clippingPlanes.get(0).distance + d;
+    }
+
+    function updateDistance2(distance){
+        tileset2.clippingPlanes.get(0).distance = parseFloat(distance);
+
+        const d = calcDeltaDistance(offset1.x, offset1.y, offset2.x, offset2.y, heading);
+
+        tileset1.clippingPlanes.get(0).distance = tileset2.clippingPlanes.get(0).distance - d;
+    }
+
+    function addTileset(url, position, heading, cb) {
+        const tileset = scene.primitives.add(
+            new Cesium.Cesium3DTileset({
+                url: url,
+            })
+        );
+
+        let clippingPlanes;
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                const transformCenter = Cesium.Matrix4.getTranslation(
+                    tileset.root.transform,
+                    new Cesium.Cartesian3()
+                );
+
+                if(!Cartesian3.equals(transformCenter, Cartesian3.ZERO)){
+                    // non georeference
+                    throw new Error("error");
+                }
+
+                viewer.scene.primitives.add(new Cesium.DebugModelMatrixPrimitive({
+                    modelMatrix : Cesium.Transforms.eastNorthUpToFixedFrame(position, undefined, new Cesium.Matrix4()),
+                    length : 300.0,
+                    width : 5.0
+                }));
+
+                const hpr = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(heading), 0, 0);
+                const orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+                tileset.modelMatrix = Transforms.headingPitchRollToFixedFrame(position, hpr);
+
+                const halfAxes = calcHalfAxes(tileset.root.boundingVolume.boundingVolume);
+
+                const xAxisHalfLength = halfAxes.x;
+                const yAxisHalfLength = halfAxes.y;
+                const zAxisHalfLength = halfAxes.z;
+
+                clippingPlanes = new Cesium.ClippingPlaneCollection({
+                    planes: [
+                        // x
+                        new Cesium.ClippingPlane(
+                            new Cesium.Cartesian3(1.0, 0.0, 0.0),
+                            xAxisHalfLength / 2
+                        ),
+                    ],
+                    edgeWidth: 1.0,
+                    unionClippingRegions: true
+                });
+
+                tileset.clippingPlanes = clippingPlanes;
+
+                if(cb)
+                    cb(tileset);
+            })
+            .otherwise(function (error) {
+                console.log(error);
+            });
+    }
+
+    function calcDeltaDistance(x1, y1, x2, y2, angle) {
+        angle = Math.PI / 2 - angle
+
+        // get coefficients of equation of the line that passes the position(x1, y1) and of which slope is -tan(angle)
+        // y - y1 = m(x- x1) // m is the slope of the distance
+
+        const a = Math.tan(angle);
+        const b = 1;
+        const c = -Math.tan(angle) * x1 - y1;
+
+        // calculate distance from position (x2, y2) to the line
+
+        // d = |ax2 + by2 + c| / sqrt(a^2 + b^2)
+
+        let d = Math.abs(a * x2 + b * y2 + c);
+
+        d = d / Math.sqrt(a ** 2 + b ** 2);
+
+        return d;
+    }
+
+    function calcHalfAxes(orientedBoundingBox) {
+        const halfAxes = orientedBoundingBox.halfAxes;
+
+        let xAxisHalfLength = halfAxes[0] * halfAxes[0] + halfAxes[1] * halfAxes[1] + halfAxes[2] * halfAxes[2];
+        let yAxisHalfLength = halfAxes[3] * halfAxes[3] + halfAxes[4] * halfAxes[4] + halfAxes[5] * halfAxes[5];
+        let zAxisHalfLength = halfAxes[6] * halfAxes[6] + halfAxes[7] * halfAxes[7] + halfAxes[8] * halfAxes[8];
+
+        xAxisHalfLength = Math.sqrt(xAxisHalfLength);
+        yAxisHalfLength = Math.sqrt(yAxisHalfLength);
+        zAxisHalfLength = Math.sqrt(zAxisHalfLength);
+
+        return {
+            x: xAxisHalfLength,
+            y: yAxisHalfLength,
+            z: zAxisHalfLength
+        }
+    }
+
+    function drawClippingPlanes(tileset) {
+        const halfAxes = calcHalfAxes(tileset.root.boundingVolume.boundingVolume);
+
+        const xAxisHalfLength = halfAxes.x;
+        const yAxisHalfLength = halfAxes.y;
+        const zAxisHalfLength = halfAxes.z;
+
+        const clippingPlanes = tileset.clippingPlanes;
+
+        for (let i = 0; i < clippingPlanes.length; ++i) {
+            const plane = clippingPlanes.get(i);
+
+            let color;
+
+            if(i === 0){
+                color = Color.RED;
+            }
+            else if( i === 1 ){
+                color = Color.YELLOW;
+            }
+            else if( i === 2 ){
+                color = Color.WHITE;
+            }
+            else if( i === 3 ){
+                color = Color.BLACK;
+            }
+            else if( i === 4 ){
+                color = Color.BLUE;
+            }
+            else if( i === 5 ){
+                color = Color.GREEN;
+            }
+
+            const planePosition =  Cesium.Matrix4.getTranslation(
+                tileset.modelMatrix,
+                new Cesium.Cartesian3()
+            );
+
+            viewer.entities.add({
+                position: planePosition,
+                //orientation: orientation,
+                plane: {
+                    dimensions: new Cesium.Cartesian2(
+                        yAxisHalfLength * 2,
+                        xAxisHalfLength * 2
+                    ),
+                    material: color.withAlpha(0.4),
+                    plane: plane,
+                    outline: true,
+                    outlineColor: Color.WHITE,
+                },
+            });
+        }
+    }
+
+</script>
+</body>
+</html>
