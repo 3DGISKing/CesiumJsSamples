@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>WGS84</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<script>
+    const Cartesian3 = Cesium.Cartesian3;
+    const Matrix4 = Cesium.Matrix4;
+
+    const viewer = new Cesium.Viewer("cesiumContainer");
+    const scene = viewer.scene;
+
+    // all vertex of this tileset are directly defined in WGS84
+
+    const url = "https://s3.us-east-2.wasabisys.com/construkted-assets/a44y1ry6536/tileset.json";
+
+    const tileset = scene.primitives.add(
+        new Cesium.Cesium3DTileset({
+            url: url,
+        })
+    );
+
+    tileset.readyPromise.then(function () {
+        if(tileset.modelMatrix.equals(Matrix4.IDENTITY) &&
+            tileset.root.transform.equals(Matrix4.IDENTITY) &&
+            Cartesian3.magnitude(tileset.boundingSphere.center) >= 6300000) {
+
+            // this will output the identity matrix
+            console.log("tileset 's model matrix", tileset.modelMatrix);
+
+            // this also will output the identity matrix
+            console.log("root tile 's transform", tileset.root.transform);
+
+            console.log("bounding sphere center", tileset.boundingSphere.center);
+
+            console.log("it seems that all vertex are defined in WGS84");
+        }
+
+        viewer.zoomTo(tileset);
+
+    }).otherwise(function(err) {
+        console.error(err.message);
+    });
+</script>
+</body>
+</html>
