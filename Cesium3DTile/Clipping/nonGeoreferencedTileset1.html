@@ -8,9 +8,9 @@
     <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>Clipping</title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.86.1/Build/CesiumUnminified/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.86.1/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <title>Clipping Box of Non Georeferenced Tileset1</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.93/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.93/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <script src="https://sandcastle.cesium.com/Sandcastle-header.js"></script>
 </head>
 <body>
@@ -19,27 +19,30 @@
 </div>
 
 <script>
-    // Power Plant design model provided by Bentley Systems
-    var viewer = new Cesium.Viewer("cesiumContainer");
-    var scene = viewer.scene;
+    const {Cartesian2, Cartesian3, Cesium3DTileset, ClippingPlane, ClippingPlaneCollection, Color, HeadingPitchRange, Matrix4, Transforms, Viewer} = window.Cesium;
 
-    var tileset = scene.primitives.add(
-        new Cesium.Cesium3DTileset({
+    const viewer = new Viewer("cesiumContainer");
+    const scene = viewer.scene;
+
+    const tileset = scene.primitives.add(
+        new Cesium3DTileset({
             url: "https://s3.us-east-2.wasabisys.com/construkted-assets/aucbzxw01n/tileset.json",
         })
     );
 
     tileset.readyPromise
         .then(function (tileset) {
-            var transformCenter = Cesium.Matrix4.getTranslation(
+            const transformCenter = Matrix4.getTranslation(
                 tileset.root.transform,
-                new Cesium.Cartesian3()
+                new Cartesian3()
             );
 
-            if(Cesium.Cartesian3.equals(transformCenter, Cesium.Cartesian3.ZERO)){
+            let clippingPlanes;
+
+            if (Cartesian3.equals(transformCenter, Cartesian3.ZERO)) {
                 // non georeference
 
-                tileset.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(129.5089, 42.8913));
+                tileset.modelMatrix = Transforms.eastNorthUpToFixedFrame(Cartesian3.fromDegrees(129.5089, 42.8913));
 
                 const boundingVolume = tileset.root.boundingVolume.boundingVolume;
                 const halfAxes = boundingVolume.halfAxes;
@@ -52,36 +55,36 @@
                 yAxisHalfLength = Math.sqrt(yAxisHalfLength);
                 zAxisHalfLength = Math.sqrt(zAxisHalfLength);
 
-                var clippingPlanes = new Cesium.ClippingPlaneCollection({
+                clippingPlanes = new ClippingPlaneCollection({
                     planes: [
                         // up
-                        new Cesium.ClippingPlane(
-                            new Cesium.Cartesian3(0.0, 0.0, -1.0),
+                        new ClippingPlane(
+                            new Cartesian3(0.0, 0.0, -1.0),
                             zAxisHalfLength * 2
                         ),
 
                         // down clipping plane
-                        new Cesium.ClippingPlane(
-                            new Cesium.Cartesian3(0.0, 0.0, 1.0),
+                        new ClippingPlane(
+                            new Cartesian3(0.0, 0.0, 1.0),
                             0
                         ),
                         // x
-                        new Cesium.ClippingPlane(
-                            new Cesium.Cartesian3(1.0, 0.0, 0.0),
+                        new ClippingPlane(
+                            new Cartesian3(1.0, 0.0, 0.0),
                             xAxisHalfLength
                         ),
                         // x
-                        new Cesium.ClippingPlane(
-                            new Cesium.Cartesian3(-1.0, 0.0, 0.0),
+                        new ClippingPlane(
+                            new Cartesian3(-1.0, 0.0, 0.0),
                             xAxisHalfLength
                         ),
                         // y
-                        new Cesium.ClippingPlane(
-                            new Cesium.Cartesian3(0.0, 1.0, 0.0),
+                        new ClippingPlane(
+                            new Cartesian3(0.0, 1.0, 0.0),
                             yAxisHalfLength
                         ),
-                        new Cesium.ClippingPlane(
-                            new Cesium.Cartesian3(0.0, -1.0, 0.0),
+                        new ClippingPlane(
+                            new Cartesian3(0.0, -1.0, 0.0),
                             yAxisHalfLength
                         ),
                     ],
@@ -90,43 +93,43 @@
                 });
 
                 tileset.clippingPlanes = clippingPlanes;
-            }else {
+            } else {
                 throw new Error();
             }
 
-            const planePosition =  Cesium.Matrix4.getTranslation(
+            const planePosition = Matrix4.getTranslation(
                 tileset.modelMatrix,
-                new Cesium.Cartesian3()
+                new Cartesian3()
             );
 
-            for (var i = 0; i < clippingPlanes.length; ++i) {
-                var plane = clippingPlanes.get(i);
+            for (let i = 0; i < clippingPlanes.length; ++i) {
+                const plane = clippingPlanes.get(i);
 
                 viewer.entities.add({
                     position: planePosition,
                     plane: {
-                        dimensions: new Cesium.Cartesian2(
-                           100,
-                           100
+                        dimensions: new Cartesian2(
+                            100,
+                            100
                         ),
-                        material: Cesium.Color.RED.withAlpha(0.4),
+                        material: Color.RED.withAlpha(0.4),
                         plane: plane,
                         outline: true,
-                        outlineColor: Cesium.Color.WHITE,
+                        outlineColor: Color.WHITE,
                     },
                 });
             }
 
             viewer.zoomTo(
                 tileset,
-                new Cesium.HeadingPitchRange(
+                new HeadingPitchRange(
                     0.5,
                     -0.2,
                     tileset.boundingSphere.radius * 4.0
                 )
             );
         })
-        .otherwise(function (error) {
+        .catch(function (error) {
             console.log(error);
         });
 
