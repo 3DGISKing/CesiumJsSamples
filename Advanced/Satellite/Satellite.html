@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Use correct character set. -->
+        <meta charset="utf-8" />
+        <!-- Tell IE to use the latest, best version. -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+        />
+        <title>Satellite</title>
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/CesiumUnminified/Cesium.js"></script>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
+        <script src="https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.1.4/satellite.min.js"></script>
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="toolbar"></div>
+
+        <script>
+            const {
+                BoundingSphere,
+                Cartesian3,
+                Color,
+                JulianDate,
+                Matrix4,
+                Transforms,
+                Viewer
+            } = window.Cesium;
+
+            const CesiumMath = Cesium.Math;
+
+            const viewer = new Viewer("cesiumContainer", {
+                shouldAnimate: true
+
+            });
+
+            const object = viewer.entities.add({
+                position: Cartesian3.fromDegrees(0, 0,),
+                model: {
+                    uri: "./weixin.gltf",
+                    minimumPixelSize: 128,
+                    maximumScale: 20000,
+                }
+            });
+
+            const tleLine1 = '1 25544U 98067A   19156.50900463  .00003075  00000-0  59442-4 0  9992';
+            const tleLine2 = '2 25544  51.6433  59.2583 0008217  16.4489 347.6017 15.51174618173442';
+
+            // Initialize a satellite record
+            const satrec = satellite.twoline2satrec(tleLine1, tleLine2);
+
+            viewer.clock.multiplier = 1000; // speed of the simulation
+
+            const earthRotation = false;
+
+            function updateCamera(time) {
+                const camera = viewer.scene.camera;
+
+                const icrfToFixed = Transforms.computeIcrfToFixedMatrix(time);
+
+                if (icrfToFixed) {
+                    const offset = Cartesian3.clone(camera.position);
+                    const transform = Matrix4.fromRotationTranslation(icrfToFixed);
+
+                    if(earthRotation){
+                        camera.lookAtTransform(transform, offset);
+                    }
+                }
+            }
+
+            function onPreRender(scene, time) {
+                updateCamera(time);
+                updatePosition(JulianDate.toDate(time));
+            }
+
+            function updatePosition(date) {
+                const positionAndVelocity = satellite.propagate(satrec, date);
+
+                const gmst = satellite.gstime(date);
+
+                const positionEci = positionAndVelocity.position;
+                const positionGd = satellite.eciToGeodetic(positionEci, gmst);
+
+                const longitude = positionGd.longitude;
+                const latitude  = positionGd.latitude;
+                const height    = positionGd.height;
+
+                const newPosition = Cartesian3.fromDegrees(CesiumMath.toDegrees(longitude), CesiumMath.toDegrees(latitude), height);
+
+                object.position.setValue(newPosition);
+            }
+
+            viewer.scene.preRender.addEventListener(onPreRender);  // enable Earth rotation
+
+            if(!earthRotation){
+                viewer.trackedEntity = object;
+            }
+
+        </script>
+    </body>
+</html>
