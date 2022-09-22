@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8"/>
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <title>BerlinLOD2</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/CesiumUnminified/Cesium.js"></script>
+    <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+    />
+    <script src="https://sandcastle.cesium.com/Sandcastle-header.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/4.1.4/satellite.min.js"></script>
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+<div id="toolbar"></div>
+
+<script>
+    const {
+        BoundingSphere,
+        Cartesian3,
+        Color,
+        defined,
+        JulianDate,
+        Matrix3,
+        Matrix4,
+        Transforms,
+        Viewer
+    } = window.Cesium;
+
+    const viewer = new Viewer("cesiumContainer", {});
+
+    const tileset = viewer.scene.primitives.add(
+        new Cesium.Cesium3DTileset({
+            url: "https://a.3d.blc.shc.eu/WAB/base_layer/cesium_mesh_2020/tileset.json",
+        })
+    );
+
+    viewer.zoomTo(tileset);
+
+</script>
+</body>
+</html>
