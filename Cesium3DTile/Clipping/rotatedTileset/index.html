@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>Clipping Rotated Tileset</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+</div>
+
+<script>
+    const {
+        AxisAlignedBoundingBox,
+        Cartesian3,
+        Cartographic,
+        ClippingPlane,
+        ClippingPlaneCollection,
+        Color,
+        DebugModelMatrixPrimitive,
+        Ellipsoid,
+        HeadingPitchRoll,
+        Matrix3,
+        Matrix4,
+        OrientedBoundingBox,
+        Quaternion,
+        Transforms
+    } = window.Cesium;
+
+    const CesiumMath = window.Cesium.Math;
+
+    const viewer = new Cesium.Viewer("cesiumContainer", {
+
+    });
+
+    const scene = viewer.scene;
+
+    viewer.extend(Cesium.viewerCesium3DTilesInspectorMixin);
+
+    const tileset = new Cesium.Cesium3DTileset({
+        url: "https://s3.us-east-2.wasabisys.com/construkted-assets/aus3emt1vwu/tileset.json",
+        enableDebugWireframe: true,
+    });
+
+    scene.primitives.add(tileset);
+
+    const longitude = 0;
+    const latitude = 0;
+    const height = 0;
+    const heading = -27.68595364;
+    const pitch = 0;
+    const roll = -45.96048297;
+
+    const cartographic = new Cartographic(longitude, latitude, height);
+    const position = Ellipsoid.WGS84.cartographicToCartesian(cartographic);
+
+    const hpr = new HeadingPitchRoll(CesiumMath.toRadians(heading), CesiumMath.toRadians(pitch), CesiumMath.toRadians(roll));
+
+    const modelMatrix = Transforms.headingPitchRollToFixedFrame(position, hpr);
+
+    tileset.modelMatrix = modelMatrix;
+
+    const zeroHpr = new HeadingPitchRoll();
+    const nonRotationModelMatrix = Transforms.headingPitchRollToFixedFrame(position, zeroHpr);
+
+    scene.primitives.add(new DebugModelMatrixPrimitive({
+        modelMatrix : nonRotationModelMatrix,
+        length : 20.0,
+        width : 3.0
+    }));
+
+    tileset.readyPromise
+        .then(() => {
+            onTilesetReady();
+
+        })
+        .catch((error) => {
+            window.alert(error);
+        });
+
+    function onTilesetReady() {
+        const boundingVolume = tileset.root.boundingVolume.boundingVolume;
+
+        // assume boundingVolume is OrientedBoundingBox
+
+        const corners = OrientedBoundingBox.computeCorners(boundingVolume);
+
+        const axisAlignedBoundingBox = AxisAlignedBoundingBox.fromPoints(corners);
+
+        const boxPosition = axisAlignedBoundingBox.center;
+
+        const maximum = axisAlignedBoundingBox.maximum;
+        const minimum = axisAlignedBoundingBox.minimum;
+
+        const xDimension = (maximum.x - minimum.x);
+        const yDimension = (maximum.y - minimum.y);
+        const zDimension = (maximum.z - minimum.z);
+
+        viewer.entities.add({
+            position: boxPosition,
+            box: {
+                dimensions: new Cesium.Cartesian3(xDimension, yDimension, zDimension),
+                material: Cesium.Color.RED.withAlpha(0.1),
+                outline: true,
+                outlineColor: Cesium.Color.WHITE
+            },
+        });
+
+        clippingPlanes = new ClippingPlaneCollection({
+            planes: [
+                // x
+                new ClippingPlane(
+                    new Cartesian3(1.0, 0.0, 0.0),
+                    0
+                ),
+            ],
+            edgeWidth: 1.0,
+            unionClippingRegions: true
+        });
+
+        const clipWithRotation = false;
+
+        if(!clipWithRotation) {
+            // convert hpr to matrix4
+
+            const quaternion = Quaternion.fromHeadingPitchRoll(hpr);
+            const rotation = Matrix3.fromQuaternion(quaternion);
+            const matrix4 = Matrix4.fromRotation(rotation);
+            const inverse = Matrix4.inverse(matrix4, new Matrix4());
+
+            clippingPlanes.modelMatrix = inverse;
+        }
+
+        tileset.clippingPlanes = clippingPlanes;
+
+        viewer.camera.flyToBoundingSphere(tileset.boundingSphere);
+    }
+
+</script>
+</body>
+</html>
