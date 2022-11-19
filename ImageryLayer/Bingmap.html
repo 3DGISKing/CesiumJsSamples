@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>BingMap</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/Cesium/Widgets/widgets.css" rel="stylesheet"/>
+
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+
+</div>
+<div id="toolbar">
+    <script type="module">
+        const {
+            BingMapsImageryProvider,
+            BingMapsStyle,
+            Viewer
+        } = window.Cesium;
+
+        const bing = new BingMapsImageryProvider({
+            url : 'https://dev.virtualearth.net',
+            key : 'your key',
+            mapStyle : BingMapsStyle.AERIAL_WITH_LABELS
+        });
+
+        const viewer = new Viewer("cesiumContainer", {
+            imageryProvider: bing
+        });
+
+    </script>
+</body>
+</html>
