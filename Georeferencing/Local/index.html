@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Georeferencing</title>
+
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.103/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.103/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../0-Common/bucket.css">
+</head>
+<body>
+<div id="cesiumContainer" class="fullSize"></div>
+
+<div id="toolbar">
+    <table>
+        <tbody>
+        <tr>
+            <td>Longitude</td>
+            <td>
+                <input data-bind="value: longitude" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Latitude</td>
+            <td>
+                <input data-bind="value: latitude" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Height</td>
+            <td>
+                <input data-bind="value: height" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Scale</td>
+            <td>
+                <input data-bind="value: scale, valueUpdate: 'input'" max="5" min="1" step="0.1" type="range" >
+                <input data-bind="value: scale" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Heading</td>
+            <td>
+                <input data-bind="value: heading, valueUpdate: 'input'" max="180" min="-180" step="0.1" type="range">
+                <input data-bind="value: heading" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Pitch</td>
+            <td>
+                <input data-bind="value: pitch, valueUpdate: 'input'" max="180" min="-180" step="0.1" type="range">
+                <input data-bind="value: pitch" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Roll</td>
+            <td>
+                <input data-bind="value: roll, valueUpdate: 'input'" max="180" min="-180" step="1" type="range">
+                <input data-bind="value: roll" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>X</td>
+            <td>
+                <input data-bind="value: x, valueUpdate: 'input'" max="100" min="-100" step="0.1" type="range">
+                <input data-bind="value: x" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Y</td>
+            <td>
+                <input data-bind="value: y, valueUpdate: 'input'" max="100" min="-100" step="0.1" type="range">
+                <input data-bind="value: y" size="2" type="text">
+            </td>
+        </tr>
+
+        <tr>
+            <td>Z</td>
+            <td>
+                <input data-bind="value: z, valueUpdate: 'input'" max="100" min="-100" step="0.1" type="range">
+                <input data-bind="value: z" size="2" type="text">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript" src="./app.js">
+</script>
+</body>
+</html>

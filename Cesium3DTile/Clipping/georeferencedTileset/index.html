@@ -35,55 +35,36 @@
 
     const CesiumMath = window.Cesium.Math;
 
-    const viewer = new Cesium.Viewer("cesiumContainer", {
-
-    });
+    const viewer = new Cesium.Viewer("cesiumContainer", {});
 
     const scene = viewer.scene;
 
     viewer.extend(Cesium.viewerCesium3DTilesInspectorMixin);
 
     const tileset = new Cesium.Cesium3DTileset({
-        url: "https://s3.us-east-2.wasabisys.com/construkted-assets/aus3emt1vwu/tileset.json",
+        url: "https://s3.us-east-2.wasabisys.com/construkted-assets/au0x0as79k3/tileset.json",
         enableDebugWireframe: true,
     });
 
     scene.primitives.add(tileset);
 
-    const longitude = 0;
-    const latitude = 0;
-    const height = 0;
-    const heading = -27.68595364;
-    const pitch = 0;
-    const roll = -45.96048297;
 
-    const position = Cartesian3.fromDegrees(longitude, latitude, height);
-
-    const hpr = new HeadingPitchRoll.fromDegrees(heading, pitch, roll);
-
-    const modelMatrix = Transforms.headingPitchRollToFixedFrame(position, hpr);
-
-    tileset.modelMatrix = modelMatrix;
-
-    const zeroHpr = new HeadingPitchRoll();
-    const nonRotationModelMatrix = Transforms.headingPitchRollToFixedFrame(position, zeroHpr);
-
-    scene.primitives.add(new DebugModelMatrixPrimitive({
-        modelMatrix : nonRotationModelMatrix,
-        length : 20.0,
-        width : 3.0
-    }));
 
     tileset.readyPromise
         .then(() => {
             onTilesetReady();
-
         })
         .catch((error) => {
             window.alert(error);
         });
 
     function onTilesetReady() {
+        scene.primitives.add(new DebugModelMatrixPrimitive({
+            modelMatrix : Transforms.eastNorthUpToFixedFrame(tileset.boundingSphere.center),
+            length : tileset.boundingSphere.radius,
+            width : 3.0
+        }));
+
         const boundingVolume = tileset.root.boundingVolume.boundingVolume;
 
         // assume boundingVolume is OrientedBoundingBox
@@ -126,24 +107,7 @@
         const clipWithRotation = false;
 
         if(!clipWithRotation) {
-            // convert hpr to matrix4
-
-            /*
-            method1
-
-            const quaternion = Quaternion.fromHeadingPitchRoll(hpr);
-            const rotation = Matrix3.fromQuaternion(quaternion);
-            const matrix4 = Matrix4.fromRotation(rotation);
-            const inverse = Matrix4.inverse(matrix4, new Matrix4());
-
-            clippingPlanes.modelMatrix = inverse;
-
-            */
-
-            // mothod2
-
-            const rootComputedTransform = tileset.root.computedTransform;
-            const inv = Matrix4.inverseTransformation(rootComputedTransform, new Matrix4());
+            const inv = Matrix4.inverseTransformation(tileset.clippingPlanesOriginMatrix, new Matrix4());
 
             const center = tileset.boundingSphere.center;
             const transform = Transforms.eastNorthUpToFixedFrame(center);
