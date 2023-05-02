@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>MapboxVectorTile</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/CesiumUnminified/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/Cesium/Widgets/widgets.css"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../0-Common/bucket.css">
+    <script src="../../0-Common/Sandcastle-header.js"></script>
+
+    <script>
+        const module = {};
+    </script>
+
+    <script src="./mapbox-gl.js"></script>
+
+    <script>
+        const Mapbox = module.exports;
+        window.Mapbox = Mapbox;
+    </script>
+
+</head>
+
+<body>
+    <div id="cesiumContainer" class="fullSize"></div>
+
+    </div>
+    <div id="toolbar">
+        <script type="module">
+            const {
+                Cartesian3,
+                Cartographic,
+                DiscardEmptyTilePolicy,
+                GeographicTilingScheme,
+                Rectangle,
+                WebMercatorTilingScheme
+            } = window.Cesium;
+
+            import MVTImageryProvider from "./MVTImageryProvider.js";
+
+            const viewer = new Cesium.Viewer("cesiumContainer");
+
+            const tileURL = "http://localhost:5000/{z}/{x}/{y}";
+
+            const options = {
+                style: {
+                    version: 8,
+                    glyphs: "https://cdn.rawgit.com/klokantech/mapbox-gl-js-offline-example/v1.0/font/{fontstack}/{range}.pbf",
+                    layers: [
+                        {
+                            id: "points",
+                            type: "symbol",
+                            source: "points",
+                            "source-layer": "test",
+                            layout: {
+                                //"text-field": "{label}",
+                                "text-field": "{ABBREV}",
+                                "text-font": ["Open Sans Semibold"],
+                                "symbol-placement": "point",
+                                "symbol-spacing": 600,
+                                "text-size": 20
+                            },
+                            paint: {
+                                "text-color": "#FFFFFF",
+                                "text-halo-width": 1,
+                                "text-halo-blur": 0,
+                                "text-halo-color": "#000000",
+                                "text-opacity": 1
+                            }
+                        }
+                    ],
+                    sources: {
+                        points: {
+                            type: "vector",
+                            minzoom: 0,
+                            maxzoom: 17,
+                            tiles: [tileURL]
+                        }
+                    }
+                }
+            };
+
+            const imageryLayers = viewer.imageryLayers;
+
+            imageryLayers.addImageryProvider(new MVTImageryProvider(options));
+
+            const tileCoordinateLayer = imageryLayers.addImageryProvider(new Cesium.TileCoordinatesImageryProvider());
+
+            function geographicTileXYToWebMercatorTile(x, y, level) {
+                const geo = new GeographicTilingScheme();
+                const web = new WebMercatorTilingScheme();
+
+                const rectangle = geo.tileXYToRectangle(x, y, level);
+
+                const westSouth = new Cartographic(rectangle.west, rectangle.south);
+                const eastSouth = new Cartographic(rectangle.east, rectangle.south);
+                const eastNorth = new Cartographic(rectangle.east, rectangle.north);
+                const westNorth = new Cartographic(rectangle.west, rectangle.north);
+
+                const westSouthTileXY = web.positionToTileXY(westSouth, level);
+                const eastSouthTileXY = web.positionToTileXY(eastSouth, level);
+                const eastNorthTileXY = web.positionToTileXY(eastNorth, level);
+                const westNorthTileXY = web.positionToTileXY(westNorth, level);
+
+                let minX = westSouthTileXY.x;
+                let maxX = westSouthTileXY.x;
+                let minY = westSouthTileXY.y;
+                let maxY = westSouthTileXY.y;
+
+                function update(tileXY) {
+                    if (tileXY.x < minX) {
+                        minX = tileXY.x;
+                    }
+
+                    if (tileXY.y < minY) {
+                        minY = tileXY.y;
+                    }
+
+                    if (tileXY.x > maxX) {
+                        maxX = tileXY.x;
+                    }
+
+                    if (tileXY.y > maxY) {
+                        maxY = tileXY.y;
+                    }
+                }
+
+                update(eastSouthTileXY);
+                update(eastNorthTileXY);
+                update(westNorthTileXY);
+
+                return {
+                    minX, maxX, minY, maxY
+                };
+            }
+
+            function drawOneTileBoundary(x, y, level) {
+                const web = new WebMercatorTilingScheme();
+
+                const rectangle = web.tileXYToRectangle(x, y, level);
+
+                const west = rectangle.west;
+                const east = rectangle.east;
+                const south = rectangle.south;
+                const north = rectangle.north;
+
+                const center = Rectangle.center(rectangle);
+
+                viewer.entities.add({
+                    position: Cartesian3.fromRadians(center.longitude, center.latitude),
+                    label: {
+                        text: `${x}_${y}_${level}`,
+                    },
+                    polyline: {
+                        positions: Cesium.Cartesian3.fromRadiansArray([west, south, east, south, east, north, west, north, west, south]),
+                        width: 5,
+                        material: Cesium.Color.BLUE,
+                        clampToGround: true,
+                    },
+                });
+            }
+
+            // x, t, level are geographic tile
+            function drawWebMercatorTileBoundary(x, y, level) {
+                const { minX, maxX, minY, maxY } = geographicTileXYToWebMercatorTile(x, y, level);
+
+                for (let x = minX; x <= maxX; x++) {
+                    for (let y = minY; y <= maxY; y++) {
+                        drawOneTileBoundary(x, y, level);
+                    }
+                }
+            }
+
+            // x, t, level are geographic tile
+            function drawWebMercatorTileBoundary1(tileInfos) {
+                tileInfos.forEach(tileInfo => {
+                    drawOneTileBoundary(tileInfo.x, tileInfo.y, tileInfo.level);
+                });
+            }
+
+            // drawWebMercatorTileBoundary(2, 2, 3);
+
+            // web mercator tiles for x=2, y=2, level=3 quad tile
+            drawWebMercatorTileBoundary1([
+                {
+                    x: 2, y: 5, level: 3
+                },
+                {
+                    x: 2, y: 6, level: 3
+                },
+                {
+                    x: 2, y: 5, level: 4
+                },
+                {
+                    x: 2, y: 6, level: 4
+                },
+                {
+                    x: 2, y: 2, level: 3
+                }
+            ]);
+
+            Sandcastle.addToggleButton(
+                "Tile Coordinate",
+                tileCoordinateLayer.show,
+                function (checked) {
+                    tileCoordinateLayer.show = checked;
+                }
+            );
+
+            Sandcastle.addToggleButton(
+                "Web Mercator Tiles",
+                viewer.entities.show,
+                function (checked) {
+                    viewer.entities.show = checked;
+                }
+            );
+
+        </script>
+</body>
+
+</html>

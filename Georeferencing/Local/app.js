@@ -8,14 +8,19 @@ const {
     Matrix3,
     Matrix4,
     Model,
+    PointPrimitiveCollection,
+    PrimitiveCollection,
     Quaternion,
+    ScreenSpaceEventHandler,
+    ScreenSpaceEventType,
     Transforms
 } = window.Cesium;
 
-let tileset = undefined;
-let viewModel = undefined;
-let ENUDebugModelMatrixPrimitive = undefined;
-let debugModelMatrixPrimitive = undefined;
+let tileset;
+let viewModel;
+let point;
+let ENUDebugModelMatrixPrimitive;
+let debugModelMatrixPrimitive;
 
 const defaultLongitude = 18.29148341298935;
 const defaultLatitude = 49.029697177090384;
@@ -55,8 +60,6 @@ function updateModelMatrixOfTilesetDefinedAtLocal(options) {
     Matrix4.multiply(modelMatrix, scaleMat, modelMatrix);
     Matrix4.multiply(modelMatrix, offsetT, modelMatrix);
 
-    console.log(scaleMat);
-
     tileset.modelMatrix = modelMatrix;
 
     ENUDebugModelMatrixPrimitive.modelMatrix = Transforms.eastNorthUpToFixedFrame(position);
@@ -72,6 +75,16 @@ function main() {
 
     const scene = viewer.scene;
     scene.globe.enableLighting = true;
+    const primitives = scene.primitives.add(new PrimitiveCollection());
+    const points = primitives.add(new PointPrimitiveCollection());
+
+    point = points.add({
+        pixelSize: 10,
+        color: Color.YELLOW,
+        position: new Cartesian3(),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY, // for draw-over
+        show: true
+    });
 
     tileset = new Cesium3DTileset({
         url: "https://s3.us-east-2.wasabisys.com/construkted-assets/ab9w7gad537/tileset.json"
@@ -112,11 +125,28 @@ function main() {
                 z
             });
 
+            point.position = new Cartesian3(position.x + x, position.y + y, position.z + z);
             viewer.camera.flyToBoundingSphere(tileset.boundingSphere);
         })
         .catch((e) => {
             console.error(e);
         });
+
+    const handler = new ScreenSpaceEventHandler(scene.canvas);
+
+    handler.setInputAction(function (movement) {
+        const pickedPosition = getWorldPosition(scene, movement.position, new Cartesian3());
+
+        if (!pickedPosition) {
+            return;
+        }
+
+        const position = Cartesian3.fromDegrees(defaultLongitude, defaultLatitude, defaultHeight);
+
+        viewModel.x = pickedPosition.x - position.x;
+        viewModel.y = pickedPosition.y - position.y;
+        viewModel.z = pickedPosition.z - position.z;
+    }, ScreenSpaceEventType.LEFT_CLICK);
 }
 
 function createModel() {
@@ -176,6 +206,22 @@ function onChangeModel() {
         y,
         z
     });
+
+    point.position = new Cartesian3(position.x + x, position.y + y, position.z + z);
 }
+
+function getWorldPosition(scene, screenPosition, result) {
+    const picked = scene.pick(screenPosition, 1, 1);
+
+    if (picked && picked.primitive instanceof Cesium3DTileset) {
+        // check to let us know if we should pick against the globe instead
+        const position = scene.pickPosition(screenPosition, new Cartesian3());
+
+        if (position) {
+            return Cartesian3.clone(position, result);
+        }
+    }
+}
+
 main();
 createModel();
