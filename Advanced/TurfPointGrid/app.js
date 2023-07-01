@@ -13,12 +13,14 @@ function main() {
     // store scene
     scene = viewer.scene;
 
-    var tileset = new Cesium.Cesium3DTileset({
-        url: Cesium.IonResource.fromAssetId(40866),
+    viewer.camera.flyTo({
+        destination : Cesium.Cartesian3.fromDegrees(-122.19, 46.25, 50.0),
+        orientation : {
+            heading : Cesium.Math.toRadians(175.0),
+            pitch : Cesium.Math.toRadians(-35.0),
+            roll : 0.0
+        }
     });
-
-    viewer.scene.primitives.add(tileset);
-    viewer.zoomTo(tileset);
 
     // construct the polygon drawing tool as global
     thePolygonDrawing = new PolygonDrawing({
