@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Plane Primitive</title>
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.117/Build/CesiumUnminified/Cesium.js"></script>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.117/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+
+        <script>
+            const {
+                Cartesian2,
+                Cartesian3,
+                Color,
+                DebugModelMatrixPrimitive,
+                GeometryInstance,
+                Material,
+                MaterialAppearance,
+                Matrix3,
+                Matrix4,
+                PlaneGeometry,
+                Primitive,
+                Transforms,
+                VertexFormat,
+                Viewer
+            } = window.Cesium;
+
+            const CesiumMath = window.Cesium.Math;
+
+            const viewer = new Viewer("cesiumContainer");
+
+            const planePosition = new Cartesian3(4737557.427843155, 2182333.447571222, 3658333.5839440585);
+            const p1 = new Cartesian3(4737553.677491152, 2182309.7563793175, 3658352.3868128825);
+            const p2 = new Cartesian3(4737541.423697553, 2182358.338198989, 3658339.367422032);
+
+            const vec1 = Cartesian3.subtract(p1, planePosition, new Cartesian3());
+            const vec2 = Cartesian3.subtract(p2, planePosition, new Cartesian3());
+
+            let worldNormal = Cartesian3.cross(vec1, vec2, new Cartesian3());
+
+            worldNormal = Cartesian3.add(planePosition, worldNormal, new Cartesian3());
+
+            const transform = Transforms.eastNorthUpToFixedFrame(planePosition);
+
+            const inv = Matrix4.inverseTransformation(transform, new Matrix4());
+
+            let localNormal = Matrix4.multiplyByPoint(inv, worldNormal, new Cartesian3());
+
+            localNormal = Cartesian3.normalize(localNormal.clone(), new Cartesian3());
+
+            viewer.scene.primitives.add(
+                new DebugModelMatrixPrimitive({
+                    modelMatrix: transform, // primitive to debug
+                    length: 20.0,
+                    width: 2.0
+                })
+            );
+
+            const dimension = 10;
+            const distance = 10.0;
+            const dimensions = new Cartesian2(dimension, dimension);
+
+            // calc model matrix
+
+            const normal = localNormal;
+
+            const translation = Cartesian3.multiplyByScalar(normal, -distance, new Cartesian3());
+
+            let up = Cartesian3.clone(Cartesian3.UNIT_Z, new Cartesian3());
+
+            if (CesiumMath.equalsEpsilon(Math.abs(Cartesian3.dot(up, normal)), 1.0, CesiumMath.EPSILON8)) {
+                up = Cartesian3.clone(Cartesian3.UNIT_Y, up);
+            }
+
+            const left = Cartesian3.cross(up, normal, new Cartesian3());
+            up = Cartesian3.cross(normal, left, up);
+            Cartesian3.normalize(left, left);
+            Cartesian3.normalize(up, up);
+
+            const rotationMatrix = new Matrix4();
+
+            Matrix3.setColumn(rotationMatrix, 0, left, rotationMatrix);
+            Matrix3.setColumn(rotationMatrix, 1, up, rotationMatrix);
+            Matrix3.setColumn(rotationMatrix, 2, normal, rotationMatrix);
+
+            const scale = Cartesian3.fromElements(dimensions.x, dimensions.y, 1.0, new Cartesian3());
+            const rotationScaleMatrix = Matrix3.multiplyByScale(rotationMatrix, scale, new Matrix3());
+
+            const localTransform = Matrix4.fromRotationTranslation(rotationScaleMatrix, translation, new Matrix4());
+
+            const modelMatrix = Matrix4.multiplyTransformation(transform, localTransform, new Matrix4());
+
+            const planeGeometry = new PlaneGeometry({
+                vertexFormat: VertexFormat.Default
+            });
+
+            const planeGeometryInstance = new GeometryInstance({
+                geometry: planeGeometry,
+                modelMatrix: modelMatrix
+            });
+
+            const primitive = new Primitive({
+                geometryInstances: planeGeometryInstance,
+                appearance: new MaterialAppearance({
+                    material: new Material({
+                        fabric: {
+                            type: "Image",
+                            uniforms: {
+                                image: "./logo512.png"
+                            }
+                        }
+                    })
+                })
+            });
+
+            viewer.scene.primitives.add(primitive);
+
+            const radius = 0.5;
+
+            viewer.entities.add({
+                position: planePosition,
+                ellipsoid: {
+                    radii: new Cartesian3(radius, radius, radius),
+                    material: Color.RED
+                }
+            });
+
+            viewer.entities.add({
+                position: p1,
+                ellipsoid: {
+                    radii: new Cartesian3(radius, radius, radius),
+                    material: Color.BLUE
+                }
+            });
+
+            viewer.entities.add({
+                position: p2,
+                ellipsoid: {
+                    radii: new Cartesian3(radius, radius, radius),
+                    material: Color.BLUE
+                }
+            });
+
+            viewer.flyTo(viewer.entities);
+        </script>
+    </body>
+</html>
