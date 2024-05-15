@@ -9,6 +9,8 @@
         />
     </head>
     <body>
+        <label for="image-file">Select a image file:</label>
+        <input id="image-file" type="file" />
         <div id="cesiumContainer" class="fullSize"></div>
 
         <script>
@@ -103,7 +105,7 @@
                 modelMatrix: modelMatrix
             });
 
-            const primitive = new Primitive({
+            let primitive = new Primitive({
                 geometryInstances: planeGeometryInstance,
                 appearance: new MaterialAppearance({
                     material: new Material({
@@ -146,6 +148,40 @@
             });
 
             viewer.flyTo(viewer.entities);
+
+            const imageFile = document.getElementById("image-file");
+
+            imageFile.addEventListener(
+                "change",
+                function (event) {
+                    const files = imageFile.files;
+
+                    if (files && files.length) {
+                        viewer.scene.primitives.remove(primitive);
+
+                        const image = window.URL.createObjectURL(files[0]);
+
+                        console.info(image);
+
+                        primitive = new Primitive({
+                            geometryInstances: planeGeometryInstance,
+                            appearance: new MaterialAppearance({
+                                material: new Material({
+                                    fabric: {
+                                        type: "Image",
+                                        uniforms: {
+                                            image: image
+                                        }
+                                    }
+                                })
+                            })
+                        });
+
+                        viewer.scene.primitives.add(primitive);
+                    }
+                },
+                false
+            );
         </script>
     </body>
 </html>
