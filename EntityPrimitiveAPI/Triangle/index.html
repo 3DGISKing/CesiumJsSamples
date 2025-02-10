@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Use correct character set. -->
+        <meta charset="utf-8" />
+        <!-- Tell IE to use the latest, best version. -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+        />
+        <title>Draw a Triangle</title>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/CesiumUnminified/Cesium.js"></script>
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="toolbar"></div>
+
+        <script>
+            // for https://community.cesium.com/t/draw-triangle-how/38463
+            //Cesium.Ion.defaultAccessToken = "your access token";
+
+            const {
+                BoundingSphere,
+                Cartesian3,
+                Color,
+                ColorGeometryInstanceAttribute,
+                ComponentDatatype,
+                GeometryAttribute,
+                GeometryInstance,
+                PerInstanceColorAppearance,
+                Primitive,
+                PrimitiveType,
+                Viewer
+            } = window.Cesium;
+
+            const viewer = new Viewer("cesiumContainer", {});
+
+            const firstVertex = Cartesian3.fromDegrees(-115.0, 37.0);
+            const secondVertex = Cartesian3.fromDegrees(-115.0, 32.0);
+            const thirdVertex = Cartesian3.fromDegrees(-107.0, 33.0);
+
+            const positions = [firstVertex, secondVertex, thirdVertex];
+
+            const rawPositions = [
+                firstVertex.x,
+                firstVertex.y,
+                firstVertex.z,
+                secondVertex.x,
+                secondVertex.y,
+                secondVertex.z,
+                thirdVertex.x,
+                thirdVertex.y,
+                thirdVertex.z
+            ];
+
+            const index = [0, 1, 2];
+
+            const position = new GeometryAttribute({
+                componentDatatype: ComponentDatatype.DOUBLE,
+                componentsPerAttribute: 3,
+                values: new Float64Array(rawPositions)
+            });
+
+            const trianglePrimitive = new Primitive({
+                geometryInstances: new GeometryInstance({
+                    geometry: new Cesium.Geometry({
+                        attributes: {
+                            position: position
+                            // normal: normal,
+                            // st: st
+                        },
+                        indices: new Uint16Array(index),
+                        primitiveType: PrimitiveType.TRIANGLES,
+                        boundingSphere: BoundingSphere.fromVertices(rawPositions)
+                    }),
+                    attributes: {
+                        color: ColorGeometryInstanceAttribute.fromColor(Color.RED)
+                    }
+                }),
+                appearance: new PerInstanceColorAppearance({
+                    flat: true,
+                    closed: true,
+                    translucent: false
+                }),
+                asynchronous: false
+            });
+
+            viewer.scene.primitives.add(trianglePrimitive);
+        </script>
+    </body>
+</html>
