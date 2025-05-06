@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Model</title>
+
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/CesiumUnminified/Cesium.js"></script>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+
+        <script type="text/javascript">
+            // https://community.cesium.com/t/show-3d-globe-from-a-glb-file-at-the-center/40421/2
+            const viewer = new Cesium.Viewer("cesiumContainer");
+
+            const modelPromise = Cesium.Model.fromGltfAsync({
+                url: `./earth.glb`
+            });
+
+            modelPromise.then((model) => {
+                viewer.scene.globe.show = false;
+
+                viewer.scene.primitives.add(model);
+            });
+        </script>
+    </body>
+</html>
