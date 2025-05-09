@@ -1,132 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- Use correct character set. -->
-    <meta charset="utf-8">
-    <!-- Tell IE to use the latest, best version. -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>Issue10837</title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/CesiumUnminified/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.99/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
-</head>
-<body>
-<div id="cesiumContainer" class="fullSize"></div>
-<div id="toolbar">
-</div>
+    <head>
+        <!-- Use correct character set. -->
+        <meta charset="utf-8" />
+        <!-- Tell IE to use the latest, best version. -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+        />
+        <title>Issue10837</title>
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/CesiumUnminified/Cesium.js"></script>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="toolbar"></div>
 
-<script>
-    // https://github.com/CesiumGS/cesium/issues/10837
+        <script>
+            // https://github.com/CesiumGS/cesium/issues/10837
 
-    const viewer = new Cesium.Viewer("cesiumContainer");
+            const viewer = new Cesium.Viewer("cesiumContainer");
 
-    //Set the random number seed for consistent results.
-    Cesium.Math.setRandomNumberSeed(3);
+            //Set the random number seed for consistent results.
+            Cesium.Math.setRandomNumberSeed(3);
 
-    //Set bounds of our simulation time
-    const start = Cesium.JulianDate.fromDate(new Date(2015, 2, 25, 16));
-    const stop = Cesium.JulianDate.addSeconds(start, 120, new Cesium.JulianDate());
+            //Set bounds of our simulation time
+            const start = Cesium.JulianDate.fromDate(new Date(2015, 2, 25, 16));
+            const stop = Cesium.JulianDate.addSeconds(start, 120, new Cesium.JulianDate());
 
-    //Make sure viewer is at the desired time.
-    viewer.clock.startTime = start.clone();
-    viewer.clock.stopTime = stop.clone();
-    viewer.clock.currentTime = start.clone();
-    viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
-    viewer.clock.multiplier = 1;
-    viewer.clock.shouldAnimate = true;
+            //Make sure viewer is at the desired time.
+            viewer.clock.startTime = start.clone();
+            viewer.clock.stopTime = stop.clone();
+            viewer.clock.currentTime = start.clone();
+            viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
+            viewer.clock.multiplier = 1;
+            viewer.clock.shouldAnimate = true;
 
-    //Set timeline to simulation bounds
-    viewer.timeline.zoomTo(start, stop);
+            //Set timeline to simulation bounds
+            viewer.timeline.zoomTo(start, stop);
 
-    const viewModel = {
-        emissionRate: 5.0,
-        gravity: 0.0,
-        minimumParticleLife: 1.2,
-        maximumParticleLife: 1.2,
-        minimumSpeed: 1.0,
-        maximumSpeed: 4.0,
-        startScale: 1.0,
-        endScale: 5.0,
-        particleSize: 25.0
-    };
+            const viewModel = {
+                emissionRate: 5.0,
+                gravity: 0.0,
+                minimumParticleLife: 1.2,
+                maximumParticleLife: 1.2,
+                minimumSpeed: 1.0,
+                maximumSpeed: 4.0,
+                startScale: 1.0,
+                endScale: 5.0,
+                particleSize: 25.0
+            };
 
-    const position = Cesium.Cartesian3.fromDegrees(-93.968403, 29.880021);
+            const position = Cesium.Cartesian3.fromDegrees(-93.968403, 29.880021);
 
-    viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(-93.968203, 29.880021),
-        billboard: {
-            image: "./Cesium_Logo_overlay.png",
-        },
-    });
+            viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(-93.968203, 29.880021),
+                billboard: {
+                    image: "./Cesium_Logo_overlay.png"
+                }
+            });
 
-    viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(-93.968504, 29.880021),
-        point: {
-            pixelSize: 20,
-            color: Cesium.Color.YELLOW,
-        },
-    });
+            viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(-93.968504, 29.880021),
+                point: {
+                    pixelSize: 20,
+                    color: Cesium.Color.YELLOW
+                }
+            });
 
-    viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(-93.968403, 29.880021, 200)
-    });
+            viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(-93.968403, 29.880021, 200)
+            });
 
-    const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+            const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 
-    const scene = viewer.scene;
-    const particleSystem = scene.primitives.add(
-        new Cesium.ParticleSystem({
-            image: "./smoke.png",
-            modelMatrix: modelMatrix,
-            startColor: Cesium.Color.LIGHTSEAGREEN.withAlpha(0.7),
-            endColor: Cesium.Color.WHITE.withAlpha(0.0),
+            const scene = viewer.scene;
+            const particleSystem = scene.primitives.add(
+                new Cesium.ParticleSystem({
+                    image: "./smoke.png",
+                    modelMatrix: modelMatrix,
+                    startColor: Cesium.Color.LIGHTSEAGREEN.withAlpha(0.7),
+                    endColor: Cesium.Color.WHITE.withAlpha(0.0),
 
-            startScale: viewModel.startScale,
-            endScale: viewModel.endScale,
+                    startScale: viewModel.startScale,
+                    endScale: viewModel.endScale,
 
-            minimumParticleLife: viewModel.minimumParticleLife,
-            maximumParticleLife: viewModel.maximumParticleLife,
+                    minimumParticleLife: viewModel.minimumParticleLife,
+                    maximumParticleLife: viewModel.maximumParticleLife,
 
-            minimumSpeed: viewModel.minimumSpeed,
-            maximumSpeed: viewModel.maximumSpeed,
+                    minimumSpeed: viewModel.minimumSpeed,
+                    maximumSpeed: viewModel.maximumSpeed,
 
-            imageSize: new Cesium.Cartesian2(viewModel.particleSize, viewModel.particleSize),
+                    imageSize: new Cesium.Cartesian2(viewModel.particleSize, viewModel.particleSize),
 
-            emissionRate: viewModel.emissionRate,
+                    emissionRate: viewModel.emissionRate,
 
-            bursts: [
-                // these burst will occasionally sync to create a multicolored effect
-                new Cesium.ParticleBurst({
-                    time: 5.0,
-                    minimum: 10,
-                    maximum: 100
-                }),
-                new Cesium.ParticleBurst({
-                    time: 10.0,
-                    minimum: 50,
-                    maximum: 100
-                }),
-                new Cesium.ParticleBurst({
-                    time: 15.0,
-                    minimum: 200,
-                    maximum: 300
+                    bursts: [
+                        // these burst will occasionally sync to create a multicolored effect
+                        new Cesium.ParticleBurst({
+                            time: 5.0,
+                            minimum: 10,
+                            maximum: 100
+                        }),
+                        new Cesium.ParticleBurst({
+                            time: 10.0,
+                            minimum: 50,
+                            maximum: 100
+                        }),
+                        new Cesium.ParticleBurst({
+                            time: 15.0,
+                            minimum: 200,
+                            maximum: 300
+                        })
+                    ],
+
+                    lifetime: 16.0,
+
+                    emitter: new Cesium.CircleEmitter(2.0)
                 })
-            ],
+            );
 
-            lifetime: 16.0,
+            viewer.screenSpaceEventHandler.setInputAction((movement) => {
+                const picked = scene.drillPick(movement.position);
 
-            emitter: new Cesium.CircleEmitter(2.0)
-        })
-    );
-
-    viewer.screenSpaceEventHandler.setInputAction((movement) => {
-        const picked = scene.drillPick(movement.position);
-
-        console.log(picked);
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-
-</script>
-</body>
+                console.log(picked);
+            }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        </script>
+    </body>
 </html>

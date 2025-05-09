@@ -1,75 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- Use correct character set. -->
-    <meta charset="utf-8"/>
-    <!-- Tell IE to use the latest, best version. -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
-    <meta
+    <head>
+        <!-- Use correct character set. -->
+        <meta charset="utf-8" />
+        <!-- Tell IE to use the latest, best version. -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+        <meta
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
-    />
-    <title>City DB</title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/CesiumUnminified/Cesium.js"></script>
-    <link
-            href="https://cesium.com/downloads/cesiumjs/releases/1.44/Build/Cesium/Widgets/widgets.css"
+        />
+        <title>City DB</title>
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/CesiumUnminified/Cesium.js"></script>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css"
             rel="stylesheet"
-    />
+        />
 
-    <script src="./jquery-1.9.1-min.js"> </script>
-    <script src="./IntersectionAPI.js"> </script>
+        <script src="./jquery-1.9.1-min.js"></script>
+        <script src="./IntersectionAPI.js"></script>
 
-    <script src="./CitydbKmlHighlightingManager.js"></script>
-    <script src="./CitydbWebworker.js"></script>
-    <script src="./CitydbKmlTilingManager.js"></script>
-    <script src="./CitydbSceneTransforms.js"></script>
-    <script src="./CitydbUtil.js"></script>
+        <script src="./CitydbKmlHighlightingManager.js"></script>
+        <script src="./CitydbWebworker.js"></script>
+        <script src="./CitydbKmlTilingManager.js"></script>
+        <script src="./CitydbSceneTransforms.js"></script>
+        <script src="./CitydbUtil.js"></script>
 
-    <script>
-         Cesium.defineProperties = Object.defineProperties;
-    </script>
+        <script>
+            Cesium.defineProperties = Object.defineProperties;
+        </script>
 
-    <script src="./CitydbKmlDataSource.js"></script>
-    <script src="./CitydbKmlLayer.js"></script>
-</head>
-<body>
-<div id="cesiumContainer" class="fullSize"></div>
-<div id="toolbar"></div>
+        <script src="./CitydbKmlDataSource.js"></script>
+        <script src="./CitydbKmlLayer.js"></script>
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="toolbar"></div>
 
-<script>
-    const {
-        Cartesian3,
-        Viewer
-    } = window.Cesium;
+        <script>
+            const { Cartesian3, Viewer } = window.Cesium;
 
-    const CesiumMath = Cesium.Math;
+            const CesiumMath = Cesium.Math;
 
-    Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMDVmZDZlOS1jNzYxLTQ3MWYtYmNlNi0xMzA4NjA1OTc1NDgiLCJpZCI6OTc4NiwiaWF0IjoxNjE3MTU2MTQ2fQ.vtM1I7acSXgL6riYVHUMz_lWeaCESiUOeYXVM2lft50";
+            Cesium.Ion.defaultAccessToken =
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMDVmZDZlOS1jNzYxLTQ3MWYtYmNlNi0xMzA4NjA1OTc1NDgiLCJpZCI6OTc4NiwiaWF0IjoxNjE3MTU2MTQ2fQ.vtM1I7acSXgL6riYVHUMz_lWeaCESiUOeYXVM2lft50";
 
-    const viewer = new Viewer("cesiumContainer", {});
+            const viewer = new Viewer("cesiumContainer", {});
 
-    const options = {
-        active: true,
-        cityobjectsJsonUrl: "",
-        maxCountOfVisibleTiles: "200",
-        maxLodPixels: "1.7976931348623157e+308",
-        maxSizeOfCachedTiles: "200",
-        minLodPixels: "100",
-        name: "Brlin_Buildings_rgbTexture",
-        thematicDataUrl: "https://www.google.com/fusiontables/DataSource?docid=19cuclDgIHMqrRQyBwLEztMLeGzP83IBWfEtKQA3B&pli=1#rows:id=1",
-        url: "https://www.3dcitydb.org/3dcitydb/fileadmin/mydata/Berlin_Demo/Berlin_Buildings_rgbTexture_ScaleFactor_0.3/Berlin_Buildings_rgbTexture_collada_MasterJSON.json"
-    };
+            const options = {
+                active: true,
+                cityobjectsJsonUrl: "",
+                maxCountOfVisibleTiles: "200",
+                maxLodPixels: "1.7976931348623157e+308",
+                maxSizeOfCachedTiles: "200",
+                minLodPixels: "100",
+                name: "Brlin_Buildings_rgbTexture",
+                thematicDataUrl:
+                    "https://www.google.com/fusiontables/DataSource?docid=19cuclDgIHMqrRQyBwLEztMLeGzP83IBWfEtKQA3B&pli=1#rows:id=1",
+                url: "https://www.3dcitydb.org/3dcitydb/fileadmin/mydata/Berlin_Demo/Berlin_Buildings_rgbTexture_ScaleFactor_0.3/Berlin_Buildings_rgbTexture_collada_MasterJSON.json"
+            };
 
-    const layer = new CitydbKmlLayer(options);
+            const layer = new CitydbKmlLayer(options);
 
-    layer.addToCesium(viewer);
+            layer.addToCesium(viewer);
 
-    viewer.camera.flyTo(
-        {
-            destination: Cartesian3.fromDegrees(13.411141287558161, 52.517479728958044, 534.97)
-        });
-
-</script>
-</body>
+            viewer.camera.flyTo({
+                destination: Cartesian3.fromDegrees(13.411141287558161, 52.517479728958044, 534.97)
+            });
+        </script>
+    </body>
 </html>

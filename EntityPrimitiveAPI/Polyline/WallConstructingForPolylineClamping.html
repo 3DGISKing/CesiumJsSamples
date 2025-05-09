@@ -1,434 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- Use correct character set. -->
-    <meta charset="utf-8">
-    <!-- Tell IE to use the latest, best version. -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>WallConstructingForPolylineClamping</title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/CesiumUnminified/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.87/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-</head>
-<body>
-<div id="cesiumContainer" class="fullSize"></div>
-<script>
-    Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMDVmZDZlOS1jNzYxLTQ3MWYtYmNlNi0xMzA4NjA1OTc1NDgiLCJpZCI6OTc4NiwiaWF0IjoxNjE3MTU2MTQ2fQ.vtM1I7acSXgL6riYVHUMz_lWeaCESiUOeYXVM2lft50"
+    <head>
+        <!-- Use correct character set. -->
+        <meta charset="utf-8" />
+        <!-- Tell IE to use the latest, best version. -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+        />
+        <title>WallConstructingForPolylineClamping</title>
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/CesiumUnminified/Cesium.js"></script>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+        <script>
+            Cesium.Ion.defaultAccessToken =
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMDVmZDZlOS1jNzYxLTQ3MWYtYmNlNi0xMzA4NjA1OTc1NDgiLCJpZCI6OTc4NiwiaWF0IjoxNjE3MTU2MTQ2fQ.vtM1I7acSXgL6riYVHUMz_lWeaCESiUOeYXVM2lft50";
 
-    const ArcType = Cesium.ArcType;
-    const Cartesian3 = Cesium.Cartesian3;
-    const Cartographic = Cesium.Cartographic;
-    const CesiumMath = Cesium.Math;
-    const EllipsoidGeodesic = Cesium.EllipsoidGeodesic;
-    const EllipsoidRhumbLine = Cesium.EllipsoidRhumbLine;
-    const Matrix4 = Cesium.Matrix4;
+            const ArcType = Cesium.ArcType;
+            const Cartesian3 = Cesium.Cartesian3;
+            const Cartographic = Cesium.Cartographic;
+            const CesiumMath = Cesium.Math;
+            const EllipsoidGeodesic = Cesium.EllipsoidGeodesic;
+            const EllipsoidRhumbLine = Cesium.EllipsoidRhumbLine;
+            const Matrix4 = Cesium.Matrix4;
 
-    var previousBottomScratch = new Cartesian3();
-    var vertexBottomScratch = new Cartesian3();
-    var vertexTopScratch = new Cartesian3();
-    var nextBottomScratch = new Cartesian3();
-    var vertexNormalScratch = new Cartesian3();
-    var intersectionScratch = new Cartesian3();
-    var cartographicScratch0 = new Cartographic();
-    var cartographicScratch1 = new Cartographic();
-    var cartographicIntersectionScratch = new Cartographic();
+            var previousBottomScratch = new Cartesian3();
+            var vertexBottomScratch = new Cartesian3();
+            var vertexTopScratch = new Cartesian3();
+            var nextBottomScratch = new Cartesian3();
+            var vertexNormalScratch = new Cartesian3();
+            var intersectionScratch = new Cartesian3();
+            var cartographicScratch0 = new Cartographic();
+            var cartographicScratch1 = new Cartographic();
+            var cartographicIntersectionScratch = new Cartographic();
 
-    var cart3Scratch1 = new Cartesian3();
-    var cart3Scratch2 = new Cartesian3();
-    var cart3Scratch3 = new Cartesian3();
-    function computeRightNormal(start, end, maxHeight, ellipsoid, result) {
-        var startBottom = getPosition(ellipsoid, start, 0.0, cart3Scratch1);
-        var startTop = getPosition(ellipsoid, start, maxHeight, cart3Scratch2);
-        var endBottom = getPosition(ellipsoid, end, 0.0, cart3Scratch3);
+            var cart3Scratch1 = new Cartesian3();
+            var cart3Scratch2 = new Cartesian3();
+            var cart3Scratch3 = new Cartesian3();
+            function computeRightNormal(start, end, maxHeight, ellipsoid, result) {
+                var startBottom = getPosition(ellipsoid, start, 0.0, cart3Scratch1);
+                var startTop = getPosition(ellipsoid, start, maxHeight, cart3Scratch2);
+                var endBottom = getPosition(ellipsoid, end, 0.0, cart3Scratch3);
 
-        var up = direction(startTop, startBottom, cart3Scratch2);
-        var forward = direction(endBottom, startBottom, cart3Scratch3);
+                var up = direction(startTop, startBottom, cart3Scratch2);
+                var forward = direction(endBottom, startBottom, cart3Scratch3);
 
-        Cartesian3.cross(forward, up, result);
-        return Cartesian3.normalize(result, result);
-    }
+                Cartesian3.cross(forward, up, result);
+                return Cartesian3.normalize(result, result);
+            }
 
-    function direction(target, origin, result) {
-        Cartesian3.subtract(target, origin, result);
-        Cartesian3.normalize(result, result);
-        return result;
-    }
+            function direction(target, origin, result) {
+                Cartesian3.subtract(target, origin, result);
+                Cartesian3.normalize(result, result);
+                return result;
+            }
 
-    function tangentDirection(target, origin, up, result) {
-        result = direction(target, origin, result);
+            function tangentDirection(target, origin, up, result) {
+                result = direction(target, origin, result);
 
-        // orthogonalize
-        result = Cartesian3.cross(result, up, result);
-        result = Cartesian3.normalize(result, result);
-        result = Cartesian3.cross(up, result, result);
-        return result;
-    }
+                // orthogonalize
+                result = Cartesian3.cross(result, up, result);
+                result = Cartesian3.normalize(result, result);
+                result = Cartesian3.cross(up, result, result);
+                return result;
+            }
 
-    var toPreviousScratch = new Cartesian3();
-    var toNextScratch = new Cartesian3();
-    var forwardScratch = new Cartesian3();
-    var vertexUpScratch = new Cartesian3();
-    var cosine90 = 0.0;
-    var cosine180 = -1.0;
-    function computeVertexMiterNormal(
-        previousBottom,
-        vertexBottom,
-        vertexTop,
-        nextBottom,
-        result
-    ) {
-        var up = direction(vertexTop, vertexBottom, vertexUpScratch);
+            var toPreviousScratch = new Cartesian3();
+            var toNextScratch = new Cartesian3();
+            var forwardScratch = new Cartesian3();
+            var vertexUpScratch = new Cartesian3();
+            var cosine90 = 0.0;
+            var cosine180 = -1.0;
+            function computeVertexMiterNormal(previousBottom, vertexBottom, vertexTop, nextBottom, result) {
+                var up = direction(vertexTop, vertexBottom, vertexUpScratch);
 
-        // Compute vectors pointing towards neighboring points but tangent to this point on the ellipsoid
-        var toPrevious = tangentDirection(
-            previousBottom,
-            vertexBottom,
-            up,
-            toPreviousScratch
-        );
-        var toNext = tangentDirection(nextBottom, vertexBottom, up, toNextScratch);
+                // Compute vectors pointing towards neighboring points but tangent to this point on the ellipsoid
+                var toPrevious = tangentDirection(previousBottom, vertexBottom, up, toPreviousScratch);
+                var toNext = tangentDirection(nextBottom, vertexBottom, up, toNextScratch);
 
-        // Check if tangents are almost opposite - if so, no need to miter.
-        if (
-            CesiumMath.equalsEpsilon(
-                Cartesian3.dot(toPrevious, toNext),
-                cosine180,
-                CesiumMath.EPSILON5
-            )
-        ) {
-            result = Cartesian3.cross(up, toPrevious, result);
-            result = Cartesian3.normalize(result, result);
-            return result;
-        }
+                // Check if tangents are almost opposite - if so, no need to miter.
+                if (CesiumMath.equalsEpsilon(Cartesian3.dot(toPrevious, toNext), cosine180, CesiumMath.EPSILON5)) {
+                    result = Cartesian3.cross(up, toPrevious, result);
+                    result = Cartesian3.normalize(result, result);
+                    return result;
+                }
 
-        // Average directions to previous and to next in the plane of Up
-        result = Cartesian3.add(toNext, toPrevious, result);
-        result = Cartesian3.normalize(result, result);
+                // Average directions to previous and to next in the plane of Up
+                result = Cartesian3.add(toNext, toPrevious, result);
+                result = Cartesian3.normalize(result, result);
 
-        // Flip the normal if it isn't pointing roughly bound right (aka if forward is pointing more "backwards")
-        var forward = Cartesian3.cross(up, result, forwardScratch);
-        if (Cartesian3.dot(toNext, forward) < cosine90) {
-            result = Cartesian3.negate(result, result);
-        }
+                // Flip the normal if it isn't pointing roughly bound right (aka if forward is pointing more "backwards")
+                var forward = Cartesian3.cross(up, result, forwardScratch);
+                if (Cartesian3.dot(toNext, forward) < cosine90) {
+                    result = Cartesian3.negate(result, result);
+                }
 
-        return result;
-    }
+                return result;
+            }
 
-    var interpolatedCartographicScratch = new Cartographic();
-    var interpolatedBottomScratch = new Cartesian3();
-    var interpolatedTopScratch = new Cartesian3();
-    var interpolatedNormalScratch = new Cartesian3();
-    function interpolateSegment(
-        start,
-        end,
-        minHeight,
-        maxHeight,
-        granularity,
-        arcType,
-        ellipsoid,
-        normalsArray,
-        bottomPositionsArray,
-        topPositionsArray,
-        cartographicsArray
-    ) {
-        if (granularity === 0.0) {
-            return;
-        }
-
-        var ellipsoidLine;
-        if (arcType === ArcType.GEODESIC) {
-            ellipsoidLine = new EllipsoidGeodesic(start, end, ellipsoid);
-        } else if (arcType === ArcType.RHUMB) {
-            ellipsoidLine = new EllipsoidRhumbLine(start, end, ellipsoid);
-        }
-
-        var surfaceDistance = ellipsoidLine.surfaceDistance;
-        if (surfaceDistance < granularity) {
-            return;
-        }
-
-        // Compute rightwards normal applicable at all interpolated points
-        var interpolatedNormal = computeRightNormal(
-            start,
-            end,
-            maxHeight,
-            ellipsoid,
-            interpolatedNormalScratch
-        );
-
-        var segments = Math.ceil(surfaceDistance / granularity);
-        var interpointDistance = surfaceDistance / segments;
-        var distanceFromStart = interpointDistance;
-        var pointsToAdd = segments - 1;
-        var packIndex = normalsArray.length;
-        for (var i = 0; i < pointsToAdd; i++) {
-            var interpolatedCartographic = ellipsoidLine.interpolateUsingSurfaceDistance(
-                distanceFromStart,
-                interpolatedCartographicScratch
-            );
-            var interpolatedBottom = getPosition(
-                ellipsoid,
-                interpolatedCartographic,
+            var interpolatedCartographicScratch = new Cartographic();
+            var interpolatedBottomScratch = new Cartesian3();
+            var interpolatedTopScratch = new Cartesian3();
+            var interpolatedNormalScratch = new Cartesian3();
+            function interpolateSegment(
+                start,
+                end,
                 minHeight,
-                interpolatedBottomScratch
-            );
-            var interpolatedTop = getPosition(
-                ellipsoid,
-                interpolatedCartographic,
                 maxHeight,
-                interpolatedTopScratch
+                granularity,
+                arcType,
+                ellipsoid,
+                normalsArray,
+                bottomPositionsArray,
+                topPositionsArray,
+                cartographicsArray
+            ) {
+                if (granularity === 0.0) {
+                    return;
+                }
+
+                var ellipsoidLine;
+                if (arcType === ArcType.GEODESIC) {
+                    ellipsoidLine = new EllipsoidGeodesic(start, end, ellipsoid);
+                } else if (arcType === ArcType.RHUMB) {
+                    ellipsoidLine = new EllipsoidRhumbLine(start, end, ellipsoid);
+                }
+
+                var surfaceDistance = ellipsoidLine.surfaceDistance;
+                if (surfaceDistance < granularity) {
+                    return;
+                }
+
+                // Compute rightwards normal applicable at all interpolated points
+                var interpolatedNormal = computeRightNormal(
+                    start,
+                    end,
+                    maxHeight,
+                    ellipsoid,
+                    interpolatedNormalScratch
+                );
+
+                var segments = Math.ceil(surfaceDistance / granularity);
+                var interpointDistance = surfaceDistance / segments;
+                var distanceFromStart = interpointDistance;
+                var pointsToAdd = segments - 1;
+                var packIndex = normalsArray.length;
+                for (var i = 0; i < pointsToAdd; i++) {
+                    var interpolatedCartographic = ellipsoidLine.interpolateUsingSurfaceDistance(
+                        distanceFromStart,
+                        interpolatedCartographicScratch
+                    );
+                    var interpolatedBottom = getPosition(
+                        ellipsoid,
+                        interpolatedCartographic,
+                        minHeight,
+                        interpolatedBottomScratch
+                    );
+                    var interpolatedTop = getPosition(
+                        ellipsoid,
+                        interpolatedCartographic,
+                        maxHeight,
+                        interpolatedTopScratch
+                    );
+
+                    Cartesian3.pack(interpolatedNormal, normalsArray, packIndex);
+                    Cartesian3.pack(interpolatedBottom, bottomPositionsArray, packIndex);
+                    Cartesian3.pack(interpolatedTop, topPositionsArray, packIndex);
+                    cartographicsArray.push(interpolatedCartographic.latitude);
+                    cartographicsArray.push(interpolatedCartographic.longitude);
+
+                    packIndex += 3;
+                    distanceFromStart += interpointDistance;
+                }
+            }
+
+            var heightlessCartographicScratch = new Cartographic();
+
+            function getPosition(ellipsoid, cartographic, height, result) {
+                Cartographic.clone(cartographic, heightlessCartographicScratch);
+                heightlessCartographicScratch.height = height;
+                return Cartographic.toCartesian(heightlessCartographicScratch, ellipsoid, result);
+            }
+
+            // Initial heights for constructing the wall.
+            // Keeping WALL_INITIAL_MIN_HEIGHT near the ellipsoid surface helps
+            // prevent precision problems with planes in the shader.
+            // Putting the start point of a plane at ApproximateTerrainHeights._defaultMinTerrainHeight,
+            // which is a highly conservative bound, usually puts the plane origin several thousands
+            // of meters away from the actual terrain, causing floating point problems when checking
+            // fragments on terrain against the plane.
+            // Ellipsoid height is generally much closer.
+            // The initial max height is arbitrary.
+            // Both heights are corrected using ApproximateTerrainHeights for computing the actual volume geometry.
+            var WALL_INITIAL_MIN_HEIGHT = 0.0;
+            var WALL_INITIAL_MAX_HEIGHT = 10000.0;
+
+            var minHeight = WALL_INITIAL_MIN_HEIGHT;
+            var maxHeight = WALL_INITIAL_MAX_HEIGHT;
+
+            var index;
+
+            const viewer = new Cesium.Viewer("cesiumContainer");
+            const scene = viewer.scene;
+            scene.globe.depthTestAgainstTerrain = true;
+            //scene.globe._surface.tileProvider._debug.wireframe = true;
+            scene.screenSpaceCameraController.enableCollisionDetection = false;
+
+            var granularity = 9999;
+            var ellipsoid = Cesium.Ellipsoid.WGS84;
+            var arcType = ArcType.GEODESIC; //1
+
+            const positions = [
+                new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681),
+                new Cartesian3(-1037188.8557929279, -4146321.488460347, 4707207.17604849),
+                new Cartesian3(-1023224.8460688646, -4165002.0172140873, 4693561.123366981),
+                new Cartesian3(-1002875.1912778437, -4123364.6257174523, 4734800.601450437),
+                new Cartesian3(-1008418.090191102, -4102736.220889342, 4752543.254830549),
+                new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681)
+            ];
+
+            const polyline = viewer.entities.add({
+                polyline: {
+                    positions: positions,
+                    width: 2,
+                    material: Cesium.Color.RED
+                }
+            });
+
+            viewer.flyTo(viewer.entities);
+
+            const splitPositions = [
+                new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681),
+                new Cartesian3(-1037188.8557929279, -4146321.488460347, 4707207.17604849),
+                new Cartesian3(-1023224.8460688646, -4165002.0172140873, 4693561.123366981),
+                new Cartesian3(-1002875.1912778437, -4123364.6257174523, 4734800.601450437),
+                new Cartesian3(-1008418.090191102, -4102736.220889342, 4752543.254830549),
+                new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681)
+            ];
+
+            let cartographicsLength = splitPositions.length;
+
+            const cartographics = new Array(cartographicsLength);
+
+            for (let i = 0; i < cartographicsLength; i++) {
+                const cartographic = Cartographic.fromCartesian(splitPositions[i]);
+
+                cartographic.height = 0.0;
+                cartographics[i] = cartographic;
+            }
+
+            /**** Build heap-side arrays for positions, interpolated cartographics, and normals from which to compute vertices ****/
+            // We build a "wall" and then decompose it into separately connected component "volumes" because we need a lot
+            // of information about the wall. Also, this simplifies interpolation.
+            // Convention: "next" and "end" are locally forward to each segment of the wall,
+            // and we are computing normals pointing towards the local right side of the vertices in each segment.
+
+            var cartographicsArray = [];
+            var normalsArray = [];
+            var bottomPositionsArray = [];
+            var topPositionsArray = [];
+
+            var previousBottom = previousBottomScratch;
+            var vertexBottom = vertexBottomScratch;
+            var vertexTop = vertexTopScratch;
+            var nextBottom = nextBottomScratch;
+            var vertexNormal = vertexNormalScratch;
+
+            // First point - either loop or attach a "perpendicular" normal
+            var startCartographic = cartographics[0];
+            var nextCartographic = cartographics[1];
+
+            var prestartCartographic = cartographics[cartographicsLength - 1];
+            previousBottom = getPosition(ellipsoid, prestartCartographic, minHeight, previousBottom);
+            nextBottom = getPosition(ellipsoid, nextCartographic, minHeight, nextBottom);
+            vertexBottom = getPosition(ellipsoid, startCartographic, minHeight, vertexBottom);
+            vertexTop = getPosition(ellipsoid, startCartographic, maxHeight, vertexTop);
+
+            Cartesian3.pack(vertexNormal, normalsArray, 0);
+            Cartesian3.pack(vertexBottom, bottomPositionsArray, 0);
+            Cartesian3.pack(vertexTop, topPositionsArray, 0);
+            cartographicsArray.push(startCartographic.latitude);
+            cartographicsArray.push(startCartographic.longitude);
+
+            interpolateSegment(
+                startCartographic,
+                nextCartographic,
+                minHeight,
+                maxHeight,
+                granularity,
+                arcType,
+                ellipsoid,
+                normalsArray,
+                bottomPositionsArray,
+                topPositionsArray,
+                cartographicsArray
             );
 
-            Cartesian3.pack(interpolatedNormal, normalsArray, packIndex);
-            Cartesian3.pack(interpolatedBottom, bottomPositionsArray, packIndex);
-            Cartesian3.pack(interpolatedTop, topPositionsArray, packIndex);
-            cartographicsArray.push(interpolatedCartographic.latitude);
-            cartographicsArray.push(interpolatedCartographic.longitude);
+            // All in between points
+            for (let i = 1; i < cartographicsLength - 1; ++i) {
+                previousBottom = Cartesian3.clone(vertexBottom, previousBottom);
+                vertexBottom = Cartesian3.clone(nextBottom, vertexBottom);
+                var vertexCartographic = cartographics[i];
+                getPosition(ellipsoid, vertexCartographic, maxHeight, vertexTop);
+                getPosition(ellipsoid, cartographics[i + 1], minHeight, nextBottom);
 
-            packIndex += 3;
-            distanceFromStart += interpointDistance;
-        }
-    }
+                computeVertexMiterNormal(previousBottom, vertexBottom, vertexTop, nextBottom, vertexNormal);
 
-    var heightlessCartographicScratch = new Cartographic();
+                index = normalsArray.length;
+                Cartesian3.pack(vertexNormal, normalsArray, index);
+                Cartesian3.pack(vertexBottom, bottomPositionsArray, index);
+                Cartesian3.pack(vertexTop, topPositionsArray, index);
+                cartographicsArray.push(vertexCartographic.latitude);
+                cartographicsArray.push(vertexCartographic.longitude);
 
-    function getPosition(ellipsoid, cartographic, height, result) {
-        Cartographic.clone(cartographic, heightlessCartographicScratch);
-        heightlessCartographicScratch.height = height;
-        return Cartographic.toCartesian(
-            heightlessCartographicScratch,
-            ellipsoid,
-            result
-        );
-    }
-
-    // Initial heights for constructing the wall.
-    // Keeping WALL_INITIAL_MIN_HEIGHT near the ellipsoid surface helps
-    // prevent precision problems with planes in the shader.
-    // Putting the start point of a plane at ApproximateTerrainHeights._defaultMinTerrainHeight,
-    // which is a highly conservative bound, usually puts the plane origin several thousands
-    // of meters away from the actual terrain, causing floating point problems when checking
-    // fragments on terrain against the plane.
-    // Ellipsoid height is generally much closer.
-    // The initial max height is arbitrary.
-    // Both heights are corrected using ApproximateTerrainHeights for computing the actual volume geometry.
-    var WALL_INITIAL_MIN_HEIGHT = 0.0;
-    var WALL_INITIAL_MAX_HEIGHT = 10000.0;
-
-    var minHeight = WALL_INITIAL_MIN_HEIGHT;
-    var maxHeight = WALL_INITIAL_MAX_HEIGHT;
-
-    var index;
-
-    const viewer = new Cesium.Viewer("cesiumContainer");
-    const scene = viewer.scene;
-    scene.globe.depthTestAgainstTerrain = true;
-    //scene.globe._surface.tileProvider._debug.wireframe = true;
-    scene.screenSpaceCameraController.enableCollisionDetection = false;
-
-    var granularity = 9999;
-    var ellipsoid = Cesium.Ellipsoid.WGS84;
-    var arcType = ArcType.GEODESIC; //1
-
-    const positions = [
-        new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681),
-        new Cartesian3(-1037188.8557929279, -4146321.488460347, 4707207.17604849),
-        new Cartesian3(-1023224.8460688646, -4165002.0172140873, 4693561.123366981),
-        new Cartesian3(-1002875.1912778437, -4123364.6257174523, 4734800.601450437),
-        new Cartesian3(-1008418.090191102, -4102736.220889342, 4752543.254830549),
-        new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681),
-    ];
-
-    const polyline = viewer.entities.add({
-        polyline : {
-            positions : positions,
-            width : 2,
-            material : Cesium.Color.RED
-        }
-    });
-
-    viewer.flyTo(viewer.entities);
-
-
-    const splitPositions = [
-        new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681),
-        new Cartesian3(-1037188.8557929279, -4146321.488460347, 4707207.17604849),
-        new Cartesian3(-1023224.8460688646, -4165002.0172140873, 4693561.123366981),
-        new Cartesian3(-1002875.1912778437, -4123364.6257174523, 4734800.601450437),
-        new Cartesian3(-1008418.090191102, -4102736.220889342, 4752543.254830549),
-        new Cartesian3(-1023535.4585385143, -4115349.4937448823, 4737837.012846681),
-    ];
-
-    let cartographicsLength = splitPositions.length;
-
-    const cartographics = new Array(cartographicsLength);
-
-    for (let i = 0; i < cartographicsLength; i++) {
-        const cartographic = Cartographic.fromCartesian(splitPositions[i]);
-
-        cartographic.height = 0.0;
-        cartographics[i] = cartographic;
-    }
-
-    /**** Build heap-side arrays for positions, interpolated cartographics, and normals from which to compute vertices ****/
-    // We build a "wall" and then decompose it into separately connected component "volumes" because we need a lot
-    // of information about the wall. Also, this simplifies interpolation.
-    // Convention: "next" and "end" are locally forward to each segment of the wall,
-    // and we are computing normals pointing towards the local right side of the vertices in each segment.
-
-
-    var cartographicsArray = [];
-    var normalsArray = [];
-    var bottomPositionsArray = [];
-    var topPositionsArray = [];
-
-    var previousBottom = previousBottomScratch;
-    var vertexBottom = vertexBottomScratch;
-    var vertexTop = vertexTopScratch;
-    var nextBottom = nextBottomScratch;
-    var vertexNormal = vertexNormalScratch;
-
-    // First point - either loop or attach a "perpendicular" normal
-    var startCartographic = cartographics[0];
-    var nextCartographic = cartographics[1];
-
-    var prestartCartographic = cartographics[cartographicsLength - 1];
-    previousBottom = getPosition(
-        ellipsoid,
-        prestartCartographic,
-        minHeight,
-        previousBottom
-    );
-    nextBottom = getPosition(ellipsoid, nextCartographic, minHeight, nextBottom);
-    vertexBottom = getPosition(
-        ellipsoid,
-        startCartographic,
-        minHeight,
-        vertexBottom
-    );
-    vertexTop = getPosition(ellipsoid, startCartographic, maxHeight, vertexTop);
-
-    Cartesian3.pack(vertexNormal, normalsArray, 0);
-    Cartesian3.pack(vertexBottom, bottomPositionsArray, 0);
-    Cartesian3.pack(vertexTop, topPositionsArray, 0);
-    cartographicsArray.push(startCartographic.latitude);
-    cartographicsArray.push(startCartographic.longitude);
-
-    interpolateSegment(
-        startCartographic,
-        nextCartographic,
-        minHeight,
-        maxHeight,
-        granularity,
-        arcType,
-        ellipsoid,
-        normalsArray,
-        bottomPositionsArray,
-        topPositionsArray,
-        cartographicsArray
-    );
-
-    // All in between points
-    for (let i = 1; i < cartographicsLength - 1; ++i) {
-        previousBottom = Cartesian3.clone(vertexBottom, previousBottom);
-        vertexBottom = Cartesian3.clone(nextBottom, vertexBottom);
-        var vertexCartographic = cartographics[i];
-        getPosition(ellipsoid, vertexCartographic, maxHeight, vertexTop);
-        getPosition(ellipsoid, cartographics[i + 1], minHeight, nextBottom);
-
-        computeVertexMiterNormal(
-            previousBottom,
-            vertexBottom,
-            vertexTop,
-            nextBottom,
-            vertexNormal
-        );
-
-        index = normalsArray.length;
-        Cartesian3.pack(vertexNormal, normalsArray, index);
-        Cartesian3.pack(vertexBottom, bottomPositionsArray, index);
-        Cartesian3.pack(vertexTop, topPositionsArray, index);
-        cartographicsArray.push(vertexCartographic.latitude);
-        cartographicsArray.push(vertexCartographic.longitude);
-
-        interpolateSegment(
-            cartographics[i],
-            cartographics[i + 1],
-            minHeight,
-            maxHeight,
-            granularity,
-            arcType,
-            ellipsoid,
-            normalsArray,
-            bottomPositionsArray,
-            topPositionsArray,
-            cartographicsArray
-        );
-    }
-
-    // Last point - either loop or attach a normal "perpendicular" to the wall.
-    var endCartographic = cartographics[cartographicsLength - 1];
-    var preEndCartographic = cartographics[cartographicsLength - 2];
-
-    vertexBottom = getPosition(
-        ellipsoid,
-        endCartographic,
-        minHeight,
-        vertexBottom
-    );
-    vertexTop = getPosition(ellipsoid, endCartographic, maxHeight, vertexTop);
-
-    if(false){
-        //loop
-    }{
-        vertexNormal = computeRightNormal(
-            preEndCartographic,
-            endCartographic,
-            maxHeight,
-            ellipsoid,
-            vertexNormal
-        );
-    }
-
-    index = normalsArray.length;
-    Cartesian3.pack(vertexNormal, normalsArray, index);
-    Cartesian3.pack(vertexBottom, bottomPositionsArray, index);
-    Cartesian3.pack(vertexTop, topPositionsArray, index);
-    cartographicsArray.push(endCartographic.latitude);
-    cartographicsArray.push(endCartographic.longitude);
-
-    console.log(bottomPositionsArray);
-    console.log(topPositionsArray);
-    console.log(normalsArray);
-
-    const bottomPositions = Cartesian3.unpackArray(bottomPositionsArray);
-
-    const radius = 100;
-
-    for(let i = 0; i < bottomPositions.length; i++) {
-        viewer.entities.add({
-            position: bottomPositions[i],
-            ellipsoid: {
-                radii: new Cesium.Cartesian3(radius, radius, radius),
-                material: Cesium.Color.RED,
+                interpolateSegment(
+                    cartographics[i],
+                    cartographics[i + 1],
+                    minHeight,
+                    maxHeight,
+                    granularity,
+                    arcType,
+                    ellipsoid,
+                    normalsArray,
+                    bottomPositionsArray,
+                    topPositionsArray,
+                    cartographicsArray
+                );
             }
-        });
-    }
 
-    const topPositions = Cartesian3.unpackArray(topPositionsArray);
+            // Last point - either loop or attach a normal "perpendicular" to the wall.
+            var endCartographic = cartographics[cartographicsLength - 1];
+            var preEndCartographic = cartographics[cartographicsLength - 2];
 
-    for(let i = 0; i < topPositions.length; i++) {
-        viewer.entities.add({
-            position: topPositions[i],
-            ellipsoid: {
-                radii: new Cesium.Cartesian3(radius, radius, radius),
-                material: Cesium.Color.YELLOW
+            vertexBottom = getPosition(ellipsoid, endCartographic, minHeight, vertexBottom);
+            vertexTop = getPosition(ellipsoid, endCartographic, maxHeight, vertexTop);
+
+            if (false) {
+                //loop
             }
-        });
-    }
+            {
+                vertexNormal = computeRightNormal(
+                    preEndCartographic,
+                    endCartographic,
+                    maxHeight,
+                    ellipsoid,
+                    vertexNormal
+                );
+            }
 
-</script>
-</body>
+            index = normalsArray.length;
+            Cartesian3.pack(vertexNormal, normalsArray, index);
+            Cartesian3.pack(vertexBottom, bottomPositionsArray, index);
+            Cartesian3.pack(vertexTop, topPositionsArray, index);
+            cartographicsArray.push(endCartographic.latitude);
+            cartographicsArray.push(endCartographic.longitude);
+
+            console.log(bottomPositionsArray);
+            console.log(topPositionsArray);
+            console.log(normalsArray);
+
+            const bottomPositions = Cartesian3.unpackArray(bottomPositionsArray);
+
+            const radius = 100;
+
+            for (let i = 0; i < bottomPositions.length; i++) {
+                viewer.entities.add({
+                    position: bottomPositions[i],
+                    ellipsoid: {
+                        radii: new Cesium.Cartesian3(radius, radius, radius),
+                        material: Cesium.Color.RED
+                    }
+                });
+            }
+
+            const topPositions = Cartesian3.unpackArray(topPositionsArray);
+
+            for (let i = 0; i < topPositions.length; i++) {
+                viewer.entities.add({
+                    position: topPositions[i],
+                    ellipsoid: {
+                        radii: new Cesium.Cartesian3(radius, radius, radius),
+                        material: Cesium.Color.YELLOW
+                    }
+                });
+            }
+        </script>
+    </body>
 </html>

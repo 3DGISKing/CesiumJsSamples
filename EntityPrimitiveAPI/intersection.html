@@ -11,9 +11,9 @@
             content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
         />
         <title>Change coordinates</title>
-        <script src="https://cesium.com/downloads/cesiumjs/releases/1.93/Build/CesiumUnminified/Cesium.js"></script>
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/CesiumUnminified/Cesium.js"></script>
         <link
-            href="https://cesium.com/downloads/cesiumjs/releases/1.93/Build/Cesium/Widgets/widgets.css"
+            href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css"
             rel="stylesheet"
         />
         <script src="https://sandcastle.cesium.com/Sandcastle-header.js"></script>
@@ -25,13 +25,7 @@
         <script>
             // to answer https://stackoverflow.com/questions/72441544/cesium-how-to-check-two-entities-have-overlapping-area
 
-            const {
-                BoundingSphere,
-                BoundingSphereState,
-                Cartesian3,
-                Color,
-                Viewer
-            } = window.Cesium;
+            const { BoundingSphere, BoundingSphereState, Cartesian3, Color, Viewer } = window.Cesium;
 
             const viewer = new Viewer("cesiumContainer");
 
@@ -39,62 +33,35 @@
                 name: "Red polygon on surface",
                 polygon: {
                     hierarchy: Cartesian3.fromDegreesArray([
-                        -115.0,
-                        44.0,
-                        -115.0,
-                        34.0,
-                        -107.0,
-                        35.0,
-                        -102.0,
-                        34.0,
-                        -102.0,
-                        41.0,
+                        -115.0, 44.0, -115.0, 34.0, -107.0, 35.0, -102.0, 34.0, -102.0, 41.0
                     ]),
-                    material: Color.RED,
-                },
+                    material: Color.RED
+                }
             });
 
             const greenPolygon = viewer.entities.add({
                 name: "Green extruded polygon",
                 polygon: {
-                    hierarchy: Cartesian3.fromDegreesArray([
-                        -108.0,
-                        42.0,
-                        -100.0,
-                        42.0,
-                        -104.0,
-                        40.0,
-                    ]),
+                    hierarchy: Cartesian3.fromDegreesArray([-108.0, 42.0, -100.0, 42.0, -104.0, 40.0]),
                     extrudedHeight: 500000.0,
                     material: Color.GREEN,
                     closeTop: false,
-                    closeBottom: false,
-                },
+                    closeBottom: false
+                }
             });
 
             const orangePolygon = viewer.entities.add({
                 name: "Orange polygon with per-position heights and outline",
                 polygon: {
                     hierarchy: Cartesian3.fromDegreesArrayHeights([
-                        -108.0,
-                        20.0,
-                        100000,
-                        -100.0,
-                        20.0,
-                        100000,
-                        -100.0,
-                        25.0,
-                        100000,
-                        -108.0,
-                        25.0,
-                        300000,
+                        -108.0, 20.0, 100000, -100.0, 20.0, 100000, -100.0, 25.0, 100000, -108.0, 25.0, 300000
                     ]),
                     extrudedHeight: 0,
                     perPositionHeight: true,
                     material: Color.ORANGE.withAlpha(0.5),
                     outline: true,
-                    outlineColor: Color.BLACK,
-                },
+                    outlineColor: Color.BLACK
+                }
             });
 
             viewer.zoomTo(viewer.entities);
@@ -103,36 +70,27 @@
                 const b1 = new BoundingSphere();
                 const b2 = new BoundingSphere();
 
-                const state1 = viewer._dataSourceDisplay.getBoundingSphere(
-                    e1,
-                    false,
-                    b1
-                );
+                const state1 = viewer._dataSourceDisplay.getBoundingSphere(e1, false, b1);
 
-                if(state1 !== BoundingSphereState.DONE ){
+                if (state1 !== BoundingSphereState.DONE) {
                     return false;
                 }
 
-                const state2 = viewer._dataSourceDisplay.getBoundingSphere(
-                    e2,
-                    false,
-                    b2
-                );
+                const state2 = viewer._dataSourceDisplay.getBoundingSphere(e2, false, b2);
 
-                if(state2 !== BoundingSphereState.DONE ){
+                if (state2 !== BoundingSphereState.DONE) {
                     return false;
                 }
 
                 const dist = Cartesian3.distance(b1.center, b2.center);
 
-                return  dist < (b1.radius + b2.radius);
+                return dist < b1.radius + b2.radius;
             }
 
-            setTimeout(() =>{
+            setTimeout(() => {
                 console.log(intersect(redPolygon, greenPolygon));
                 console.log(intersect(redPolygon, orangePolygon));
             }, 6000);
-
         </script>
     </body>
 </html>

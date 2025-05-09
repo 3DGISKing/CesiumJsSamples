@@ -1,107 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <!-- Use correct character set. -->
+        <meta charset="utf-8" />
+        <!-- Tell IE to use the latest, best version. -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+        />
+        <title></title>
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/CesiumUnminified/Cesium.js"></script>
 
-<head>
-    <!-- Use correct character set. -->
-    <meta charset="utf-8">
-    <!-- Tell IE to use the latest, best version. -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title></title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/CesiumUnminified/Cesium.js"></script>
-
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/cesium/1.92.0/Cesium.js"
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/cesium/1.92.0/Cesium.js"
         integrity="sha512-+HOk10QAUdruLu3zoxQjrvpfuAW3YJ4dWptlsVkc2LTswI9TXZEJExCWJ6XiGkb2OEXPF0qPGE3o7DuocBCXBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
 
+        <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+        <script src="./CustomCesiumTerrainProvider.js"></script>
+    </head>
 
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.92/Build/Cesium/Widgets/widgets.css"
-        rel="stylesheet" />
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
 
-    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
-    <script src="./CustomCesiumTerrainProvider.js"></script>
-</head>
+        <script>
+            Cesium.Ion.defaultAccessToken =
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMDVmZDZlOS1jNzYxLTQ3MWYtYmNlNi0xMzA4NjA1OTc1NDgiLCJpZCI6OTc4NiwiaWF0IjoxNjE3MTU2MTQ2fQ.vtM1I7acSXgL6riYVHUMz_lWeaCESiUOeYXVM2lft50";
 
-<body>
-    <div id="cesiumContainer" class="fullSize"></div>
+            function createWorldTerrain(options) {
+                const { defaultValue, IonResource } = window.Cesium;
 
-    <script>
-        Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMDVmZDZlOS1jNzYxLTQ3MWYtYmNlNi0xMzA4NjA1OTc1NDgiLCJpZCI6OTc4NiwiaWF0IjoxNjE3MTU2MTQ2fQ.vtM1I7acSXgL6riYVHUMz_lWeaCESiUOeYXVM2lft50";
+                return new CustomCesiumTerrainProvider({
+                    url: IonResource.fromAssetId(1),
+                    requestVertexNormals: defaultValue(options.requestVertexNormals, false),
+                    requestWaterMask: defaultValue(options.requestWaterMask, false)
+                });
 
-        function createWorldTerrain(options) {
-            const { defaultValue, IonResource } = window.Cesium;
+                return provider;
+            }
 
-            return new CustomCesiumTerrainProvider({
-                url: IonResource.fromAssetId(1),
-                requestVertexNormals: defaultValue(options.requestVertexNormals, false),
-                requestWaterMask: defaultValue(options.requestWaterMask, false),
+            const viewer = new Cesium.Viewer("cesiumContainer", {
+                terrainProvider: createWorldTerrain({})
             });
 
-            return provider;
-        }
+            window.viewer = viewer;
 
-        const viewer = new Cesium.Viewer("cesiumContainer", {
-            terrainProvider: createWorldTerrain({})
-        });
+            const largePolygonPositions = Cesium.Cartesian3.fromDegreesArray([
+                86.79443906772303, 28.041869782825533,
 
-        window.viewer = viewer;
+                86.89153096564297, 28.103730347369023,
 
-        const largePolygonPositions = Cesium.Cartesian3.fromDegreesArray([
-            86.79443906772303,
-            28.041869782825533,
+                87.01986929516555, 28.082185729800877,
 
-            86.89153096564297,
-            28.103730347369023,
+                86.94719549094943, 27.96312508436842,
 
-            87.01986929516555,
-            28.082185729800877,
+                86.8474140436542, 27.96795096557792
+            ]);
 
-            86.94719549094943,
-            27.96312508436842,
+            const smallPolygonPositions = [
+                new Cesium.Cartesian3(864050.8192442931, -4533280.102540217, 4388114.067955882),
+                new Cesium.Cartesian3(864051.0980843891, -4533280.484730301, 4388113.621233026),
+                new Cesium.Cartesian3(864054.7351407356, -4533285.469782746, 4388107.79444742),
+                new Cesium.Cartesian3(864062.9678900794, -4533296.753801222, 4388094.605103466),
+                new Cesium.Cartesian3(864066.4956498718, -4533301.589035331, 4388088.953431325),
+                new Cesium.Cartesian3(864066.7093354751, -4533301.426145506, 4388089.078783995),
+                new Cesium.Cartesian3(864067.2139222486, -4533301.041499688, 4388089.374791552),
+                new Cesium.Cartesian3(864136.0877873072, -4533248.538616452, 4388129.778955212),
+                new Cesium.Cartesian3(864150.546923798, -4533237.516345442, 4388138.261263695),
+                new Cesium.Cartesian3(864153.7398963568, -4533235.082322792, 4388140.134393294),
+                new Cesium.Cartesian3(864154.2813732239, -4533234.669551474, 4388140.452046164),
+                new Cesium.Cartesian3(864154.2237863415, -4533234.586692417, 4388140.548335422),
+                new Cesium.Cartesian3(864154.1029035761, -4533234.412761638, 4388140.750457991),
+                new Cesium.Cartesian3(864145.294578162, -4533221.739368444, 4388155.478083674),
+                new Cesium.Cartesian3(864137.9433800862, -4533211.162487635, 4388167.769373159),
+                new Cesium.Cartesian3(864137.9330378103, -4533211.14761082, 4388167.786661852),
+                new Cesium.Cartesian3(864132.9936409364, -4533215.057390213, 4388164.740784174),
+                new Cesium.Cartesian3(864066.2678443879, -4533267.874197837, 4388123.594334441),
+                new Cesium.Cartesian3(864053.6545329312, -4533277.858265806, 4388115.816337668),
+                new Cesium.Cartesian3(864051.1774433217, -4533279.819007005, 4388114.288840017)
+            ];
 
-            86.8474140436542,
-            27.96795096557792
-        ]);
+            const positions = largePolygonPositions;
 
-        const smallPolygonPositions = [
-            new Cesium.Cartesian3(864050.8192442931, -4533280.102540217, 4388114.067955882),
-            new Cesium.Cartesian3(864051.0980843891, -4533280.484730301, 4388113.621233026),
-            new Cesium.Cartesian3(864054.7351407356, -4533285.469782746, 4388107.79444742,),
-            new Cesium.Cartesian3(864062.9678900794, -4533296.753801222, 4388094.605103466),
-            new Cesium.Cartesian3(864066.4956498718, -4533301.589035331, 4388088.953431325),
-            new Cesium.Cartesian3(864066.7093354751, -4533301.426145506, 4388089.078783995),
-            new Cesium.Cartesian3(864067.2139222486, -4533301.041499688, 4388089.374791552),
-            new Cesium.Cartesian3(864136.0877873072, -4533248.538616452, 4388129.778955212),
-            new Cesium.Cartesian3(864150.546923798, -4533237.516345442, 4388138.261263695),
-            new Cesium.Cartesian3(864153.7398963568, -4533235.082322792, 4388140.134393294),
-            new Cesium.Cartesian3(864154.2813732239, -4533234.669551474, 4388140.452046164),
-            new Cesium.Cartesian3(864154.2237863415, -4533234.586692417, 4388140.548335422),
-            new Cesium.Cartesian3(864154.1029035761, -4533234.412761638, 4388140.750457991),
-            new Cesium.Cartesian3(864145.294578162, -4533221.739368444, 4388155.478083674),
-            new Cesium.Cartesian3(864137.9433800862, -4533211.162487635, 4388167.769373159),
-            new Cesium.Cartesian3(864137.9330378103, -4533211.14761082, 4388167.786661852),
-            new Cesium.Cartesian3(864132.9936409364, -4533215.057390213, 4388164.740784174),
-            new Cesium.Cartesian3(864066.2678443879, -4533267.874197837, 4388123.594334441),
-            new Cesium.Cartesian3(864053.6545329312, -4533277.858265806, 4388115.816337668),
-            new Cesium.Cartesian3(864051.1774433217, -4533279.819007005, 4388114.288840017)
-        ];
+            viewer.entities.add({
+                polygon: {
+                    hierarchy: positions,
+                    material: Cesium.Color.RED.withAlpha(0.5)
+                }
+            });
 
-        const positions = largePolygonPositions;
-
-        viewer.entities.add({
-            polygon: {
-                hierarchy: positions,
-                material: Cesium.Color.RED.withAlpha(0.5)
-            },
-        });
-
-        viewer.terrainProvider.setFloor(positions, 5000);
-        // viewer.scene.globe._surface.tileProvider._debug.wireframe = true
-        viewer.zoomTo(viewer.entities); 
-    </script>
-</body>
-
+            viewer.terrainProvider.setFloor(positions, 5000);
+            // viewer.scene.globe._surface.tileProvider._debug.wireframe = true
+            viewer.zoomTo(viewer.entities);
+        </script>
+    </body>
 </html>

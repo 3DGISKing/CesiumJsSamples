@@ -1,75 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Globe</title>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Globe</title>
 
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/CesiumUnminified/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-</head>
-<body>
-<div id = "cesiumContainer" class="fullSize"> </div>
-<div id="loadingOverlay"><h1>Loading...</h1></div>
-<script type="text/javascript">
-    const Scene = Cesium.Scene;
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/CesiumUnminified/Cesium.js"></script>
+        <link
+            href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="loadingOverlay"><h1>Loading...</h1></div>
+        <script type="text/javascript">
+            const Scene = Cesium.Scene;
 
-    Object.defineProperties(Scene.prototype, {
-        globe: {
-            get: function () {
-                return this._globe;
-            },
+            Object.defineProperties(Scene.prototype, {
+                globe: {
+                    get: function () {
+                        return this._globe;
+                    },
 
-            set: function (globe) {
-                this._globe = globe;
+                    set: function (globe) {
+                        this._globe = globe;
 
-                updateGlobeListeners(this, globe);
-            },
-        }
-    });
+                        updateGlobeListeners(this, globe);
+                    }
+                }
+            });
 
-    function updateGlobeListeners(scene, globe) {
-        for (let i = 0; i < scene._removeGlobeCallbacks.length; ++i) {
-            scene._removeGlobeCallbacks[i]();
-        }
-        scene._removeGlobeCallbacks.length = 0;
+            function updateGlobeListeners(scene, globe) {
+                for (let i = 0; i < scene._removeGlobeCallbacks.length; ++i) {
+                    scene._removeGlobeCallbacks[i]();
+                }
+                scene._removeGlobeCallbacks.length = 0;
 
-        var removeGlobeCallbacks = [];
-        if (defined(globe)) {
-            removeGlobeCallbacks.push(
-                globe.imageryLayersUpdatedEvent.addEventListener(
-                    requestRenderAfterFrame(scene)
-                )
+                var removeGlobeCallbacks = [];
+                if (defined(globe)) {
+                    removeGlobeCallbacks.push(
+                        globe.imageryLayersUpdatedEvent.addEventListener(requestRenderAfterFrame(scene))
+                    );
+                    removeGlobeCallbacks.push(
+                        globe.terrainProviderChanged.addEventListener(requestRenderAfterFrame(scene))
+                    );
+                }
+                scene._removeGlobeCallbacks = removeGlobeCallbacks;
+            }
+
+            var viewer = new Cesium.Viewer("cesiumContainer");
+
+            var scene = viewer.scene;
+            var globe = scene.globe;
+
+            var formationGlobe = new Cesium.Globe();
+
+            scene.globe = formationGlobe;
+
+            const rectangle = new Cesium.Rectangle(
+                -1.8473426587365276,
+                0.7825171219331977,
+                -1.7749588086053933,
+                0.8866870725794928
             );
-            removeGlobeCallbacks.push(
-                globe.terrainProviderChanged.addEventListener(
-                    requestRenderAfterFrame(scene)
-                )
-            );
-        }
-        scene._removeGlobeCallbacks = removeGlobeCallbacks;
-    }
 
-    var viewer = new Cesium.Viewer("cesiumContainer");
+            globe.cartographicLimitRectangle = rectangle;
+            globe.showSkirts = false;
+            globe.backFaceCulling = false;
+            globe.undergroundColor = undefined;
+            scene.skyAtmosphere.show = false;
 
-    var scene = viewer.scene;
-    var globe = scene.globe;
-
-    var formationGlobe = new Cesium.Globe();
-
-    scene.globe = formationGlobe;
-
-    const rectangle = new Cesium.Rectangle(-1.8473426587365276, 0.7825171219331977, -1.7749588086053933, 0.8866870725794928);
-
-    globe.cartographicLimitRectangle = rectangle;
-    globe.showSkirts = false;
-    globe.backFaceCulling = false;
-    globe.undergroundColor = undefined;
-    scene.skyAtmosphere.show = false;
-
-    viewer.camera.flyTo({
-        destination : rectangle
-    });
-
-</script>
-</body>
+            viewer.camera.flyTo({
+                destination: rectangle
+            });
+        </script>
+    </body>
 </html>
