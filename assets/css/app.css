@@ -1,0 +1,17 @@
+.top-nav[data-v-6bacaaf1] {
+    display: none !important;
+}
+
+.wrap[data-v-b6af7eca] {
+    display: none !important;
+}
+
+span[data-v-b6af7eca] svg{
+    display: none !important;
+}
+
+.page-content {
+    height: calc(100% - 0px) !important;
+    top: 0px !important;
+}
+

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,user-scalable=0,minimum-scale=1.0,maximum-scale=1.0"
+        />
+        <meta name="author" content="CesiumGIS CoolGIS https://coolgis.org/" />
+        <meta name="apple-touch-fullscreen" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="x5-fullscreen" content="true" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+
+        <meta name="keywords" content="CoolGIS|CesiumGIS|3DGISKing|cesium|" />
+        <meta name="description" content="ZhefengJin 3DGISKing CesiumJS Samples" />
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
+        <title></title>
+
+        <script
+            type="text/javascript"
+            src="/lib/include-lib.js"
+            libpath="./lib/"
+            include="cesiumjs,sandcastle"
+        ></script>
+        <style>
+            html,
+            body,
+            #cesiumContainer {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #toolbar {
+                background: rgba(42, 42, 42, 0.8);
+                padding: 4px;
+                border-radius: 4px;
+            }
+
+            #toolbar input {
+                vertical-align: middle;
+                padding-top: 2px;
+                padding-bottom: 2px;
+            }
+
+            #toolbar input[type="text"] {
+                width: 80px;
+            }
+        </style>
+    </head>
+
+    <body class="dark">
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="toolbar">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Heading</td>
+                        <td>
+                            <input
+                                data-bind="value: heading, valueUpdate: 'input'"
+                                max="180"
+                                min="-180"
+                                step="0.1"
+                                type="range"
+                            />
+                            <input data-bind="value: heading" size="2" type="text" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Pitch</td>
+                        <td>
+                            <input
+                                data-bind="value: pitch, valueUpdate: 'input'"
+                                max="90"
+                                min="-90"
+                                step="0.1"
+                                type="range"
+                            />
+                            <input data-bind="value: pitch" size="2" type="text" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script src="./code.js"></script>
+    </body>
+</html>

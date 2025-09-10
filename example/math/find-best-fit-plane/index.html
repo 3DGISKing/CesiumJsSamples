@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,user-scalable=0,minimum-scale=1.0,maximum-scale=1.0"
+        />
+        <meta name="author" content="CesiumGIS CoolGIS https://coolgis.org/" />
+        <meta name="apple-touch-fullscreen" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="x5-fullscreen" content="true" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+
+        <meta name="keywords" content="CoolGIS|CesiumGIS|3DGISKing|cesium|" />
+        <meta name="description" content="ZhefengJin 3DGISKing CesiumJS Samples" />
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
+        <title></title>
+
+        <script
+            type="text/javascript"
+            src="/lib/include-lib.js"
+            libpath="./lib/"
+            include="cesiumjs,sandcastle,turf,math"
+        ></script>
+        <style>
+            html,
+            body,
+            #cesiumContainer {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #measuretoolbar {
+                position: absolute;
+                top: 700px;
+                right: 30px;
+                display: inline;
+                margin: 10px;
+                padding: 0px;
+                background: #394148;
+            }
+
+            /*
+    initial twipsy code taken from bootstrap
+*/
+            .twipsy {
+                display: block;
+                position: absolute;
+                visibility: visible;
+                max-width: 200px;
+                min-width: 100px;
+                padding: 5px;
+                font-size: 11px;
+                z-index: 1000;
+                opacity: 0.8;
+                -khtml-opacity: 0.8;
+                -moz-opacity: 0.8;
+                filter: alpha(opacity=80);
+            }
+            .twipsy.left .twipsy-arrow {
+                top: 50%;
+                right: 0;
+                margin-top: -5px;
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+                border-left: 5px solid #000000;
+            }
+            .twipsy.right .twipsy-arrow {
+                top: 50%;
+                left: 0;
+                margin-top: -5px;
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+                border-right: 5px solid #000000;
+            }
+            .twipsy-inner {
+                padding: 3px 8px;
+                background-color: #000000;
+                color: white;
+                text-align: center;
+                max-width: 200px;
+                text-decoration: none;
+                -webkit-border-radius: 4px;
+                -moz-border-radius: 4px;
+                border-radius: 4px;
+            }
+            .twipsy-arrow {
+                position: absolute;
+                width: 0;
+                height: 0;
+            }
+
+            /*
+css rules for the draw helper components
+*/
+
+            .cesiumMeasureToolbar {
+                margin: 0px;
+                padding: 0px;
+                background: #394148;
+            }
+
+            .cesiumMeasureToolbar > .cesiumMeasureToolbarButton {
+                margin: 5px;
+                padding: 5px;
+                border: 1px solid #eee;
+                cursor: pointer;
+            }
+
+            .cesiumMeasureToolbar > .cesiumMeasureToolbarButton:hover {
+                background: #444819;
+            }
+
+            /*
+css rules for the infowindow
+*/
+
+            .infoWindow {
+                position: absolute;
+                min-width: 100px;
+                max-width: 300px;
+            }
+            .infoWindow #frame {
+                padding: 10px;
+                border: 1px solid black;
+                background: white;
+            }
+            .infoWindow #close {
+                float: right;
+                margin: 5px 2px;
+                font-size: small;
+                color: gray;
+                cursor: pointer;
+            }
+            .infoWindow #arrow {
+                position: absolute;
+                bottom: -8px;
+                left: 50%;
+                margin-left: -10px;
+                border-right: 10px solid transparent;
+                border-left: 10px solid transparent;
+                border-top: 10px solid white;
+            }
+        </style>
+    </head>
+
+    <body class="dark">
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="measuretoolbar"></div>
+        <script src="./code.js"></script>
+    </body>
+</html>

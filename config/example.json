@@ -1,0 +1,492 @@
+[
+  {
+    "name": "Basics",
+    "icon": "fa-globe",
+    "download": false,
+    "children": [
+      {
+        "name": "Imagery",
+        "details": "Imagery Layers",
+        "children": [
+          {
+            "name": "Tile Coordinates",
+            "thumbnail": "tile-coordinates.png",
+            "main": "imagery/tile-coordinates",
+            "hasPannel": true
+          },
+          {
+            "name": "Grid",
+            "thumbnail": "grid.png",
+            "main": "imagery/grid",
+            "hasPannel": true
+          },
+          {
+            "name": "OpenStreetMap",
+            "thumbnail": "openstreetmap.png",
+            "main": "imagery/openstreetmap",
+            "hasPannel": true
+          },
+          {
+            "name": "Google",
+            "thumbnail": "google.png",
+            "main": "imagery/google",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "DataSource",
+        "details": "",
+        "children": [
+          {
+            "name": "Countries",
+            "thumbnail": "countries.png",
+            "main": "data-source/countries",
+            "hasPannel": true
+          },
+          {
+            "name": "Russia",
+            "thumbnail": "russia.png",
+            "main": "data-source/russia",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Camera",
+        "details": "",
+        "children": [
+          {
+            "name": "Heading Pitch Roll",
+            "thumbnail": "heading-pitch-roll.png",
+            "main": "camera/heading-pitch-roll",
+            "hasPannel": true
+          },
+          {
+            "name": "My Location",
+            "thumbnail": "my-location.png",
+            "main": "camera/my-location",
+            "hasPannel": true
+          },
+          {
+            "name": "Capture Zoomout",
+            "thumbnail": "capture-zoomout.png",
+            "main": "camera/capture-zoomout",
+            "hasPannel": true
+          },
+          {
+            "name": "Simple Tour",
+            "thumbnail": "simple-tour.png",
+            "main": "camera/simple-tour",
+            "hasPannel": true
+          },
+          {
+            "name": "Street View Camera Controller",
+            "thumbnail": "street-view-camera-controller.png",
+            "main": "camera/street-view-camera-controller",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Model",
+        "details": "",
+        "children": [
+          {
+            "name": "Earth",
+            "thumbnail": "earth.png",
+            "main": "model/earth",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Entity, Primitive",
+        "details": "",
+        "children": [
+          {
+            "name": "Change Polygon",
+            "thumbnail": "change-polygon.png",
+            "main": "entity-primitive/change-polygon",
+            "hasPannel": true
+          },
+          {
+            "name": "Triangle",
+            "thumbnail": "triangle.png",
+            "main": "entity-primitive/triangle",
+            "hasPannel": true
+          },
+          {
+            "name": "CircleGeometry",
+            "thumbnail": "circle-geometry.png",
+            "main": "entity-primitive/circle-geometry",
+            "hasPannel": true
+          },
+          {
+            "name": "CircleOutlineGeometry",
+            "thumbnail": "circle-outline-geometry.png",
+            "main": "entity-primitive/circle-outline-geometry",
+            "hasPannel": true
+          },
+          {
+            "name": "Circle Primitive",
+            "thumbnail": "circle-primitive.png",
+            "main": "entity-primitive/circle-primitive",
+            "hasPannel": true
+          },
+          {
+            "name": "Polyline Primitive",
+            "thumbnail": "polyline-primitive.png",
+            "main": "entity-primitive/polyline-primitive",
+            "hasPannel": true
+          },
+          {
+            "name": "Plane Primitive",
+            "thumbnail": "plane-primitive.png",
+            "main": "entity-primitive/plane-primitive",
+            "hasPannel": true
+          },
+          {
+            "name": "Frustum",
+            "thumbnail": "frustum.png",
+            "main": "entity-primitive/frustum",
+            "hasPannel": true
+          },
+          {
+            "name": "Texture Sphere Primitive",
+            "thumbnail": "texture-sphere-primitive.png",
+            "main": "entity-primitive/texture-sphere-primitive",
+            "hasPannel": true
+          },
+          {
+            "name": "Drillholes",
+            "thumbnail": "drillholes.png",
+            "main": "entity-primitive/drillholes",
+            "hasPannel": true
+          },
+          {
+            "name": "Polyline Volume",
+            "thumbnail": "polyline-volume.png",
+            "main": "entity-primitive/polyline-volume",
+            "hasPannel": true
+          },
+          {
+            "name": "Grid Material",
+            "thumbnail": "grid-material.png",
+            "main": "entity-primitive/grid-material",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Math",
+        "details": "",
+        "children": [
+          {
+            "name": "Cartesian3",
+            "thumbnail": "cartesian3.png",
+            "main": "math/cartesian3",
+            "hasPannel": true
+          },
+          {
+            "name": "Axis",
+            "thumbnail": "axis.png",
+            "main": "math/axis",
+            "hasPannel": true
+          },
+          {
+            "name": "Rotate Vector",
+            "thumbnail": "rotate-vector.png",
+            "main": "math/rotate-vector",
+            "hasPannel": true
+          },
+          {
+            "name": "Vertical Move",
+            "thumbnail": "vertical-move.png",
+            "main": "math/vertical-move",
+            "hasPannel": true
+          },
+          {
+            "name": "Intersection",
+            "thumbnail": "intersection.png",
+            "main": "math/intersection",
+            "hasPannel": true
+          },
+          {
+            "name": "Plane Normal",
+            "thumbnail": "plane-normal.png",
+            "main": "math/plane-normal",
+            "hasPannel": true
+          },
+          {
+            "name": "Calc Angle",
+            "thumbnail": "calc-angle.png",
+            "main": "math/calc-angle",
+            "hasPannel": true
+          },
+          {
+            "name": "Terrain Tangent Plane",
+            "thumbnail": "terrain-tangent-plane.png",
+            "main": "math/terrain-tangent-plane",
+            "hasPannel": true
+          },
+          {
+            "name": "UTM to LatLng",
+            "thumbnail": "utm-to-latlng.png",
+            "main": "math/utm-to-latlng",
+            "hasPannel": true
+          },
+          {
+            "name": "Find the Best Fit Plane",
+            "thumbnail": "find-best-fit-plane.png",
+            "main": "math/find-best-fit-plane",
+            "hasPannel": true
+          },
+          {
+            "name": "Walls for Polyline Clamping",
+            "thumbnail": "walls-for-polyline-clamping.png",
+            "main": "math/walls-for-polyline-clamping",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Misc",
+        "details": "",
+        "children": [
+          {
+            "name": "Skybox",
+            "thumbnail": "skybox.png",
+            "main": "misc/skybox",
+            "hasPannel": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Animation",
+    "icon": "fa-globe",
+    "download": false,
+    "children": [
+      {
+        "name": "Drone",
+        "details": "Drone Animation",
+        "children": [
+          {
+            "name": "Drone Animation",
+            "thumbnail": "drone-animation.png",
+            "main": "animation/drone",
+            "hasPannel": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "3D Tiles",
+    "icon": "fa-globe",
+    "download": false,
+    "children": [
+      {
+        "name": "General",
+        "details": "",
+        "children": [
+          {
+            "name": "Time Series",
+            "thumbnail": "time-series.png",
+            "main": "3d-tiles/time-series",
+            "hasPannel": true
+          },
+          {
+            "name": "Vertical Movement",
+            "thumbnail": "vertical-movement.png",
+            "main": "3d-tiles/vertical-movement",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Georeferencing",
+        "details": "",
+        "children": [
+          {
+            "name": "WGS84",
+            "thumbnail": "wgs84.png",
+            "main": "3d-tiles/wgs84",
+            "hasPannel": true
+          },
+          {
+            "name": "Rotate WGS84",
+            "thumbnail": "rotate-wgs84.png",
+            "main": "3d-tiles/rotate-wgs84",
+            "hasPannel": true
+          },
+          {
+            "name": "Georeference Steps",
+            "thumbnail": "georeference-steps.png",
+            "main": "3d-tiles/georeference-steps",
+            "hasPannel": true
+          },
+          {
+            "name": "Georeference Local",
+            "thumbnail": "georeference-local.png",
+            "main": "3d-tiles/georeference-local",
+            "hasPannel": true
+          },
+          {
+            "name": "Georeference WGS84",
+            "thumbnail": "georeference-wgs84.png",
+            "main": "3d-tiles/georeference-wgs84",
+            "hasPannel": true
+          },
+          {
+            "name": "Location Editor",
+            "thumbnail": "location-editor.png",
+            "main": "3d-tiles/location-editor",
+            "hasPannel": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Advanced",
+    "icon": "fa-globe",
+    "download": false,
+    "children": [
+      {
+        "name": "Shader",
+        "details": "",
+        "children": [
+          {
+            "name": "Hello Shader",
+            "thumbnail": "hello-shader.png",
+            "main": "shader/hello-shader",
+            "hasPannel": true
+          },
+          {
+            "name": "CircleWaveMaterial",
+            "thumbnail": "circle-wave-material.png",
+            "main": "shader/circle-wave-material",
+            "hasPannel": true
+          },
+          {
+            "name": "Globe Shader Override",
+            "thumbnail": "globe-shader-override.png",
+            "main": "shader/globe-shader-override",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Terrain",
+        "details": "",
+        "children": [
+          {
+            "name": "Floor",
+            "thumbnail": "floor.png",
+            "main": "terrain/floor",
+            "hasPannel": true
+          },
+          {
+            "name": "Elevation Shading",
+            "thumbnail": "elevation-shading.png",
+            "main": "terrain/elevation-shading",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Particle",
+        "details": "",
+        "children": [
+          {
+            "name": "Simulation Plume",
+            "thumbnail": "simulation-plume.png",
+            "main": "advanced/simulation-plume",
+            "hasPannel": true
+          },
+          {
+            "name": "Simulation Meteor",
+            "thumbnail": "simulation-meteor.png",
+            "main": "advanced/simulation-meteor",
+            "hasPannel": true
+          }
+        ]
+      },
+      {
+        "name": "Misc",
+        "details": "",
+        "children": [
+          {
+            "name": "Drawing Tool",
+            "thumbnail": "drawing-tool.png",
+            "main": "advanced/drawing-tool",
+            "hasPannel": true
+          },
+          {
+            "name": "Satellite",
+            "thumbnail": "satellite.png",
+            "main": "advanced/satellite",
+            "hasPannel": true
+          },
+          {
+            "name": "Draw Circle",
+            "thumbnail": "draw-circle.png",
+            "main": "advanced/draw-circle",
+            "hasPannel": true
+          },
+          {
+            "name": "Airport Approach Simulation",
+            "thumbnail": "airport-approach-simulation.png",
+            "main": "advanced/airport-approach-simulation",
+            "hasPannel": true
+          },
+          {
+            "name": "Clipped Map",
+            "thumbnail": "clipped-map.png",
+            "main": "advanced/clipped-map",
+            "hasPannel": true
+          },
+          {
+            "name": "EPSG Converter",
+            "thumbnail": "epsg-converter.png",
+            "main": "advanced/epsg-converter",
+            "hasPannel": true
+          },
+          {
+            "name": "Point Grid",
+            "thumbnail": "point-grid.png",
+            "main": "advanced/point-grid",
+            "hasPannel": true
+          },
+          {
+            "name": "Twin View",
+            "thumbnail": "twin-view.png",
+            "main": "advanced/twin-view",
+            "hasPannel": true
+          },
+          {
+            "name": "Threejs",
+            "thumbnail": "threejs.png",
+            "main": "advanced/threejs",
+            "hasPannel": true
+          },
+          {
+            "name": "Latlon Inspector",
+            "thumbnail": "latlon-inspector.png",
+            "main": "advanced/latlon-inspector",
+            "hasPannel": true
+          },
+          {
+            "name": "Model Instancing",
+            "thumbnail": "model-instancing.png",
+            "main": "advanced/model-instancing",
+            "hasPannel": true
+          }
+        ]
+      }
+    ]
+  }
+]

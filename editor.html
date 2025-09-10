@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="zh-cn">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <!-- mobile device viewport -->
+        <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui"
+        />
+        <meta name="author" content="ZhefengJin 3DGISKing https://coolgis.org/ " />
+
+        <meta name="renderer" content="webkit" />
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        <link rel="icon" sizes="192x192" href="/img/favicon/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="apple-mobile-web-app-title" content="CesiumGIS CoolGIS" />
+
+        <link rel="apple-touch-icon-precomposed" href="/img/favicon/apple-touch-icon.png" />
+        <meta name="msapplication-TileImage" content="/img/favicon/app-icon72x72@2x.png" />
+        <meta name="msapplication-TileColor" content="#62a8ea" />
+
+        <meta name="keywords" content="CoolGIS|CesiumGIS|3DGISKing|cesium|" />
+        <meta name="description" content="ZhefengJin 3DGISKing CesiumJS Samples" />
+
+        <title>CesiumJS Samples</title>
+
+        <link rel="stylesheet" href="./js/editor/editor.css" />
+        <link rel="stylesheet" href="./lib/editor/style.css" />
+        <script src="./lib/include-lib.js" libpath="./lib/" include=""></script>
+        <script src="./lib/require/require.js"></script>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+        <div id="root"></div>
+        <script>
+            require.config({ paths: { vs: "./lib/monaco-editor" } });
+
+            require(["vs/editor/editor.main"], function (monaco) {
+                require(["./lib/editor/editor.iife.js"], function () {
+                    const jsEditor = new JSEditor.Editor({
+                        baseUrl: "/",
+                        code: getQueryString("code"),
+                        configLibs: window.configLibs,
+                        resourcePublicPath: "/example",
+                        libPublicPath: "/lib/",
+                        framework: "es5",
+                        configSourceUrl: `/config/example.json`
+                    });
+
+                    jsEditor.renderHTML({
+                        container: document.getElementById("root"),
+                        exampleId: getExampleId(),
+                        exampleKey: getQueryString("key")
+                    });
+                });
+            });
+
+            function getQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) {
+                    return decodeURI(r[2]);
+                }
+                return null;
+            }
+
+            function getExampleId() {
+                let exampleId = getQueryString("id");
+                if (exampleId) {
+                    return exampleId
+                        .replace(/\\/gm, "/")
+                        .replace("example/", "")
+                        .replace("/code.js", "")
+                        .replace("/index.html", "");
+                }
+            }
+        </script>
+    </body>
+</html>

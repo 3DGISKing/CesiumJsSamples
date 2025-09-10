@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,user-scalable=0,minimum-scale=1.0,maximum-scale=1.0"
+        />
+        <meta name="author" content="CesiumGIS CoolGIS https://coolgis.org/" />
+        <meta name="apple-touch-fullscreen" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="x5-fullscreen" content="true" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+
+        <meta name="keywords" content="CoolGIS|CesiumGIS|3DGISKing|cesium|" />
+        <meta name="description" content="ZhefengJin 3DGISKing CesiumJS Samples" />
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
+        <title></title>
+
+        <script
+            type="text/javascript"
+            src="/lib/include-lib.js"
+            libpath="./lib/"
+            include="cesiumjs,sandcastle,jquery,openlayers"
+        ></script>
+        <style>
+            html,
+            body,
+            #cesiumContainer {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .infoview {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                padding: 10px 15px;
+                border-radius: 4px;
+                border: 1px solid rgba(128, 128, 128, 0.5);
+                color: #fff;
+                background: rgba(0, 0, 0, 0.4);
+                box-shadow: 0 3px 14px rgba(128, 128, 128, 0.5);
+                z-index: 999;
+            }
+
+            .infoview input,
+            .infoview select,
+            .infoview textarea {
+                color: #fff;
+                background-color: rgba(32, 160, 255, 0.2);
+                border: 1px solid #e4eaec;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+
+    <body class="dark">
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div class="infoview" style="display: none">
+            <div style="width: 100%; text-align: center; font-size: 16px">
+                How to determine line?(in Dubai Sample position)
+            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Altitude (Feet)</td>
+                        <td><input id="model_altitude" type="range" min="110" max="500" step="1.0" value="110" /></td>
+                        <td><input id="model_altitude_text" type="number" min="110" max="500" value="110" /></td>
+                    </tr>
+                    <tr>
+                        <td>Course (Degree)</td>
+                        <td><input id="model_course" type="range" min="0" max="360" step="1.0" value="119" /></td>
+                        <td><input id="model_course_text" type="number" min="0" max="360" value="119" /></td>
+                    </tr>
+                    <tr>
+                        <td>Slope (Degree)</td>
+                        <td><input id="model_slope" type="range" min="-50" max="50" step="1.0" value="3" /></td>
+                        <td><input id="model_slope_text" type="number" min="-50" max="50" value="3" /></td>
+                    </tr>
+                    <tr>
+                        <td>Distance (Nautical Mile)</td>
+                        <td><input id="distance" type="range" min="0" max="10" step="0.1" value="5" /></td>
+                        <td><input id="distance_text" type="number" min="0" max="10" value="5" /></td>
+                    </tr>
+
+                    <tr>
+                        <td>Show AirPlane</td>
+                        <td><input id="show_airplane" type="checkbox" checked /></td>
+                    </tr>
+
+                    <tr>
+                        <td>Update Current Line</td>
+                        <td><input id="update_current_line" type="checkbox" checked /></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <input id="create_newline" type="button" class="btn btn-info" value="Create New Line" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script src="./code.js"></script>
+        <script src="./simulation.js"></script>
+    </body>
+</html>

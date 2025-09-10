@@ -1,0 +1,56 @@
+// for https://stackoverflow.com/questions/68161849/cesium-js-ellipsoid-tangent-plane-calculation
+
+var viewer = new Cesium.Viewer("cesiumContainer");
+
+viewer.scene.globe.depthTestAgainstTerrain = true;
+
+var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+handler.setInputAction(function (event) {
+    var clickedPoint = viewer.scene.pickPosition(event.position);
+
+    if (!clickedPoint) return;
+
+    var transform = Cesium.Transforms.eastNorthUpToFixedFrame(clickedPoint);
+
+    var inv = Cesium.Matrix4.inverseTransformation(transform, new Cesium.Matrix4());
+
+    var extendedWordNormal = Cesium.Cartesian3.multiplyByScalar(clickedPoint, 1.001, new Cesium.Cartesian3());
+
+    var localNormal = Cesium.Matrix4.multiplyByPoint(inv, extendedWordNormal, new Cesium.Cartesian3());
+
+    //var localNormal = new Cesium.Cartesian3(0, 0, 1);
+
+    localNormal = Cesium.Cartesian3.normalize(localNormal.clone(), new Cesium.Cartesian3());
+
+    viewer.scene.primitives.add(
+        new Cesium.DebugModelMatrixPrimitive({
+            modelMatrix: transform, // primitive to debug
+            length: 1000000.0,
+            width: 2.0
+        })
+    );
+
+    var color = Cesium.Color.fromRandom();
+
+    viewer.entities.add({
+        position: clickedPoint,
+        point: {
+            pixelSize: 10,
+            heightReference: Cesium.HeightReference.NONE,
+            outlineWidth: 2,
+            color: color
+        }
+    });
+
+    var plane = new Cesium.Plane(localNormal, 0.0);
+
+    viewer.entities.add({
+        position: clickedPoint,
+        plane: {
+            plane: plane,
+            dimensions: new Cesium.Cartesian2(1000000.0, 1000000.0),
+            material: color
+        }
+    });
+}, Cesium.ScreenSpaceEventType.LEFT_CLICK);

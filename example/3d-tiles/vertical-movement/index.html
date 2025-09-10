@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,minimum-scale=1.0,maximum-scale=1.0" />
+        <meta name="author" content="CesiumGIS CoolGIS https://coolgis.org/" />
+        <meta name="apple-touch-fullscreen" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="x5-fullscreen" content="true" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+
+        <meta name="keywords" content="CoolGIS|CesiumGIS|3DGISKing|cesium|" />
+        <meta name="description" content="ZhefengJin 3DGISKing CesiumJS Samples" />
+
+        <link rel="shortcut icon" type="image/x-icon" href="/img/favicon/favicon.ico" />
+        <title></title>
+
+        <script type="text/javascript" src="/lib/include-lib.js" libpath="./lib/" include="cesiumjs,sandcastle"></script>
+        <style>
+            html,
+            body,
+            #cesiumContainer {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+
+    <body class="dark">
+        <div id="cesiumContainer" class="fullSize"></div>
+        <div id="toolbar">
+            <div>Height</div>
+            <input type="range" min="-1000.0" max="1000.0" step="1" data-bind="value: height, valueUpdate: 'input'" />
+            <input type="text" size="5" data-bind="value: height" />
+        </div>
+        <script src="./code.js"></script>
+    </body>
+</html>
