@@ -206,9 +206,7 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                 }
                 e(async () => {
                     let a = n("type");
-                    (Qa.value = a || "vue"),
-                        (v.value = ya.filter((a) => a.value === Qa.value)[0]),
-                        v.value && (document.title = `(${v.value.label}) - ` + document.title);
+                    (Qa.value = a || "vue"), (v.value = ya.filter((a) => a.value === Qa.value)[0]), v.value && (document.title = `(${v.value.label}) - ` + document.title);
                     const l = await y();
                     (b.value = l.count), (A.value = l.list), (x.value = l.list);
                     const e = window.location.hash;
@@ -301,7 +299,7 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                         C(a);
                     };
                 function La(a) {
-                    return `/example/thumbnail/${a.thumbnail || "map-options-basemaps.jpg"}`;
+                    return `./example/thumbnail/${a.thumbnail || "map-options-basemaps.jpg"}`;
                 }
                 function Ua(a) {
                     const l = a.srcElement;
@@ -313,11 +311,7 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                 const Ha = (a, l) => {
                     let e = new Blob([l]),
                         n = document.createElement("a");
-                    (n.download = a),
-                        (n.href = URL.createObjectURL(e)),
-                        document.body.appendChild(n),
-                        n.click(),
-                        document.body.removeChild(n);
+                    (n.download = a), (n.href = URL.createObjectURL(e)), document.body.appendChild(n), n.click(), document.body.removeChild(n);
                 };
                 function Wa(a) {
                     let l = a.name;
@@ -393,10 +387,7 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                                                 t(
                                                     "div",
                                                     {
-                                                        class: c([
-                                                            "search-new f-toe",
-                                                            { "search-new-active": Va.value }
-                                                        ]),
+                                                        class: c(["search-new f-toe", { "search-new-active": Va.value }]),
                                                         title: "选中后只显示最近加的新示例",
                                                         onClick: ja
                                                     },
@@ -523,60 +514,19 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                                                                                             return (
                                                                                                 null == (a = x.value) ||
                                                                                                     a.forEach((a) => {
-                                                                                                        if (
-                                                                                                            !a.children ||
-                                                                                                            !1 ===
-                                                                                                                a.download
-                                                                                                        )
-                                                                                                            return;
-                                                                                                        l += `\n\n功能 ${++e}  ${
-                                                                                                            a.name
-                                                                                                        }`;
+                                                                                                        if (!a.children || !1 === a.download) return;
+                                                                                                        l += `\n\n功能 ${++e}  ${a.name}`;
                                                                                                         let s = 0;
-                                                                                                        a.children.forEach(
-                                                                                                            (a) => {
-                                                                                                                if (
-                                                                                                                    !a.children ||
-                                                                                                                    !1 ===
-                                                                                                                        a.download
-                                                                                                                )
-                                                                                                                    return;
-                                                                                                                l += `\n功能 ${e}.${++s}  ${
-                                                                                                                    a.name
-                                                                                                                }：`;
-                                                                                                                let i = 0;
-                                                                                                                a.children.forEach(
-                                                                                                                    (
-                                                                                                                        a
-                                                                                                                    ) => {
-                                                                                                                        if (
-                                                                                                                            !1 ===
-                                                                                                                                a.download ||
-                                                                                                                            a.hidden
-                                                                                                                        )
-                                                                                                                            return;
-                                                                                                                        const e =
-                                                                                                                            Wa(
-                                                                                                                                a
-                                                                                                                            );
-                                                                                                                        e &&
-                                                                                                                            (n[
-                                                                                                                                e
-                                                                                                                            ] ||
-                                                                                                                                ((n[
-                                                                                                                                    e
-                                                                                                                                ] =
-                                                                                                                                    !0),
-                                                                                                                                ++i,
-                                                                                                                                (l +=
-                                                                                                                                    1 ===
-                                                                                                                                    i
-                                                                                                                                        ? `${e}`
-                                                                                                                                        : `,${e}`)));
-                                                                                                                    }
-                                                                                                                );
-                                                                                                            }
-                                                                                                        );
+                                                                                                        a.children.forEach((a) => {
+                                                                                                            if (!a.children || !1 === a.download) return;
+                                                                                                            l += `\n功能 ${e}.${++s}  ${a.name}：`;
+                                                                                                            let i = 0;
+                                                                                                            a.children.forEach((a) => {
+                                                                                                                if (!1 === a.download || a.hidden) return;
+                                                                                                                const e = Wa(a);
+                                                                                                                e && (n[e] || ((n[e] = !0), ++i, (l += 1 === i ? `${e}` : `,${e}`)));
+                                                                                                            });
+                                                                                                        });
                                                                                                     }),
                                                                                                 l
                                                                                             );
@@ -612,54 +562,25 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                                                                                         "Mars3D功能清单.csv",
                                                                                         (function () {
                                                                                             var a;
-                                                                                            let l =
-                                                                                                    "序号,分类,子分类,功能名称,示例ID\n",
+                                                                                            let l = "序号,分类,子分类,功能名称,示例ID\n",
                                                                                                 e = 0;
                                                                                             const n = {};
                                                                                             return (
                                                                                                 null == (a = x.value) ||
                                                                                                     a.forEach((a) => {
                                                                                                         a.children &&
-                                                                                                            !1 !==
-                                                                                                                a.download &&
-                                                                                                            a.children.forEach(
-                                                                                                                (s) => {
-                                                                                                                    s.children &&
-                                                                                                                        !1 !==
-                                                                                                                            s.download &&
-                                                                                                                        s.children.forEach(
-                                                                                                                            (
-                                                                                                                                i
-                                                                                                                            ) => {
-                                                                                                                                if (
-                                                                                                                                    !1 ===
-                                                                                                                                        i.download ||
-                                                                                                                                    i.hidden
-                                                                                                                                )
-                                                                                                                                    return;
-                                                                                                                                const t =
-                                                                                                                                    Wa(
-                                                                                                                                        i
-                                                                                                                                    );
-                                                                                                                                t &&
-                                                                                                                                    (n[
-                                                                                                                                        t
-                                                                                                                                    ] ||
-                                                                                                                                        ((n[
-                                                                                                                                            t
-                                                                                                                                        ] =
-                                                                                                                                            !0),
-                                                                                                                                        (l += `${++e},${
-                                                                                                                                            a.name
-                                                                                                                                        },${
-                                                                                                                                            s.name
-                                                                                                                                        },${t},${
-                                                                                                                                            i.main
-                                                                                                                                        }\n`)));
-                                                                                                                            }
-                                                                                                                        );
-                                                                                                                }
-                                                                                                            );
+                                                                                                            !1 !== a.download &&
+                                                                                                            a.children.forEach((s) => {
+                                                                                                                s.children &&
+                                                                                                                    !1 !== s.download &&
+                                                                                                                    s.children.forEach((i) => {
+                                                                                                                        if (!1 === i.download || i.hidden) return;
+                                                                                                                        const t = Wa(i);
+                                                                                                                        t &&
+                                                                                                                            (n[t] ||
+                                                                                                                                ((n[t] = !0), (l += `${++e},${a.name},${s.name},${t},${i.main}\n`)));
+                                                                                                                    });
+                                                                                                            });
                                                                                                     }),
                                                                                                 l
                                                                                             );
@@ -713,10 +634,7 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                                                             class: "side1-item",
                                                             onClick: (l) =>
                                                                 ((a) => {
-                                                                    S.value !== a.id
-                                                                        ? ((S.value = a.id),
-                                                                          (window.location.hash = `#/${a.id}`))
-                                                                        : (S.value = "");
+                                                                    S.value !== a.id ? ((S.value = a.id), (window.location.hash = `#/${a.id}`)) : (S.value = "");
                                                                 })(a)
                                                         },
                                                         [
@@ -757,14 +675,11 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                                                                               "div",
                                                                               {
                                                                                   class: c({
-                                                                                      "sidebar-children_active":
-                                                                                          E.value === a.id
+                                                                                      "sidebar-children_active": E.value === a.id
                                                                                   }),
                                                                                   onClick: (l) =>
                                                                                       ((a, l) => {
-                                                                                          Q(),
-                                                                                              B(a.id),
-                                                                                              (E.value = a.id);
+                                                                                          Q(), B(a.id), (E.value = a.id);
                                                                                       })(a)
                                                                               },
                                                                               u(a.name) + "（" + u(a.count) + "） ",
@@ -818,15 +733,7 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                                                                                             null,
                                                                                             2
                                                                                         ),
-                                                                                        t(
-                                                                                            "div",
-                                                                                            va,
-                                                                                            u(a.name) +
-                                                                                                " （" +
-                                                                                                u(a.count) +
-                                                                                                "）",
-                                                                                            1
-                                                                                        )
+                                                                                        t("div", va, u(a.name) + " （" + u(a.count) + "）", 1)
                                                                                     ]),
                                                                                     Ca
                                                                                 ],
@@ -859,259 +766,151 @@ const j = (a) => (A("data-v-b6af7eca"), (a = a()), x(), a),
                                                                                                                   "div",
                                                                                                                   {
                                                                                                                       id: a.id,
-                                                                                                                      class: c(
-                                                                                                                          {
-                                                                                                                              "list-children_title":
-                                                                                                                                  !0,
-                                                                                                                              activeItem:
-                                                                                                                                  E.value ===
-                                                                                                                                  l.id
-                                                                                                                          }
-                                                                                                                      )
+                                                                                                                      class: c({
+                                                                                                                          "list-children_title": !0,
+                                                                                                                          activeItem: E.value === l.id
+                                                                                                                      })
                                                                                                                   },
                                                                                                                   [
-                                                                                                                      g(
-                                                                                                                          u(
-                                                                                                                              l.name
-                                                                                                                          ) +
-                                                                                                                              "（" +
-                                                                                                                              u(
-                                                                                                                                  l.count
-                                                                                                                              ) +
-                                                                                                                              "） ",
-                                                                                                                          1
-                                                                                                                      ),
+                                                                                                                      g(u(l.name) + "（" + u(l.count) + "） ", 1),
                                                                                                                       l.details
                                                                                                                           ? (s(),
                                                                                                                             d(
                                                                                                                                 Ja,
                                                                                                                                 {
                                                                                                                                     key: 0,
-                                                                                                                                    placement:
-                                                                                                                                        "right"
+                                                                                                                                    placement: "right"
                                                                                                                                 },
                                                                                                                                 {
-                                                                                                                                    content:
-                                                                                                                                        r(
-                                                                                                                                            () => [
-                                                                                                                                                g(
-                                                                                                                                                    u(
-                                                                                                                                                        l.details
-                                                                                                                                                    ),
-                                                                                                                                                    1
-                                                                                                                                                )
-                                                                                                                                            ]
-                                                                                                                                        ),
-                                                                                                                                    default:
-                                                                                                                                        r(
-                                                                                                                                            () => [
-                                                                                                                                                E.value ===
-                                                                                                                                                l.id
-                                                                                                                                                    ? (s(),
-                                                                                                                                                      d(
-                                                                                                                                                          C,
-                                                                                                                                                          {
-                                                                                                                                                              key: 0,
-                                                                                                                                                              icon: "help",
-                                                                                                                                                              width: "20",
-                                                                                                                                                              color: "#2468f2"
-                                                                                                                                                          }
-                                                                                                                                                      ))
-                                                                                                                                                    : (s(),
-                                                                                                                                                      d(
-                                                                                                                                                          C,
-                                                                                                                                                          {
-                                                                                                                                                              key: 1,
-                                                                                                                                                              icon: "help",
-                                                                                                                                                              width: "20",
-                                                                                                                                                              color: "#071228"
-                                                                                                                                                          }
-                                                                                                                                                      ))
-                                                                                                                                            ]
-                                                                                                                                        ),
+                                                                                                                                    content: r(() => [g(u(l.details), 1)]),
+                                                                                                                                    default: r(() => [
+                                                                                                                                        E.value === l.id
+                                                                                                                                            ? (s(),
+                                                                                                                                              d(C, {
+                                                                                                                                                  key: 0,
+                                                                                                                                                  icon: "help",
+                                                                                                                                                  width: "20",
+                                                                                                                                                  color: "#2468f2"
+                                                                                                                                              }))
+                                                                                                                                            : (s(),
+                                                                                                                                              d(C, {
+                                                                                                                                                  key: 1,
+                                                                                                                                                  icon: "help",
+                                                                                                                                                  width: "20",
+                                                                                                                                                  color: "#071228"
+                                                                                                                                              }))
+                                                                                                                                    ]),
                                                                                                                                     _: 2
                                                                                                                                 },
                                                                                                                                 1024
                                                                                                                             ))
-                                                                                                                          : h(
-                                                                                                                                "",
-                                                                                                                                !0
-                                                                                                                            )
+                                                                                                                          : h("", !0)
                                                                                                                   ],
                                                                                                                   10,
                                                                                                                   Ia
                                                                                                               ),
-                                                                                                              t(
-                                                                                                                  "div",
-                                                                                                                  wa,
-                                                                                                                  [
-                                                                                                                      (s(
-                                                                                                                          !0
-                                                                                                                      ),
-                                                                                                                      i(
-                                                                                                                          p,
-                                                                                                                          null,
-                                                                                                                          m(
-                                                                                                                              l.children,
-                                                                                                                              (
-                                                                                                                                  a,
-                                                                                                                                  l
-                                                                                                                              ) => (
-                                                                                                                                  s(),
-                                                                                                                                  i(
-                                                                                                                                      p,
-                                                                                                                                      {
-                                                                                                                                          key: l
-                                                                                                                                      },
-                                                                                                                                      [
-                                                                                                                                          !a.hidden ||
-                                                                                                                                          a.main
-                                                                                                                                              ? (s(),
-                                                                                                                                                i(
-                                                                                                                                                    "div",
-                                                                                                                                                    {
-                                                                                                                                                        key: 0,
-                                                                                                                                                        class: "list-chilidren_item",
-                                                                                                                                                        onClick:
-                                                                                                                                                            (
-                                                                                                                                                                l
-                                                                                                                                                            ) =>
-                                                                                                                                                                ((
-                                                                                                                                                                    a
-                                                                                                                                                                ) => {
-                                                                                                                                                                    let l =
-                                                                                                                                                                        `/editor.html?key=${a.id}&id=` +
-                                                                                                                                                                        encodeURI(
-                                                                                                                                                                            a.main
-                                                                                                                                                                        );
-                                                                                                                                                                    window.autoShowCode &&
-                                                                                                                                                                        (l +=
-                                                                                                                                                                            "&code=1"),
-                                                                                                                                                                        a.params &&
-                                                                                                                                                                            (l += `&${a.params}`),
-                                                                                                                                                                        window.open(
-                                                                                                                                                                            l,
-                                                                                                                                                                            "_blank"
-                                                                                                                                                                        );
-                                                                                                                                                                })(
-                                                                                                                                                                    a
-                                                                                                                                                                )
-                                                                                                                                                    },
-                                                                                                                                                    [
-                                                                                                                                                        Fa(
-                                                                                                                                                            a
-                                                                                                                                                        )
-                                                                                                                                                            ? (s(),
-                                                                                                                                                              i(
-                                                                                                                                                                  "span",
-                                                                                                                                                                  Aa,
-                                                                                                                                                                  "新"
-                                                                                                                                                              ))
-                                                                                                                                                            : h(
-                                                                                                                                                                  "",
-                                                                                                                                                                  !0
-                                                                                                                                                              ),
-                                                                                                                                                        w(
-                                                                                                                                                            t(
-                                                                                                                                                                "img",
-                                                                                                                                                                {
-                                                                                                                                                                    class: "pic",
-                                                                                                                                                                    onerror:
-                                                                                                                                                                        Ua
-                                                                                                                                                                },
-                                                                                                                                                                null,
-                                                                                                                                                                512
-                                                                                                                                                            ),
-                                                                                                                                                            [
-                                                                                                                                                                [
-                                                                                                                                                                    Da,
-                                                                                                                                                                    La(
-                                                                                                                                                                        a
-                                                                                                                                                                    )
-                                                                                                                                                                ]
-                                                                                                                                                            ]
-                                                                                                                                                        ),
+                                                                                                              t("div", wa, [
+                                                                                                                  (s(!0),
+                                                                                                                  i(
+                                                                                                                      p,
+                                                                                                                      null,
+                                                                                                                      m(
+                                                                                                                          l.children,
+                                                                                                                          (a, l) => (
+                                                                                                                              s(),
+                                                                                                                              i(
+                                                                                                                                  p,
+                                                                                                                                  {
+                                                                                                                                      key: l
+                                                                                                                                  },
+                                                                                                                                  [
+                                                                                                                                      !a.hidden || a.main
+                                                                                                                                          ? (s(),
+                                                                                                                                            i(
+                                                                                                                                                "div",
+                                                                                                                                                {
+                                                                                                                                                    key: 0,
+                                                                                                                                                    class: "list-chilidren_item",
+                                                                                                                                                    onClick: (l) =>
+                                                                                                                                                        ((a) => {
+                                                                                                                                                            let l =
+                                                                                                                                                                `./editor.html?key=${a.id}&id=` +
+                                                                                                                                                                encodeURI(a.main);
+                                                                                                                                                            window.autoShowCode && (l += "&code=1"),
+                                                                                                                                                                a.params && (l += `&${a.params}`),
+                                                                                                                                                                window.open(l, "_blank");
+                                                                                                                                                        })(a)
+                                                                                                                                                },
+                                                                                                                                                [
+                                                                                                                                                    Fa(a) ? (s(), i("span", Aa, "新")) : h("", !0),
+                                                                                                                                                    w(
                                                                                                                                                         t(
-                                                                                                                                                            "p",
+                                                                                                                                                            "img",
                                                                                                                                                             {
-                                                                                                                                                                class: "name",
-                                                                                                                                                                title: a.name
+                                                                                                                                                                class: "pic",
+                                                                                                                                                                onerror: Ua
                                                                                                                                                             },
-                                                                                                                                                            [
-                                                                                                                                                                g(
-                                                                                                                                                                    u(
-                                                                                                                                                                        a.name
-                                                                                                                                                                    ) +
-                                                                                                                                                                        " ",
-                                                                                                                                                                    1
-                                                                                                                                                                ),
-                                                                                                                                                                a.hasPannel
-                                                                                                                                                                    ? (s(),
-                                                                                                                                                                      i(
-                                                                                                                                                                          "span",
-                                                                                                                                                                          {
-                                                                                                                                                                              key: 0,
-                                                                                                                                                                              innerHTML:
-                                                                                                                                                                                  v
-                                                                                                                                                                                      .value
-                                                                                                                                                                                      .icon
-                                                                                                                                                                          },
-                                                                                                                                                                          null,
-                                                                                                                                                                          8,
-                                                                                                                                                                          ba
-                                                                                                                                                                      ))
-                                                                                                                                                                    : h(
-                                                                                                                                                                          "",
-                                                                                                                                                                          !0
-                                                                                                                                                                      ),
-                                                                                                                                                                w(
-                                                                                                                                                                    t(
-                                                                                                                                                                        "span",
-                                                                                                                                                                        {
-                                                                                                                                                                            style: {
-                                                                                                                                                                                color: "rgba(0, 147, 255, 0.7)"
-                                                                                                                                                                            },
-                                                                                                                                                                            title:
-                                                                                                                                                                                "该功能需要引入 mars3d-" +
-                                                                                                                                                                                a.plugins +
-                                                                                                                                                                                ".js 插件才能使用。"
+                                                                                                                                                            null,
+                                                                                                                                                            512
+                                                                                                                                                        ),
+                                                                                                                                                        [[Da, La(a)]]
+                                                                                                                                                    ),
+                                                                                                                                                    t(
+                                                                                                                                                        "p",
+                                                                                                                                                        {
+                                                                                                                                                            class: "name",
+                                                                                                                                                            title: a.name
+                                                                                                                                                        },
+                                                                                                                                                        [
+                                                                                                                                                            g(u(a.name) + " ", 1),
+                                                                                                                                                            a.hasPannel
+                                                                                                                                                                ? (s(),
+                                                                                                                                                                  i(
+                                                                                                                                                                      "span",
+                                                                                                                                                                      {
+                                                                                                                                                                          key: 0,
+                                                                                                                                                                          innerHTML: v.value.icon
+                                                                                                                                                                      },
+                                                                                                                                                                      null,
+                                                                                                                                                                      8,
+                                                                                                                                                                      ba
+                                                                                                                                                                  ))
+                                                                                                                                                                : h("", !0),
+                                                                                                                                                            w(
+                                                                                                                                                                t(
+                                                                                                                                                                    "span",
+                                                                                                                                                                    {
+                                                                                                                                                                        style: {
+                                                                                                                                                                            color: "rgba(0, 147, 255, 0.7)"
                                                                                                                                                                         },
-                                                                                                                                                                        "[" +
-                                                                                                                                                                            u(
-                                                                                                                                                                                a.plugins
-                                                                                                                                                                            ) +
-                                                                                                                                                                            "插件]",
-                                                                                                                                                                        9,
-                                                                                                                                                                        Sa
-                                                                                                                                                                    ),
-                                                                                                                                                                    [
-                                                                                                                                                                        [
-                                                                                                                                                                            k,
-                                                                                                                                                                            a.plugins
-                                                                                                                                                                        ]
-                                                                                                                                                                    ]
-                                                                                                                                                                )
-                                                                                                                                                            ],
-                                                                                                                                                            8,
-                                                                                                                                                            xa
-                                                                                                                                                        )
-                                                                                                                                                    ],
-                                                                                                                                                    8,
-                                                                                                                                                    ka
-                                                                                                                                                ))
-                                                                                                                                              : h(
-                                                                                                                                                    "",
-                                                                                                                                                    !0
-                                                                                                                                                )
-                                                                                                                                      ],
-                                                                                                                                      64
-                                                                                                                                  )
+                                                                                                                                                                        title:
+                                                                                                                                                                            "该功能需要引入 mars3d-" +
+                                                                                                                                                                            a.plugins +
+                                                                                                                                                                            ".js 插件才能使用。"
+                                                                                                                                                                    },
+                                                                                                                                                                    "[" + u(a.plugins) + "插件]",
+                                                                                                                                                                    9,
+                                                                                                                                                                    Sa
+                                                                                                                                                                ),
+                                                                                                                                                                [[k, a.plugins]]
+                                                                                                                                                            )
+                                                                                                                                                        ],
+                                                                                                                                                        8,
+                                                                                                                                                        xa
+                                                                                                                                                    )
+                                                                                                                                                ],
+                                                                                                                                                8,
+                                                                                                                                                ka
+                                                                                                                                            ))
+                                                                                                                                          : h("", !0)
+                                                                                                                                  ],
+                                                                                                                                  64
                                                                                                                               )
-                                                                                                                          ),
-                                                                                                                          128
-                                                                                                                      ))
-                                                                                                                  ]
-                                                                                                              )
+                                                                                                                          )
+                                                                                                                      ),
+                                                                                                                      128
+                                                                                                                  ))
+                                                                                                              ])
                                                                                                           ],
                                                                                                           8,
                                                                                                           fa
