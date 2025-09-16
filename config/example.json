@@ -175,6 +175,12 @@
             "thumbnail": "grid-material.png",
             "main": "entity-primitive/grid-material",
             "hasPannel": true
+          },
+          {
+            "name": "Water Material",
+            "thumbnail": "water-material.png",
+            "main": "entity-primitive/water-material",
+            "hasPannel": true
           }
         ]
       },
