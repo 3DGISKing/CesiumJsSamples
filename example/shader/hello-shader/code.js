@@ -1,15 +1,4 @@
-const {
-    BlendingState,
-    DrawCommand,
-    Geometry,
-    GeometryAttribute,
-    Pass,
-    PrimitiveType,
-    RenderState,
-    ShaderProgram,
-    VertexArray,
-    Viewer
-} = Cesium;
+const { BlendingState, DrawCommand, Geometry, GeometryAttribute, Pass, PrimitiveType, RenderState, ShaderProgram, VertexArray, Viewer } = Cesium;
 
 const viewer = new Viewer("cesiumContainer");
 
@@ -20,9 +9,7 @@ class MyPrimitive {
                 position: new GeometryAttribute({
                     componentDatatype: Cesium.ComponentDatatype.FLOAT,
                     componentsPerAttribute: 3,
-                    values: new Float32Array([
-                        -6378137, -6378137, 0, 6378137, -6378137, 0, 6378137, 6378137, 0, -6378137, 6378137, 0
-                    ])
+                    values: new Float32Array([-6378137, -6378137, 0, 6378137, -6378137, 0, 6378137, 6378137, 0, -6378137, 6378137, 0])
                 }),
                 color: new GeometryAttribute({
                     componentDatatype: Cesium.ComponentDatatype.FLOAT,
@@ -96,7 +83,8 @@ class MyPrimitive {
             renderState: RenderState.fromCache({
                 blending: BlendingState.ALPHA_BLEND
             }),
-            pass: Pass.TRANSLUCENT
+            pass: Pass.TRANSLUCENT,
+            primitiveType: PrimitiveType.TRIANGLES
         });
     }
 
