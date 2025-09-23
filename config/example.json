@@ -372,6 +372,12 @@
             "hasPannel": true
           },
           {
+            "name": "Trail",
+            "thumbnail": "trail.png",
+            "main": "shader/trail",
+            "hasPannel": true
+          },
+          {
             "name": "CircleWaveMaterial",
             "thumbnail": "circle-wave-material.png",
             "main": "shader/circle-wave-material",
