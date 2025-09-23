@@ -1,11 +1,12 @@
-const { BlendingState, Cartesian2, DrawCommand, Geometry, GeometryAttribute, Pass, PrimitiveType, RenderState, ShaderProgram, VertexArray, Viewer } = Cesium;
+const { BlendingState, Cartesian2, Cartesian3, DrawCommand, Geometry, GeometryAttribute, Pass, PrimitiveType, RenderState, ShaderProgram, VertexArray, Viewer } = Cesium;
 
-const PARTICLE_COUNT_PER_MOUSE = 80;
+const PARTICLE_COUNT_PER_MOUSE = 800;
 const COUNT = PARTICLE_COUNT_PER_MOUSE * 400;
+const POSITION_ATTRIBUTE_COUNT = 3;
 const MOUSE_ATTRIBUTE_COUNT = 4;
 
-const scratchFront = new Cartesian2();
-const scratchStep = new Cartesian2();
+const scratchFront = new Cartesian3();
+const scratchStep = new Cartesian3();
 
 class Trail {
     constructor(scene) {
@@ -15,8 +16,8 @@ class Trail {
 
         const count = this._count;
 
-        this._positions = new Float32Array(count * 3);
-        this._mouse = new Float32Array(count * 4);
+        this._positions = new Float32Array(count * POSITION_ATTRIBUTE_COUNT);
+        this._mouse = new Float32Array(count * MOUSE_ATTRIBUTE_COUNT);
         this._afront = new Float32Array(count * 2);
         this._random = new Float32Array(count);
 
@@ -24,12 +25,13 @@ class Trail {
         const mouse = this._mouse;
         const aFront = this._afront;
 
-        this.mouseI = 0;
+        this._positionIndex = 0;
+        this._mouseIndex = 0;
 
         for (let i = 0; i < count; i++) {
-            positions[i * 3 + 0] = Math.random();
-            positions[i * 3 + 1] = Math.random();
-            positions[i * 3 + 2] = Math.random();
+            positions[i * 3 + 0] = 0;
+            positions[i * 3 + 1] = 0;
+            positions[i * 3 + 2] = 0;
 
             mouse[i * 4 + 0] = -1;
             mouse[i * 4 + 1] = -1;
@@ -42,52 +44,49 @@ class Trail {
             this._random[i] = Math.random();
         }
 
-        this.oldPosition = null;
+        this._timestamp = 0; // JulianDate.secondsOfDay
+        this._oldPosition = null;
     }
 
     isDestroyed() {
         return false;
     }
 
-    _createVertexArray(position, screenPosition, julianDate) {
-        const secondsOfDay = julianDate.secondsOfDay;
-        const x = screenPosition.x;
-        const y = screenPosition.y;
+    _createVertexArray(position) {
+        const diff = new Cartesian3();
 
-        const newPosition = new Cartesian2(x, y);
-        const diff = new Cartesian2();
-
-        if (this.oldPosition) {
-            Cartesian2.subtract(newPosition, this.oldPosition, diff);
+        if (this._oldPosition) {
+            Cartesian3.subtract(position, this._oldPosition, diff);
         }
 
-        const length = Cartesian2.magnitude(diff);
-        const front = Cartesian2.normalize(diff, scratchFront);
+        const length = Cartesian3.magnitude(diff);
+        const front = Cartesian3.normalize(diff, scratchFront);
 
         for (let i = 0; i < PARTICLE_COUNT_PER_MOUSE; i++) {
-            const ci = (this.mouseI % (COUNT * MOUSE_ATTRIBUTE_COUNT)) + i * MOUSE_ATTRIBUTE_COUNT;
+            const ci = (this._positionIndex % (COUNT * POSITION_ATTRIBUTE_COUNT)) + i * POSITION_ATTRIBUTE_COUNT;
 
-            let position = newPosition;
+            let subPosition = position;
 
-            if (this.oldPosition) {
-                const step = Cartesian2.multiplyByScalar(diff, i / PARTICLE_COUNT_PER_MOUSE, scratchStep);
+            if (this._oldPosition) {
+                const step = Cartesian3.multiplyByScalar(diff, i / PARTICLE_COUNT_PER_MOUSE, scratchStep);
 
-                position = Cartesian2.add(this.oldPosition, step, position);
+                subPosition = Cartesian3.add(this._oldPosition, step, position);
             }
 
-            //  console.log(ci);
-
-            this._mouse[ci] = position.x;
-            this._mouse[ci + 1] = position.y;
-            this._mouse[ci + 2] = secondsOfDay;
-            this._mouse[ci + 3] = length;
-
-            this._afront[ci] = front.x;
-            this._afront[ci + 1] = front.y;
+            this._positions[ci + 0] = subPosition.x;
+            this._positions[ci + 1] = subPosition.y;
+            this._positions[ci + 2] = subPosition.z;
         }
 
-        this.oldPosition = newPosition;
-        this.mouseI += MOUSE_ATTRIBUTE_COUNT * PARTICLE_COUNT_PER_MOUSE;
+        for (let i = 0; i < PARTICLE_COUNT_PER_MOUSE; i++) {
+            const ci = (this._mouseIndex % (COUNT * MOUSE_ATTRIBUTE_COUNT)) + i * MOUSE_ATTRIBUTE_COUNT;
+
+            this._mouse[ci + 0] = this._timestamp;
+        }
+
+        this._oldPosition = position;
+        this._positionIndex += POSITION_ATTRIBUTE_COUNT * PARTICLE_COUNT_PER_MOUSE;
+        this._mouseIndex += MOUSE_ATTRIBUTE_COUNT * PARTICLE_COUNT_PER_MOUSE;
 
         const geometry = new Geometry({
             attributes: {
@@ -130,8 +129,8 @@ class Trail {
         });
     }
 
-    updatePosition(position, screenPosition, julianDate) {
-        const vertexArray = this._createVertexArray(position, screenPosition, julianDate);
+    updatePosition(position) {
+        const vertexArray = this._createVertexArray(position);
 
         if (this._command) {
             this._command.vertexArray = vertexArray;
@@ -164,15 +163,15 @@ class Trail {
                         out float vSpreadLength;
                         out float vPositionZ;
 
+                        const float PI = 3.1415926;
+                        const float PI2 = PI * 2.;
 
                         float cubicOut(float t) {
                             float f = t - 1.0;
                             return f * f * f + 1.0;
                         }
 
-                        const float PI = 3.1415926;
-                        const float PI2 = PI * 2.;
-
+ 
                         vec2 cartesianToPolar(vec2 p) {
                             return vec2((atan(p.y, p.x) + PI) / PI2, length(p));
                         }
@@ -184,48 +183,87 @@ class Trail {
                         }
 
                         void main() {
-                            float progress = clamp((timestamp - mouse.z) * speed, 0., 1.);
-                            progress *= step(0., mouse.x);
+                            if(position.x == 0.0 && position.y == 0.0 && position.z == 0.0){    
+                                
+                                gl_PointSize = 0.0;
+                                return;
+                            }
 
-                            float startX = mouse.x - resolution.x / 2.;
-                            float startY = mouse.y - resolution.y / 2.;
-                            vec3 startPosition = vec3(startX, startY, random);
+                            // mouse.x means timestamp
+                            float progress = clamp((timestamp - mouse.x) * speed , 0., 1.);
 
-                            float diff = clamp(mouse.w / maxDiff, 0., 1.);
-                            diff = pow(diff, diffPow);
+                            float u = random;
+                            float v = random;
 
-                            vec3 cPosition = position * 2. - 1.;
+                            float theta = 2.0 * PI * u;
+                            float phi = acos(2.0 * v - 1.0);
 
-                            float radian = cPosition.x * PI2 - PI;
-                            vec2 xySpread = vec2(cos(radian), sin(radian)) * spread * mix(1., maxSpread, diff) * cPosition.y;
+                            float d = 1.0;
 
-                            vec3 endPosition = startPosition;
-                            endPosition.xy += xySpread;
-                            endPosition.xy -= aFront * far * random;
-                            endPosition.z += cPosition.z * maxZ * (pixelRatio > 1. ? 1.2 : 1.);
+                            float x = position.x + (d * sin(phi) * cos(theta));
+                            float y = position.y + (d * sin(phi) * sin(theta));
+                            float z = position.z + (d * cos(phi));
 
-                            float positionProgress = cubicOut(progress * random);
+                            vec3 currentPosition = vec3(x, y, z);
 
-                            vec3 currentPosition = mix(startPosition, endPosition, positionProgress);
-
-                            vProgress = progress;
                             vRandom = random;
-                            vDiff = diff;
-                            vSpreadLength = cPosition.y;
-                            vPositionZ = position.z;
+                            vProgress = progress;
 
                             gl_Position = czm_modelViewProjection * vec4(currentPosition, 1.);
-                            gl_PointSize = max(currentPosition.z * size * diff * pixelRatio, minSize * (pixelRatio > 1. ? 1.3 : 1.));
 
-                            
-                            gl_PointSize = 10.0;
+                            float diff = 50.0; 
+
+                            gl_PointSize = max(random * size * diff * pixelRatio, minSize * (pixelRatio > 1. ? 1.3 : 1.));
                         }`;
 
             const fs = `
-                        in vec4 v_color;
+                        precision highp float;
+             
+                        in float vRandom;
+                        in float vProgress;
+
+                        uniform float fadeSpeed;
+                        uniform float minFlashingSpeed;
+                        uniform float blur;
                         
+                        highp float random(vec2 co) {
+                            highp float a = 12.9898;
+                            highp float b = 78.233;
+                            highp float c = 43758.5453;
+                            highp float dt = dot(co.xy, vec2(a, b));
+                            highp float sn = mod(dt, 3.14);
+
+                            return fract(sin(sn) * c);
+                        }
+                       
+                        const vec3 baseColor = vec3(170., 133., 88.) / 255.;
+
                         void main() {
-                            out_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+                            float vPositionZ = 1.0;
+                            float vDiff = 1.0;
+
+                            vec2 p = gl_PointCoord * 2. - 1.0;
+
+                            float len = 0.1;
+
+                            float cRandom = random(vec2(vProgress * mix(minFlashingSpeed, 1., vRandom)));
+                            cRandom = mix(0.3, 2.0, cRandom);
+           
+                            float cBlur = blur * mix(1.0, 0.3, vPositionZ);
+
+                            float shape = smoothstep(1. - cBlur, 1. + cBlur, (1. - cBlur) / len);
+                            shape *= mix(0.5, 1.0, vRandom);
+
+                            if (shape == 0.0)  {
+                                discard;
+                            }
+
+                            float darkness = mix(0.1, 1., vPositionZ);
+                            float alphaProgress = vProgress * fadeSpeed * 50.0 * mix(2.5, 1., pow(vDiff, 0.6));
+                            float alpha = 1. - min(alphaProgress, 1.);
+                            alpha *= cRandom * vDiff;
+
+                            out_FragColor = vec4(baseColor * darkness * cRandom, shape * alpha);
                         }`;
 
             const shaderProgram = ShaderProgram.fromCache({
@@ -248,7 +286,7 @@ class Trail {
                 uniformMap: {
                     resolution: () => new Cartesian2(scene.canvas.width, scene.canvas.height),
                     pixelRatio: () => window.devicePixelRatio,
-                    timestamp: () => julianDate.secondsOfDay,
+                    timestamp: () => this._timestamp,
                     size: () => 0.05,
                     minSize: () => 1,
                     speed: () => 0.012,
@@ -264,12 +302,17 @@ class Trail {
                     diffPow: () => 0.24
                 },
                 renderState: RenderState.fromCache({
-                    blending: BlendingState.ALPHA_BLEND
+                    blending: BlendingState.ADDITIVE_BLEND
                 }),
-                pass: Pass.TRANSLUCENT,
+                pass: Pass.OPAQUE,
                 primitiveType: PrimitiveType.POINTS
             });
         }
+    }
+
+    updateTimestamp(julianDate) {
+        this._timestamp = julianDate.secondsOfDay;
+        //  console.log(this._timestamp);
     }
 
     update(frameState) {

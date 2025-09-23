@@ -61,7 +61,7 @@ function computeCirclularFlight(lon, lat, radius) {
 const position = computeCirclularFlight(-112.110693, 36.0994841, 0.03);
 
 //Actually create the entity
-const entity = viewer.entities.add({
+const planeEntity = viewer.entities.add({
     //Set the entity availability to the same interval as the simulation time.
     availability: new Cesium.TimeIntervalCollection([
         new Cesium.TimeInterval({
@@ -80,9 +80,10 @@ const entity = viewer.entities.add({
     model: {
         uri: "./assets/models/Cesium_Air.glb",
         minimumPixelSize: 64
-    },
+    }
 
     //Show the path as a pink line sampled in 1 second increments.
+    /*
     path: {
         resolution: 1,
         material: new Cesium.PolylineGlowMaterialProperty({
@@ -91,6 +92,7 @@ const entity = viewer.entities.add({
         }),
         width: 10
     }
+    */
 });
 
 //Add button to view the path from the top down
@@ -107,20 +109,20 @@ Sandcastle.addToolbarButton("View Side", function () {
 
 //Add button to track the entity as it moves
 Sandcastle.addToolbarButton("View Aircraft", function () {
-    viewer.trackedEntity = entity;
+    viewer.trackedEntity = planeEntity;
 });
 
 Sandcastle.addToolbarMenu([
     {
         text: "Tracking reference frame: East-North-Up",
         onselect: function () {
-            entity.trackingReferenceFrame = Cesium.TrackingReferenceFrame.ENU;
+            planeEntity.trackingReferenceFrame = Cesium.TrackingReferenceFrame.ENU;
         }
     },
     {
         text: "Tracking reference frame: Inertial",
         onselect: function () {
-            entity.trackingReferenceFrame = Cesium.TrackingReferenceFrame.INERTIAL;
+            planeEntity.trackingReferenceFrame = Cesium.TrackingReferenceFrame.INERTIAL;
         }
     }
 ]);
@@ -131,7 +133,7 @@ Sandcastle.addToolbarMenu(
         {
             text: "Interpolation: Linear Approximation",
             onselect: function () {
-                entity.position.setInterpolationOptions({
+                planeEntity.position.setInterpolationOptions({
                     interpolationDegree: 1,
                     interpolationAlgorithm: Cesium.LinearApproximation
                 });
@@ -140,7 +142,7 @@ Sandcastle.addToolbarMenu(
         {
             text: "Interpolation: Lagrange Polynomial Approximation",
             onselect: function () {
-                entity.position.setInterpolationOptions({
+                planeEntity.position.setInterpolationOptions({
                     interpolationDegree: 5,
                     interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
                 });
@@ -149,7 +151,7 @@ Sandcastle.addToolbarMenu(
         {
             text: "Interpolation: Hermite Polynomial Approximation",
             onselect: function () {
-                entity.position.setInterpolationOptions({
+                planeEntity.position.setInterpolationOptions({
                     interpolationDegree: 2,
                     interpolationAlgorithm: Cesium.HermitePolynomialApproximation
                 });
@@ -164,24 +166,34 @@ const scene = viewer.scene;
 const trail = new Trail(scene);
 scene.primitives.add(trail);
 
-var previousTime = Cesium.JulianDate.clone(viewer.clock.currentTime);
+let previousTime = Cesium.JulianDate.clone(viewer.clock.currentTime);
+let previousPlanePosition = planeEntity.position.getValue(viewer.clock.currentTime);
 
 viewer.clock.onTick.addEventListener((e) => {
     if (!Cesium.JulianDate.equalsEpsilon(previousTime, viewer.clock.currentTime, 1)) {
+        trail.updateTimestamp(viewer.clock.currentTime);
+
         previousTime = Cesium.JulianDate.clone(viewer.clock.currentTime);
+    }
+
+    const planePosition = planeEntity.position.getValue(viewer.clock.currentTime);
+    const distance = Cesium.Cartesian3.distance(previousPlanePosition, planePosition);
+
+    const distanceTolerance = 100;
+
+    if (distance > distanceTolerance) {
+        //  trail.updatePosition(planePosition);
+        previousPlanePosition = planePosition;
     }
 });
 
-scene.preRender.addEventListener(function (scene, time) {
-    //console.log(time);
+function computeModelMatrix(entity, time) {
+    return entity.computeModelMatrix(time, new Cesium.Matrix4());
+}
 
-    const planePosition = entity.position.getValue(time);
+viewer.scene.preUpdate.addEventListener(function (scene, time) {
+    const modelMatrix = computeModelMatrix(planeEntity, time);
 
-    const screenPosition = scene.cartesianToCanvasCoordinates(planePosition, new Cartesian2());
-
-    if (!screenPosition) {
-        return;
-    }
-
-    trail.updatePosition(planePosition, screenPosition, time);
+    const planePosition = planeEntity.position.getValue(viewer.clock.currentTime);
+    trail.updatePosition(planePosition);
 });
