@@ -1,6 +1,6 @@
 import Trail from "./Trail.js";
 
-const { Cartesian2 } = window.Cesium;
+const { Cartesian2, DebugModelMatrixPrimitive } = window.Cesium;
 
 const viewer = new Cesium.Viewer("cesiumContainer", {
     infoBox: false, //Disable InfoBox widget
@@ -27,7 +27,7 @@ viewer.clock.startTime = start.clone();
 viewer.clock.stopTime = stop.clone();
 viewer.clock.currentTime = start.clone();
 viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
-viewer.clock.multiplier = 10;
+viewer.clock.multiplier = 1;
 
 //Set timeline to simulation bounds
 viewer.timeline.zoomTo(start, stop);
@@ -166,6 +166,13 @@ const scene = viewer.scene;
 const trail = new Trail(scene);
 scene.primitives.add(trail);
 
+const debugModelMatrixPrimitive = new DebugModelMatrixPrimitive({
+    length: 100.0,
+    width: 3.0
+});
+
+scene.primitives.add(debugModelMatrixPrimitive);
+
 let previousTime = Cesium.JulianDate.clone(viewer.clock.currentTime);
 let previousPlanePosition = planeEntity.position.getValue(viewer.clock.currentTime);
 
@@ -183,7 +190,7 @@ viewer.clock.onTick.addEventListener((e) => {
 
     if (distance > distanceTolerance) {
         //  trail.updatePosition(planePosition);
-        previousPlanePosition = planePosition;
+        // previousPlanePosition = planePosition;
     }
 });
 
@@ -194,6 +201,16 @@ function computeModelMatrix(entity, time) {
 viewer.scene.preUpdate.addEventListener(function (scene, time) {
     const modelMatrix = computeModelMatrix(planeEntity, time);
 
+    debugModelMatrixPrimitive.modelMatrix = modelMatrix;
+
     const planePosition = planeEntity.position.getValue(viewer.clock.currentTime);
-    trail.updatePosition(planePosition);
+    const distance = Cesium.Cartesian3.distance(previousPlanePosition, planePosition);
+
+    const distanceTolerance = 20;
+
+    if (distance > distanceTolerance) {
+        previousPlanePosition = planePosition;
+    }
+
+    trail.updatePosition(modelMatrix);
 });
