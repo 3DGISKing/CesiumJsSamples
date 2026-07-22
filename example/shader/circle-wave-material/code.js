@@ -1,8 +1,9 @@
-const { Cartesian3, Color, createPropertyDescriptor, defaultValue, defined, Event, Material, Property, Viewer } =
+const { Cartesian3, Color, createPropertyDescriptor, defined, Event, Material, Property, Viewer } =
     window.Cesium;
 
 function CircleWaveMaterialProperty(options) {
-    this.options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+    options = options ?? {};
+    this.options = options;
 
     this._definitionChanged = new Event();
 
@@ -12,13 +13,13 @@ function CircleWaveMaterialProperty(options) {
 
     this.color = options.color;
 
-    this.duration = defaultValue(options.duration, 1e3);
+    this.duration = options.duration ?? 1e3;
 
-    this.count = defaultValue(options.count, 2);
+    this.count = options.count ?? 2;
 
     if (this.count <= 0) this.count = 1;
 
-    this.gradient = defaultValue(options.gradient, 0.1);
+    this.gradient = options.gradient ?? 0.1;
 
     if (this.gradient < 0) this.gradient = 0;
     else if (this.gradient > 1) this.gradient = 1;

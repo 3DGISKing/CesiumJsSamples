@@ -1,6 +1,5 @@
 const PolygonPrimitive = (function () {
     const  createGuid = Cesium.createGuid;
-    const defaultValue = Cesium.defaultValue;
     const destroyObject  = Cesium.destroyObject;
     const BoundingSphere = Cesium.BoundingSphere;
     const Color = Cesium.Color;
@@ -18,10 +17,10 @@ const PolygonPrimitive = (function () {
      * @ionsdk
      */
     function PolygonPrimitive(options) {
-        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+        options = options ?? {};
 
-        this.show = defaultValue(options.show, true);
-        const color = Color.clone(defaultValue(options.color, Color.WHITE));
+        this.show = options.show ?? true;
+        const color = Color.clone(options.color ?? Color.WHITE);
         this._id = createGuid();
         this._color = color;
         this._depthFailColor = color;

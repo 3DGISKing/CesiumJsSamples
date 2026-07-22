@@ -33,7 +33,7 @@
 
     function LatlonInspector(options) {
         this._viewer = options.viewer;
-        this._fractionDigits = Cesium.defaultValue(options.fractionDigits, 2);
+        this._fractionDigits = options.fractionDigits ?? 2;
         this._started = true;
 
         this._createUI(options.container);

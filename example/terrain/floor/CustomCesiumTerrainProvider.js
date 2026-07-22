@@ -4,7 +4,6 @@ const {
     Cartesian3,
     CesiumTerrainProvider,
     Credit,
-    defaultValue,
     defer,
     defined,
     DeveloperError,

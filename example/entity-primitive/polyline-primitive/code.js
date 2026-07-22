@@ -4,7 +4,6 @@ const {
     BoundingSphere,
     Cartesian3,
     ColorGeometryInstanceAttribute,
-    defaultValue,
     defined,
     Color,
     GeometryInstance,
@@ -20,22 +19,22 @@ const {
 
 class PolylinePrimitive {
     constructor(options) {
-        this._show = defaultValue(options.show, true);
-        const isArrow = defaultValue(options.arrow, false);
+        this._show = options.show ?? true;
+        const isArrow = options.arrow ?? false;
         this._width = options.width ? options.width : isArrow ? 5 : 3;
         this._isArrow = isArrow;
-        this._color = Color.clone(defaultValue(options.color, Color.WHITE));
+        this._color = Color.clone(options.color ?? Color.WHITE);
         this._primitive = undefined;
-        this._dashed = defaultValue(options.dashed, false);
-        this._loop = defaultValue(options.loop, false);
-        const positions = defaultValue(options.positions, []);
+        this._dashed = options.dashed ?? false;
+        this._loop = options.loop ?? false;
+        const positions = options.positions ?? [];
         this._positions = positions;
         this._boundingSphere = positions.length > 0 ? BoundingSphere.fromPoints(this._positions) : new BoundingSphere();
         this._transformedBoundingSphere = BoundingSphere.clone(this._boundingSphere);
-        this._depthTest = defaultValue(options.depthTest, false);
-        this._clampToGround = defaultValue(options.clampToGround, false);
+        this._depthTest = options.depthTest ?? false;
+        this._clampToGround = options.clampToGround ?? false;
         this._update = true;
-        this._allowPicking = defaultValue(options.allowPicking, false);
+        this._allowPicking = options.allowPicking ?? false;
     }
 
     get positions() {

@@ -1,6 +1,5 @@
 const PolylinePrimitive = (function () {
     const createGuid = Cesium.createGuid;
-    const defaultValue = Cesium.defaultValue;
     const defined = Cesium.defined;
     const destroyObject = Cesium.destroyObject;
     const ArcType = Cesium.ArcType;
@@ -22,19 +21,19 @@ const PolylinePrimitive = (function () {
      * @ionsdk
      */
     function PolylinePrimitive(options) {
-        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+        options = options ?? {};
 
-        this.show = defaultValue(options.show, true);
+        this.show = options.show ?? true;
 
-        this._ellipsoid = defaultValue(options.ellipsoid, Ellipsoid.WGS84);
-        this._width = defaultValue(options.width, 3);
-        this._color = Color.clone(defaultValue(options.color, Color.WHITE));
+        this._ellipsoid = options.ellipsoid ?? Ellipsoid.WGS84;
+        this._width = options.width ?? 3;
+        this._color = Color.clone(options.color ?? Color.WHITE);
         this._id = createGuid();
-        this._positions = defaultValue(options.positions, []);
+        this._positions = options.positions ?? [];
         this._primitive = undefined;
         this._boundingSphere = new BoundingSphere();
-        this._dashed = defaultValue(options.dashed, false);
-        this._loop = defaultValue(options.loop, false);
+        this._dashed = options.dashed ?? false;
+        this._loop = options.loop ?? false;
 
         this._update = true;
     }

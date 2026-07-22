@@ -1,7 +1,6 @@
 const Cartographic = Cesium.Cartographic;
 const Cartesian3 = Cesium.Cartesian3;
 const Color = Cesium.Color;
-const defaultValue = Cesium.defaultValue;
 const defined = Cesium.defined;
 const Matrix3 = Cesium.Matrix3;
 const SceneMode = Cesium.SceneMode;
@@ -80,7 +79,7 @@ Cesium.UniformState.prototype.update = function (frameState) {
 
     setSunAndMoonDirections(this, frameState);
 
-    var light = defaultValue(frameState.light, defaultLight);
+    var light = frameState.light ?? defaultLight;
     if (light instanceof SunLight) {
         this._lightDirectionWC = Cartesian3.clone(
             this._sunDirectionWC,
@@ -131,17 +130,13 @@ Cesium.UniformState.prototype.update = function (frameState) {
         : undefined;
     this._brdfLut = brdfLut;
 
-    this._environmentMap = defaultValue(
-        frameState.environmentMap,
-        frameState.context.defaultCubeMap
-    );
+    this._environmentMap =
+        frameState.environmentMap ?? frameState.context.defaultCubeMap;
 
     // IE 11 doesn't optimize out uniforms that are #ifdef'd out. So undefined values for the spherical harmonic
     // coefficients and specular environment map atlas dimensions cause a crash.
-    this._sphericalHarmonicCoefficients = defaultValue(
-        frameState.sphericalHarmonicCoefficients,
-        EMPTY_ARRAY
-    );
+    this._sphericalHarmonicCoefficients =
+        frameState.sphericalHarmonicCoefficients ?? EMPTY_ARRAY;
     this._specularEnvironmentMaps = frameState.specularEnvironmentMaps;
     this._specularEnvironmentMapsMaximumLOD =
         frameState.specularEnvironmentMapsMaximumLOD;

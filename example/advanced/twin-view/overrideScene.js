@@ -1,6 +1,6 @@
 // based on CesiumJS 1.79.1
 
-const { BoundingRectangle, BoundingSphere, Cesium3DTilePass, Cesium3DTilePassState, Color, defaultValue, defined, JulianDate, Pass, RequestScheduler, Scene } = Cesium;
+const { BoundingRectangle, BoundingSphere, Cesium3DTilePass, Cesium3DTilePassState, Color, defined, JulianDate, Pass, RequestScheduler, Scene } = Cesium;
 const CesiumMath = Cesium.Math;
 
 /**
@@ -199,7 +199,7 @@ function render(scene) {
     frameState.passes.postProcess = scene.postProcessStages.hasSelected;
     frameState.tilesetPassState = renderTilesetPassState;
 
-    var backgroundColor = defaultValue(scene.backgroundColor, Color.BLACK);
+    var backgroundColor = scene.backgroundColor ?? Color.BLACK;
     if (scene._hdr) {
         backgroundColor = Color.clone(backgroundColor, scratchBackgroundColor);
         backgroundColor.red = Math.pow(backgroundColor.red, scene.gamma);
